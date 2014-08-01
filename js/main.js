@@ -10,7 +10,7 @@ function initApp() {
 	// launch the app
 	can.view('patient_tmpl', {
 		patient: Patient.findOne({id: 'x'}),
-		last_manual_search: "Rheumatoid Arthritis",
+		last_manual_search: null,
 	})
 	.then(function(frag) {
 		$("#app").html(frag);

@@ -171,9 +171,24 @@ def retrieve_problems(smart_client, smart_05=False):
 	# pick out the individual problems
 	problems = []
 	if prob_ld is not None:
-		for gr in prob_ld.get("@graph", []):
-			if "sp:Problem" == gr.get("@type"):
-				problems.append(gr)
+		for prob in prob_ld.get("@graph", []):
+			if "sp:Problem" == prob.get("@type"):
+				problem = {}
+				problem['name'] = prob.get('sp:problemName', {}).get('dcterms:title') or "Unnamed Problem"
+				
+				period = ''
+				if 'sp:startDate' in prob:
+					problem['startdate'] = prob['sp:startDate']
+					period = problem['startdate']
+				if 'sp:endDate' in prob:
+					problem['enddate'] = prob['sp:endDate']
+					period = "{} until {}".format(period, problem['enddate'])
+				else:
+					period = "since {}".format(problem['startdate'])
+				if len(period) > 0:
+					problem['period'] = period
+				
+				problems.append(problem)
 	
 	return problems
 
