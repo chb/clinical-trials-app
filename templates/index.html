@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Trial Eligibility</title>
+	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<link rel="icon" type="image/png" href="static/favicon.png">
+</head>
+<body>
+	<div id="container">
+		<header>
+			<a href="help">Help</a>
+		</header>
+		
+		<div id="content">
+			{% if defs.use_smart %}
+			<div class="back_to_select">
+				{% if 'none' != api_base %}
+				<a id="back_to_patient" href="index.html?api_base={{ api_base }}&amp;record_id=0">« Change patient</a>
+				{% endif %}
+				<a href="index.html?api_base=">« Start over</a>
+			</div>
+			{% endif %}
+			
+			{#
+			    Patient's demographics template
+			 #}
+			<script type="text/mustache" id="patient_tmpl">{% raw %}
+			<div id="demographics">
+				{{#patient.full_name}}
+				<h1>Trials for {{ patient.full_name }}</h1>
+				{{/patient.full_name}}
+				{{^patient.full_name}}
+				<h1>Trial Eligibility</h1>
+				{{/patient.full_name}}
+				
+				<div class="patient_portrait"></div>
+				
+				<div class="demo_row">
+					<input type="radio" id="select_female" name="demo_gender" value="female"{{^patient.male}} checked="checked"{{/}}><!--
+				 --><label for="select_female" id="select_female_label" class="demo_gender">Female</label><!--
+				 --><input type="radio" id="select_male" name="demo_gender" value="male"{{#patient.male}} checked="checked"{{/}}><!--
+				 --><label for="select_male" id="select_male_label" class="demo_gender">Male</label>
+				 	
+					<input type="number" id="demo_age" name="demo_age" placeholder="Age" value="{{ patient.age_years }}" min="0" max="120" /> y
+					{{#patient.birthday}}<span class="demo_birthday">
+						({{^patient.deathdate}}born {{/}} {{ patient.birthday }}{{#patient.deathdate}} – {{patient.deathdate}}{{/}})
+					</span>{{/}}
+				</div>
+				
+				<div class="demo_row">
+					<input type="text" id="demo_location" placeholder="City, State" value="{{ patient.location }}" />
+					<!--button onclick="locatePatient()">Locate</button-->
+				</div>
+			</div>
+			
+			<div id="patient_problems">
+				<ul id="problem_list">
+					<li id="prob_manual"{{^patient.problems}} class="active"{{/}}>
+						<form method="get" action="" onsubmit="hideProblemsAndStartTrialSearch('prob_manual'); return false;">
+							<!--input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" value="Rheumatoid Arthritis" /-->
+							<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" value="{{ last_manual_search }}" />
+							<button id="manual_cancel" type="button" onclick="window.event.stopPropagation(); cancelTrialSearchAndShowProblemList('prob_manual');">Cancel</button>
+							<button id="manual_submit" type="submit">Search</button>
+						</form>
+					</li>
+				</ul>
+				<!-- patient problems here -->
+			</div>
+			{% endraw %}</script>
+			
+			<div id="app"><h1>Loading...</h1></div>
+			
+			<div id="trial_status"></div>
+			<div id="trial_selectors">
+				<ul id="selector_goodbad" class="trial_selector"></ul>
+				<div id="selector_inv_type_parent" class="trial_opt_selector">
+					<h2>Intervention / Observation</h2>
+					<ul id="selector_inv_type"></ul>
+				</div>
+				<div id="selector_inv_phase_parent" class="trial_opt_selector">
+					<h2>Trial phase</h2>
+					<ul id="selector_inv_phase"></ul>
+				</div>
+			</div>
+			<div style="clear:left;"> </div>
+			
+			<div id="selector_keywords_parent">
+				<h2>Selected Keywords</h2>
+				<div id="selector_keywords"></div>
+			</div>
+			
+			<ul id="selected_trial" class="trial_list active"></ul>
+			<div id="g_map"></div>
+			<div id="g_map_toggle">
+				<a href="javascript:void(0)" onclick="toggleTrialMap()">Show Map</a>
+				<span class="red"></span>
+			</div>
+			
+			<div id="trials">
+				<ul id="trial_list" class="trial_list"></ul>
+			</div>
+		</div>
+		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<!-- <script src="static/can.custom.js"></script> -->
+	<script src="static/can.jquery.dev.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key={{ defs.google_api_key }}&sensor=false"></script>
+	<script src="static/markerclusterer.js"></script>
+	<script src="static/main.js"></script>
+	{% if defs.smart_v05 %}
+	<!-- SMART v0.5 hack -->
+	<script src="http://sample-apps-v05.smartplatforms.org/framework/smart/scripts/smart-api-client.js"></script>
+	<script src="static/smart-v05.js"></script>
+	{% endif %}
+	<script>
+	$(document).ready(function() {
+		initApp();
+	});
+</script>
+</body>
+</html>

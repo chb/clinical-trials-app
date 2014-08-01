@@ -1,0 +1,3 @@
+[submodule "ClinicalTrials"]
+	path = ClinicalTrials
+	url = git@github.com:p2/ClinicalTrials.git

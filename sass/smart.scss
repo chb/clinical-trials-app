@@ -1,0 +1,33 @@
+/**
+ *  Launch page and SMART specific styles
+ */
+
+.list_select {
+	overflow: hidden;
+	background-color: white;
+	border: 1px solid darken($col-border, 10%); border-radius: $border-radius;
+	
+	padding-left: 0;
+	li {
+		list-style-type: none;
+		border-bottom: 1px solid darken($col-border, 10%);
+		
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+	
+	a {
+		display: block;
+		padding: 0.75em 1em;
+		
+		&:hover {
+			background-color: $col-bg;
+		}
+		
+		span {
+			display: block;
+			color: $col-faded;
+		}
+	}
+}

@@ -1,0 +1,15 @@
+env.sh
+session_data
+static/help.html
+
+# virtualenv
+env
+
+# IDE settings
+project.sublime-*
+
+# Other
+__pycache__
+.sass-cache
+.DS_Store
+

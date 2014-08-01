@@ -1,0 +1,177 @@
+//
+//  Defaults
+//
+
+
+@import "bourbon";
+
+$col-main:				#038;
+$col-main-fg:			darken($col-main, 20%);
+$col-main-border:		darken($col-main, 15%);
+$col-main-bg:			lighten($col-main, 50%);
+
+$col-title:				rgb(30,30,30);
+$col-link:				rgb(0,20,190);
+$col-faded:				rgb(80,80,80);
+$col-trans-faded:		rgba(0,0,0,0.4);
+$col-border:			rgb(200,200,200);
+$col-border-inactive:	rgb(185,185,185);
+
+$col-bg:				rgb(246,246,246);
+$col-boxbg:				rgb(230,230,230);
+$col-redbg:				rgb(200,30,20);
+$col-greenbg:			rgb(160,255,110);
+$col-note:				rgb(255,255,200);
+
+$border-radius:			2pt;
+
+
+html, body {
+	height: 100%; margin: 0; padding: 0;
+	font: 11pt "Helvetica-Neue", Helvetica, sans-serif; line-height: 1.35;
+	background-color: $col-bg;
+}
+
+h1 {
+	font-weight: 300;
+}
+
+h2 {
+	margin: 2em 0 0.3em;
+	font-weight: 300;
+}
+
+h3 {
+	margin-bottom: 0.5em;
+	font-weight: 300;
+	&:first-child { margin-top: 0.3em; }
+}
+
+a {
+	color: $col-link; text-decoration: none;
+}
+
+p {
+	margin: 0.5em 0;
+	&:first-child { margin-top: 0; }
+	&:last-child { margin-bottom: 0; }
+}
+
+blockquote {
+	margin: 1em 0; padding: 0 0 0 1em;
+	border-left: 0.3em solid darken($col-border, 10%);
+	color: $col-faded;
+}
+
+table {
+	border-collapse: collapse;
+}
+td {
+	&:first-child { padding-left: 0; }
+	&:last-child { padding-right: 0; }
+}
+
+.back_to_select {
+	margin: 1em 0 2em;
+	
+	#back_to_patient {
+		margin-right: 2em;
+	}
+}
+
+header {
+	padding: 0.5em 3em 0;
+	text-align: right;
+}
+
+#container {
+	max-width: 70em; min-height: 100%;
+	margin: 0 auto;
+	background-color: white;
+	
+	@media screen and (min-width: 72em) {
+		border: 1px solid $col-border; border-width: 0 1px;
+	}	
+}
+
+#content {
+	padding: 1em 3em 2em;
+}
+
+#footer {
+	padding: 2em 3em;
+	font-size: 90%; color: $col-faded; text-align: center;
+}
+
+#g_map {
+	display: none;
+	position: relative;
+	width: 100%; height: 400px;
+	margin-top: 1.5em;
+	clear: left;
+}
+
+#g_map_loading {
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	line-height: 5em; text-align: center; font-size: 2em; font-weight: 300; color: white;
+	background-color: rgba(0,0,0,0.8);
+}
+
+#g_map_toggle {
+	display: none;
+	font-size: 0.9em;
+	
+	span {
+		margin-left: 1em;
+	}
+}
+
+
+@import "patient";
+@import "trials";
+@import "smart";
+
+
+// Generic
+.green {
+	color: #090;
+}
+
+.red {
+	color: #A00;
+}
+
+.faded {
+	color: $col-faded;
+}
+
+.supplement {
+	font-size: 0.9em; color: $col-faded;
+}
+div.supplement {
+	margin-top: 0.5em;
+}
+
+
+.small {
+	font-size: 0.85em;
+}
+
+
+.tag {
+	display: inline-block;
+	margin: 0.4em 0.5em 0 0; padding: 0 0.4em;
+	border: 1px solid $col-border-inactive; border-radius: $border-radius;
+	
+	&.active {
+		color: black;
+		background-color: $col-border-inactive;
+	}
+}
+	
+span.tag {
+	color: $col-faded;
+//	cursor: pointer; @include user-select(none);
+}
+

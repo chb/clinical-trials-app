@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title|default("Trial Eligibility") }}</title>
+	<link rel="stylesheet" type="text/css" href="static/style.css" />
+</head>
+<body>
+	<div id="container">
+		<header>
+			{%- for link in links %}
+			<a href="{{ link.href }}">{{ link.text }}</a>
+			{%- else %}
+			&nbsp;
+			{%- endfor %}
+		</header>
+		<div id="content">
+			{{ content|safe }}
+		</div>
+		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
+	</div>
+</body>
+</html>
