@@ -149,7 +149,7 @@ def index():
 		'google_api_key': os.environ.get('GOOGLE_API_KEY')
 	}
 	
-	return render_template('index.html', defs=defs, api_base=api_base, last_manual_input=session.get('last_manual_input', ''))
+	return render_template('index.html', defs=defs, api_base=api_base)
 
 
 @app.route('/help')
@@ -219,19 +219,21 @@ def endpoints():
 
 # ------------------------------------------------------------------------------ RESTful paths
 
-@app.route('/patient', methods=['GET', 'PUT'])
-def patient():
+@app.route('/patient/<id>', methods=['GET', 'PUT'])
+def patient(id):
 	""" Returns the current patient's data as JSON.
 	"""
+	id = 'x'
 	pat = session.get('patient')
 	if pat:
-		patient = Patient('x', pat)
+		patient = Patient(id, pat)
 	else:
-		patient = Patient('x')
+		patient = Patient(id)
 	
 	# PUT new demographics
 	if 'PUT' == request.method:
-		raise Exception("PUT is not implemented")
+		patient.updateWith(request.form)
+		session['patient'] = patient.json
 	
 	# auto-fetch demographics
 	elif USE_SMART and not patient.did_fetch:

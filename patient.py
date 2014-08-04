@@ -15,7 +15,7 @@ class Patient(JSONDocument):
 	Properties:
 	
 	- full_name [string]
-	- male [bool]
+	- gender [string, "female" or "male"]
 	
 	- birthday
 	- deathdate
@@ -27,6 +27,11 @@ class Patient(JSONDocument):
 	- country [string]
 	- location = city, region, country [string]
 	"""
+	
+	def __init__(self, ident, json=None):
+		super().__init__(ident, "patient", json)
+		if json is None:
+			self.gender = "female"
 	
 	def didFetch(self):
 		self.did_fetch = True
@@ -54,8 +59,14 @@ class Patient(JSONDocument):
 	
 	@property
 	def age_years(self):
-		delta = self.age_delta()
-		return delta.years if delta is not None else None
+		if self.__dict__['age_years'] is None:
+			delta = self.age_delta()
+			self.age_years = delta.years if delta is not None else None
+		return self.__dict__['age_years']
+	
+	@age_years.setter
+	def age_years(self, years):
+		self.__dict__['age_years'] = years
 	
 	@property
 	def age_string(self):
@@ -78,12 +89,18 @@ class Patient(JSONDocument):
 	
 	@property
 	def location(self):
-		parts = []
-		if self.city:
-			parts.append(self.city)
-		if self.region:
-			parts.append(self.region)
-		if self.country:
-			parts.append(self.country)
-		return ', '.join(parts) if len(parts) > 0 else ''
+		if self.__dict__['location'] is None:
+			parts = []
+			if self.city:
+				parts.append(self.city)
+			if self.region:
+				parts.append(self.region)
+			if self.country:
+				parts.append(self.country)
+			self.__dict__['location'] = ', '.join(parts) if len(parts) > 0 else ''
+		return self.__dict__['location']
+	
+	@location.setter
+	def location(self, value):
+		self.__dict__['location'] = value
 	

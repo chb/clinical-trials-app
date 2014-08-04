@@ -36,19 +36,19 @@
 				<div class="patient_portrait"></div>
 				
 				<div class="demo_row">
-					<input type="radio" id="select_female" name="demo_gender" value="female"{{^patient.male}} checked="checked"{{/}}><!--
+					<input type="radio" id="select_female" name="demo_gender" value="female" can-value="patient.gender" can-click="patient.save"><!--
 				 --><label for="select_female" id="select_female_label" class="demo_gender">Female</label><!--
-				 --><input type="radio" id="select_male" name="demo_gender" value="male"{{#patient.male}} checked="checked"{{/}}><!--
+				 --><input type="radio" id="select_male" name="demo_gender" value="male" can-value="patient.gender" can-click="patient.save"><!--
 				 --><label for="select_male" id="select_male_label" class="demo_gender">Male</label>
 				 	
-					<input type="number" id="demo_age" name="demo_age" placeholder="Age" value="{{ patient.age_years }}" min="0" max="120" /> y
+					<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="patient.age_years" min="0" max="120"> y
 					{{#patient.birthday}}<span class="demo_birthday">
 						({{^patient.deathdate}}born {{/}} {{ patient.birthday }}{{#patient.deathdate}} – {{patient.deathdate}}{{/}})
 					</span>{{/}}
 				</div>
 				
 				<div class="demo_row">
-					<input type="text" id="demo_location" placeholder="City, State" value="{{ patient.location }}" />
+					<input type="text" id="demo_location" placeholder="City, State" can-value="patient.location" can-enter="patient.save">
 					<!--button onclick="locatePatient()">Locate</button-->
 				</div>
 			</div>
@@ -56,12 +56,9 @@
 			<div id="patient_problems">
 				<ul id="problem_list">
 					<li id="prob_manual"{{^patient.problems}} class="active"{{/}}>
-						<form method="get" action="" onsubmit="hideProblemsAndStartTrialSearch('prob_manual'); return false;">
-							<!--input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" value="Rheumatoid Arthritis" /-->
-							<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" value="{{ last_manual_search }}" />
-							<button id="manual_cancel" type="button" onclick="window.event.stopPropagation(); cancelTrialSearchAndShowProblemList('prob_manual');">Cancel</button>
-							<button id="manual_submit" type="submit">Search</button>
-						</form>
+						<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" can-value="patient.last_manual_search" can-enter="patient.searchTrials">
+						<button id="manual_cancel" type="button" onclick="window.event.stopPropagation(); cancelTrialSearchAndShowProblemList('prob_manual');">Cancel</button>
+						<button id="manual_submit" type="button" can-click="patient.searchTrials">Search</button>
 					</li>
 					{{#patient.problems}}
 					<li can-click="" {{data 'problem'}}>
