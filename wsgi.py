@@ -19,6 +19,7 @@ from beaker.middleware import SessionMiddleware
 USE_SMART = int(os.environ.get('USE_SMART', False))
 USE_SMART_05 = int(os.environ.get('USE_SMART_05', False))
 USE_NLP = int(os.environ.get('USE_NLP', False))
+LILLY_SECRET = os.environ.get('LILLY_SECRET')
 
 # SMART
 if USE_SMART:
@@ -27,6 +28,8 @@ if USE_SMART:
 # App
 from patient import Patient
 from ClinicalTrials.trial import Trial
+from ClinicalTrials.trialfinder import TrialFinder
+from ClinicalTrials.lillyserver import LillyV2Server
 
 # session setup
 session_opts = {
@@ -47,6 +50,14 @@ class BeakerSessionInterface(SessionInterface):
 
 app = application = Flask(__name__)
 
+# Trial Server
+trialserver = None
+if LILLY_SECRET is not None:
+	trialserver = LillyV2Server()
+	trialserver.headers = {
+		'Authorization': 'Basic {}'.format(LILLY_SECRET)
+	}
+	trialserver.trial_headers = trialserver.search_headers = {'Accept': 'application/json'}
 
 
 # ------------------------------------------------------------------------------ Utilities
@@ -217,11 +228,11 @@ def endpoints():
 	return render_template('endpoint_select.html', endpoints=smart.endpoints(), callback=callback)
 
 
-# ------------------------------------------------------------------------------ RESTful paths
+# ------------------------------------------------------------------------------ Patient
 
-@app.route('/patient/<id>', methods=['GET', 'PUT'])
-def patient(id):
-	""" Returns the current patient's data as JSON.
+@app.route('/patients/<id>', methods=['GET', 'PUT'])
+def patients(id):
+	""" Updates - if PUT - and returns the current patient's data as JSON.
 	"""
 	id = 'x'
 	pat = session.get('patient')
@@ -244,6 +255,17 @@ def patient(id):
 
 # ------------------------------------------------------------------------------ Trials
 
+@app.route('/trials')
+def trials():
+	""" Retrieve trials.
+	"""
+	finder = TrialFinder(trialserver)			# TODO: hold on to the finder in the session
+	trials = []
+	for trial in finder.find(request.args):
+		trials.append(trial.api)
+	
+	print("TRIALS: ", trials)
+	return jsonify({'trials': trials or []})
 
 
 # ------------------------------------------------------------------------------ Enrolling
