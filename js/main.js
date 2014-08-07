@@ -8,15 +8,17 @@ function initApp() {
 	}
 	
 	// launch the app
-	can.view('patient_tmpl', {
-		patient: Patient.findOne({id: 'x'}),
-		last_manual_search: null,
-	})
-	.then(function(frag) {
-		$("#app").html(frag);
+	Patient.findOne({id: 'x'})
+	.then(function(patient) {
+		var finder = TrialFinder();
+		finder.attr('patient', patient);
+		
+		// render the finder into the template
+		$('#app').html(can.view('trialresult_tmpl', {
+			finder: finder,
+		}));
 	});
 }
-
 
 
 /**
@@ -33,7 +35,7 @@ function initApp() {
 				success_func(obj1, status, obj2);
 			}
 			else {
-				console.warn('Successfully loaded', url, 'but no success func is set')
+				console.warn('Successfully loaded', url, 'but no success func is set');
 			}
 		}
 		else {

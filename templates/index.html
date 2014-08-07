@@ -21,75 +21,92 @@
 			</div>
 			{%- endif %}
 			
-			{#-
-			    Patient's demographics template
-			 #}
-			<script type="text/mustache" id="patient_tmpl">{% raw %}
+			{#- Trial list item template #}
+			<script type="text/mustache" id="trialresult_tmpl">{% raw %}
+			{{#finder.patient}}
 			<div id="demographics">
-				{{#patient.full_name}}
-				<h1>Trials for {{ patient.full_name }}</h1>
-				{{/patient.full_name}}
-				{{^patient.full_name}}
+				{{#full_name}}
+				<h1>Trials for {{ full_name }}</h1>
+				{{/}}
+				{{^full_name}}
 				<h1>Trial Eligibility</h1>
-				{{/patient.full_name}}
+				{{/}}
 				
 				<div class="patient_portrait"></div>
 				
 				<div class="demo_row">
-					<input type="radio" id="select_female" name="demo_gender" value="female" can-value="patient.gender" can-click="patient.save"><!--
+					<input type="radio" id="select_female" name="demo_gender" value="female" can-value="gender" can-click="save"><!--
 				 --><label for="select_female" id="select_female_label" class="demo_gender">Female</label><!--
-				 --><input type="radio" id="select_male" name="demo_gender" value="male" can-value="patient.gender" can-click="patient.save"><!--
+				 --><input type="radio" id="select_male" name="demo_gender" value="male" can-value="gender" can-click="save"><!--
 				 --><label for="select_male" id="select_male_label" class="demo_gender">Male</label>
 				 	
-					<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="patient.age_years" min="0" max="120"> y
-					{{#patient.birthday}}<span class="demo_birthday">
-						({{^patient.deathdate}}born {{/}} {{ patient.birthday }}{{#patient.deathdate}} – {{patient.deathdate}}{{/}})
+					<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="age_years" min="0" max="120"> y
+					{{#birthday}}<span class="demo_birthday">
+						({{^deathdate}}born {{/}} {{ birthday }}{{#deathdate}} – {{deathdate}}{{/}})
 					</span>{{/}}
 				</div>
 				
 				<div class="demo_row">
-					<input type="text" id="demo_location" placeholder="City, State" can-value="patient.location" can-enter="patient.save">
+					<input type="text" id="demo_location" placeholder="City, State" can-value="location" can-enter="save">
 					<!--button onclick="locatePatient()">Locate</button-->
 				</div>
 			</div>
 			
 			<div id="patient_problems">
 				<ul id="problem_list">
-					<li id="prob_manual"{{^patient.problems}} class="active"{{/}}>
-						<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" can-value="patient.last_manual_search" can-enter="patient.findTrials">
+					<li id="prob_manual"{{^problems}} class="active"{{/}}>
+						<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" can-value="last_manual_search" can-enter="finder.find">
 						<button id="manual_cancel" type="button" onclick="window.event.stopPropagation(); cancelTrialSearchAndShowProblemList('prob_manual');">Cancel</button>
-						<button id="manual_submit" type="button" can-click="patient.findTrials">Search</button>
+						<button id="manual_submit" type="button" can-click="finder.find">Search</button>
 					</li>
-					{{#patient.problems}}
+					{{#problems}}
 					<li can-click="" {{data 'problem'}}>
 						<div class="problem_name">{{ name }}</div>
 						<div class="supplement">{{ period }}</div>
 					</li>
-					{{/patient.problems}}
+					{{/}}
 				</ul>
 			</div>
-			{% endraw %}</script>
+			{{/}}
 			
-			<div id="app"><h1>Loading...</h1></div>
+			{{#finder.status}}
+			<div id="trial_status">{{ . }}</div>
+			{{/}}
 			
-			<div id="trial_status"></div>
+			{{#finder.result}}
 			<div id="trial_selectors">
 				<ul id="selector_goodbad" class="trial_selector"></ul>
 				<div id="selector_inv_type_parent" class="trial_opt_selector">
 					<h2>Intervention / Observation</h2>
-					<ul id="selector_inv_type"></ul>
+					<ul id="selector_inv_type">
+					{{#interventions}}
+						<li>
+							<input type="checkbox" id="{{ huid }}">
+							<label for="{{ huid }}">{{ name }}</label>
+							<span class="num_matches">{{ num_matches }}</span>
+						</li>
+					{{/}}
+					</ul>
 				</div>
 				<div id="selector_inv_phase_parent" class="trial_opt_selector">
 					<h2>Trial phase</h2>
-					<ul id="selector_inv_phase"></ul>
+					<ul id="selector_inv_phase">
+					{{#phases}}
+						<li>
+							<input type="checkbox" id="{{ huid }}">
+							<label for="{{ huid }}">{{ name }}</label>
+							<span class="num_matches">{{ num_matches }}</span>
+						</li>
+					{{/}}
+					</ul>
 				</div>
 			</div>
 			<div style="clear:left;"> </div>
 			
-			<div id="selector_keywords_parent">
+			<!--div id="selector_keywords_parent">
 				<h2>Selected Keywords</h2>
 				<div id="selector_keywords"></div>
-			</div>
+			</div-->
 			
 			<ul id="selected_trial" class="trial_list active"></ul>
 			<div id="g_map"></div>
@@ -99,8 +116,37 @@
 			</div>
 			
 			<div id="trials">
-				<ul id="trial_list" class="trial_list"></ul>
+				<ul id="trial_list" class="trial_list">
+				{{#trials}}
+					<li class="trial" {{ data 'trial' }}>
+						<div class="trial_locations"></div>
+						
+						<div class="trial_info">
+							{{ title }}
+							<div class="supplement">{{ phase }}</div>
+							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ _id }}" target="_blank"><{{ _id }}</a>
+							
+							<!-- keywords here -->
+							
+							<div class="show_elig_toggle supplement">
+								<a href="javascript:void(0);" can-click="toggleEligibilityCriteria">Show eligibility criteria</a>
+							</div>
+							
+							{{#reason}}
+							<tt class="exclusion_reason">{{ reason }}</tt>
+							{{/}}
+						</div>
+						
+						<div style="clear: right;"> </div>
+						<div class="formatted_criteria"></div>
+					</li>
+				{{/}}
+				</ul>
 			</div>
+			{{/}}
+			{% endraw %}</script>
+			
+			<div id="app"><h1>Loading...</h1></div>
 		</div>
 		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
 	</div>
@@ -118,6 +164,6 @@
 	$(document).ready(function() {
 		initApp();
 	});
-</script>
+	</script>
 </body>
 </html>
