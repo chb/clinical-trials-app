@@ -19,6 +19,9 @@ from beaker.middleware import SessionMiddleware
 USE_SMART = int(os.environ.get('USE_SMART', False))
 USE_SMART_05 = int(os.environ.get('USE_SMART_05', False))
 USE_NLP = int(os.environ.get('USE_NLP', False))
+LIMIT_COUNTRIES = os.environ.get('LIMIT_COUNTRIES')
+if LIMIT_COUNTRIES is not None:
+	LIMIT_COUNTRIES = re.split(r',\s*', LIMIT_COUNTRIES)
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 
 # SMART
@@ -53,11 +56,7 @@ app = application = Flask(__name__)
 # Trial Server
 trialserver = None
 if LILLY_SECRET is not None:
-	trialserver = LillyV2Server()
-	trialserver.headers = {
-		'Authorization': 'Basic {}'.format(LILLY_SECRET)
-	}
-	trialserver.trial_headers = trialserver.search_headers = {'Accept': 'application/json'}
+	trialserver = LillyV2Server(LILLY_SECRET)
 
 
 # ------------------------------------------------------------------------------ Utilities
@@ -260,11 +259,12 @@ def trials():
 	""" Retrieve trials.
 	"""
 	finder = TrialFinder(trialserver)			# TODO: hold on to the finder in the session
+	if LIMIT_COUNTRIES:
+		finder.limit_countries = LIMIT_COUNTRIES
 	trials = []
 	for trial in finder.find(request.args):
-		trials.append(trial.api)
+		trials.append(trial.js)
 	
-	print("TRIALS: ", trials)
 	return jsonify({'trials': trials or []})
 
 
