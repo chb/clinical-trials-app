@@ -32,6 +32,8 @@ class Patient(JSONDocument):
 		super().__init__(ident, "patient", json)
 		if json is None:
 			self.gender = "female"
+		if self.country is None:
+			self.country = "USA"
 	
 	def didFetch(self):
 		self.did_fetch = True
@@ -87,20 +89,18 @@ class Patient(JSONDocument):
 	
 	# MARK: Location
 	
-	@property
-	def location(self):
-		if self.__dict__['location'] is None:
-			parts = []
-			if self.city:
-				parts.append(self.city)
-			if self.region:
-				parts.append(self.region)
-			if self.country:
-				parts.append(self.country)
-			self.__dict__['location'] = ', '.join(parts) if len(parts) > 0 else ''
-		return self.__dict__['location']
+	def __setattr__(self, name, value):
+		super().__setattr__(name, value)
+		if 'country' == name or 'city' == name or 'region' == name:
+			self.update_location()
 	
-	@location.setter
-	def location(self, value):
-		self.__dict__['location'] = value
+	def update_location(self):
+		parts = []
+		if self.city:
+			parts.append(self.city)
+		if self.region:
+			parts.append(self.region)
+		if self.country:
+			parts.append(self.country)
+		setattr(self, 'location', ', '.join(parts) if len(parts) > 0 else None)
 	

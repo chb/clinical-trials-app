@@ -19,9 +19,6 @@ from beaker.middleware import SessionMiddleware
 USE_SMART = int(os.environ.get('USE_SMART', False))
 USE_SMART_05 = int(os.environ.get('USE_SMART_05', False))
 USE_NLP = int(os.environ.get('USE_NLP', False))
-LIMIT_COUNTRIES = os.environ.get('LIMIT_COUNTRIES')
-if LIMIT_COUNTRIES is not None:
-	LIMIT_COUNTRIES = re.split(r',\s*', LIMIT_COUNTRIES)
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 
 # SMART
@@ -29,10 +26,11 @@ if USE_SMART:
 	import smart
 
 # App
-from patient import Patient
 from ClinicalTrials.trial import Trial
-from ClinicalTrials.trialfinder import TrialFinder
 from ClinicalTrials.lillyserver import LillyV2Server
+from patient import Patient
+from trialfinder import TrialFinder
+from trialmatcher import TrialMatcher
 
 # session setup
 session_opts = {
@@ -233,12 +231,8 @@ def endpoints():
 def patients(id):
 	""" Updates - if PUT - and returns the current patient's data as JSON.
 	"""
-	id = 'x'
 	pat = session.get('patient')
-	if pat:
-		patient = Patient(id, pat)
-	else:
-		patient = Patient(id)
+	patient = Patient('x', pat)
 	
 	# PUT new demographics
 	if 'PUT' == request.method:
@@ -258,11 +252,20 @@ def patients(id):
 def trials():
 	""" Retrieve trials.
 	"""
-	finder = TrialFinder(trialserver)			# TODO: hold on to the finder in the session
-	if LIMIT_COUNTRIES:
-		finder.limit_countries = LIMIT_COUNTRIES
+	id = 'x'
+	if 'PUT' == request.method:
+		patient = Patient(id)
+		patient.updateWith(request.form)
+	else:
+		pat = session.get('patient')
+		patient = Patient(id, pat)
+	
+	finder = TrialFinder(trialserver, patient)
+	found = finder.find(request.args)
+	
 	trials = []
-	for trial in finder.find(request.args):
+	matcher = TrialMatcher(patient)
+	for trial in matcher.match(found):
 		trials.append(trial.js)
 	
 	return jsonify({'trials': trials or []})

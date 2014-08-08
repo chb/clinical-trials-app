@@ -10,9 +10,6 @@ export USE_SMART=0
 export USE_SMART_05=0
 export USE_APP_ID="clinical-trials@apps.chip.org"
 
-# Trial Settings
-export LIMIT_COUNTRIES="USA, Canada"		# separate multiple countries with a comma
-
 # LillyCOI API key (base64 encoded "key:secret" string)
 export LILLY_SECRET=
 
