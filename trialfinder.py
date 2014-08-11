@@ -15,6 +15,7 @@ class TrialFinder(object):
 		self.server = server
 		self.patient = patient
 		
+		self.fetch_all = True
 		self.recruiting_only = True
 		
 		self.session = None
@@ -40,7 +41,7 @@ class TrialFinder(object):
 		req = self.server.search_request(prms)
 		trials = self._find(req)
 		total = self.search_meta.get('total') or 0
-		if total <= 200:
+		if self.fetch_all and total <= 200:
 			while self.hasMore():
 				trials.extend(self.more())
 		

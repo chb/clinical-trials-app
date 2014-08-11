@@ -30,7 +30,7 @@ from ClinicalTrials.trial import Trial
 from ClinicalTrials.lillyserver import LillyV2Server
 from patient import Patient
 from trialfinder import TrialFinder
-from trialmatcher import TrialMatcher
+from trialmatcher import *
 
 # session setup
 session_opts = {
@@ -55,6 +55,13 @@ app = application = Flask(__name__)
 trialserver = None
 if LILLY_SECRET is not None:
 	trialserver = LillyV2Server(LILLY_SECRET)
+
+# Trial Matcher
+trialmatcher = TrialSerialMatcher()
+trialmatcher.modules = [
+	TrialGenderMatcher(),
+	TrialAgeMatcher()
+]
 
 
 # ------------------------------------------------------------------------------ Utilities
@@ -260,15 +267,17 @@ def trials():
 		pat = session.get('patient')
 		patient = Patient(id, pat)
 	
+	# force country to be US for now
+	patient.country = "Canada"
 	finder = TrialFinder(trialserver, patient)
 	found = finder.find(request.args)
 	
-	trials = []
-	matcher = TrialMatcher(patient)
-	for trial in matcher.match(found):
-		trials.append(trial.js)
+	results = []
+	trialmatcher.patient = patient
+	for result in trialmatcher.match(found):
+		results.append(result.trial.js)
 	
-	return jsonify({'trials': trials or []})
+	return jsonify({'trials': results or []})
 
 
 # ------------------------------------------------------------------------------ Enrolling

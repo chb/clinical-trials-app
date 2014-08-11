@@ -33,7 +33,7 @@ class Patient(JSONDocument):
 		if json is None:
 			self.gender = "female"
 		if self.country is None:
-			self.country = "USA"
+			self.country = "United States"
 	
 	def didFetch(self):
 		self.did_fetch = True
@@ -61,10 +61,10 @@ class Patient(JSONDocument):
 	
 	@property
 	def age_years(self):
-		if self.__dict__['age_years'] is None:
+		if self.__dict__.get('age_years') is None:
 			delta = self.age_delta()
 			self.age_years = delta.years if delta is not None else None
-		return self.__dict__['age_years']
+		return self.__dict__.get('age_years')
 	
 	@age_years.setter
 	def age_years(self, years):
