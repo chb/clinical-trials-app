@@ -1,21 +1,23 @@
 /**
- *  An object encapsulating trial search results.
+ *  An object handling trial search.
  */
 var TrialFinder = can.Model.extend({
 },
 {
 	status: null,
+	error: null,
 	patient: null,
 	
-	trials: [],
-	interventions: [],
-	phases: [],
+	// the result object will have `results`, `interventions` and `phases`.
 	// `interventions` and `phases` needs: huid, name, num_results
+	result: null,
 	
 	/// Search for trials for the given term
 	find: function(patient, elem, evt) {
 		var self = this;
 		self.attr('status', "Searching...");
+		self.attr('error', null);
+		self.attr('result', null);
 		
 		var search = null;
 		
@@ -27,16 +29,30 @@ var TrialFinder = can.Model.extend({
 		if (!search) {
 			search = $('#manual_problem').val(); // element.val() || 
 		}
-		var url = '/trials?term=' + encodeURIComponent(search);
-		console.log(url);
 		
-		$.ajax({url: url, type: 'GET', dataType: 'json'})
-		.done(function(json, message, req) {
-			self.attr('status', "Sorting...");
-			if (json && 'trials' in json) {
-				self.attr('trials', json['trials']);
-			}
+		$.ajax({
+			url: '/find?term=' + encodeURIComponent(search),
+			type: this.patient ? 'PUT' : 'GET',
+			data: this.patient ? this.patient._data : null,
+			dataType: 'json'
+		})
+		.always(function(json, message, req) {
 			
+			// success: instantiate TrialResult objects
+			if ('success' == message) {
+				self.attr('status', "Sorting...");
+				if (json && 'results' in json) {
+					self.attr('result', {
+						'results': TrialResult.fromJSON(json['results']),
+						'interventions': [],
+						'phases': [],
+					});
+					self.attr('complete', true);
+				}
+			}
+			else {
+				self.attr('error', "Error: " + req.toString());
+			}
 			self.attr('status', null);
 		});
 		

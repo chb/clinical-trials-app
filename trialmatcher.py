@@ -14,6 +14,19 @@ class TrialMatchResult(object):
 		self.trial = trial
 		self.ok = TrialMatchResult.OK if flag else TrialMatchResult.FAIL
 		self.reason = reason
+	
+		
+	@property
+	def js(self):
+		js = {
+			'ok': self.ok,
+			'trial': self.trial.js
+		}
+		if self.reason is not None:
+			js['reason'] = self.reason
+		
+		return js
+
 
 
 class TrialMatcher(object):

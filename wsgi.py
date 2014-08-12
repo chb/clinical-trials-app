@@ -16,9 +16,10 @@ from flask.sessions import SessionInterface
 from beaker.middleware import SessionMiddleware
 
 # settings
-USE_SMART = int(os.environ.get('USE_SMART', False))
-USE_SMART_05 = int(os.environ.get('USE_SMART_05', False))
-USE_NLP = int(os.environ.get('USE_NLP', False))
+DEBUG = int(os.environ.get('DEBUG', 0)) > 0
+USE_SMART = int(os.environ.get('USE_SMART', 0)) > 0
+USE_SMART_05 = int(os.environ.get('USE_SMART_05', 0)) > 0
+USE_NLP = int(os.environ.get('USE_NLP', 0)) > 0
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 
 # SMART
@@ -159,6 +160,7 @@ def index():
 	
 	# everything in order, render index
 	defs = {
+		'debug': DEBUG,
 		'use_smart': USE_SMART,
 		'smart_v05': USE_SMART_05,
 		'google_api_key': os.environ.get('GOOGLE_API_KEY')
@@ -255,9 +257,9 @@ def patients(id):
 
 # ------------------------------------------------------------------------------ Trials
 
-@app.route('/trials')
-def trials():
-	""" Retrieve trials.
+@app.route('/find', methods=['GET', 'PUT'])
+def find():
+	""" Retrieve trials for the given patient.
 	"""
 	id = 'x'
 	if 'PUT' == request.method:
@@ -268,16 +270,17 @@ def trials():
 		patient = Patient(id, pat)
 	
 	# force country to be US for now
-	patient.country = "Canada"
+	patient.country = "United States"
+	
 	finder = TrialFinder(trialserver, patient)
 	found = finder.find(request.args)
 	
 	results = []
 	trialmatcher.patient = patient
 	for result in trialmatcher.match(found):
-		results.append(result.trial.js)
+		results.append(result.js)
 	
-	return jsonify({'trials': results or []})
+	return jsonify({'results': results or []})
 
 
 # ------------------------------------------------------------------------------ Enrolling
@@ -303,7 +306,7 @@ if '__main__' == __name__:
 	app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
 	app.session_interface = BeakerSessionInterface()
 	
-	if os.environ.get('DEBUG'):
+	if DEBUG:
 		logging.basicConfig(level=logging.DEBUG)
 		app.run(debug=True, port=8008)
 	else:

@@ -70,7 +70,10 @@
 			{{/}}
 			
 			{{#finder.status}}
-			<div id="trial_status">{{ . }}</div>
+			<div class="trial_status">{{ . }}</div>
+			{{/}}
+			{{#finder.error}}
+			<div class="trial_status red">{{ . }}</div>
 			{{/}}
 			
 			{{#finder.result}}
@@ -117,14 +120,14 @@
 			
 			<div id="trials">
 				<ul id="trial_list" class="trial_list">
-				{{#trials}}
+				{{#results}}
 					<li class="trial" {{ data 'trial' }}>
 						<div class="trial_locations"></div>
 						
 						<div class="trial_info">
-							{{ title }}
-							<div class="supplement">{{ phase }}</div>
-							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ _id }}" target="_blank"><{{ _id }}</a>
+							{{ trial.title }}
+							<div class="supplement">{{ trial.phase }}</div>
+							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ _id }}" target="_blank"><{{ trial._id }}</a>
 							
 							<!-- keywords here -->
 							
@@ -151,7 +154,7 @@
 		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script src="static/can.jquery.dev.js"></script>
+	<script src="static/can.jquery{% if defs.debug %}.dev{% endif %}.js"></script>
 	<script src="//maps.googleapis.com/maps/api/js?key={{ defs.google_api_key }}&sensor=false"></script>
 	<script src="static/markerclusterer.js"></script>
 	<script src="static/main.js"></script>

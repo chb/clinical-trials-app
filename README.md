@@ -13,13 +13,33 @@ User Flow
 
 The app is used in context of a patient.
 Patient data (age, gender, zip, problems, meds, labs) is obtained via the [SMART on FHIR][smart] API to prepopulate a form.
-This involves logging in to the SMART container, either explicitly through a web login page if the app is a standalone app or implicitly by launching the app from within the EHR and passing the correct context.
+This involves logging in to the SMART container, either explicitly through a  login page or implicitly by launching the app from within the EHR and passing the correct context.
 
-A query for trials is then performed against Lilly's API, which retrieves all trials matching a certain search condition.
+The patient's demographics (gender, age, location and picture, if available) are shown atop.
+> Need to determine how/if to show problems, meds, ...
+
+A search field is available to enter trial search terms.
+> Needs to have shortcuts that allows to "search" for:
+> 
+> - trials available at the site
+> - trials for a specific condition drawn from the problem list
+> - ...
+
+
+A query for trials is then performed against Lilly's API with the respective restrictions.
 For trials that have a **target profile**, the trial's target profile is compared against the patient data to determine the patient's preliminary eligibility.
 
-Trials are then listed alongside indicators on why a patient is (in)eligible for a trial.
-There will be a possibility to add or remove patient criteria to narrow down or broaden the breadth of potential trials.
+Trials are then listed below the patient overview.
+> Need to figure out best trial sort order
+
+The list provides a quick glance at the trials, with trial title, intervention, phase and keywords visible.
+> Trial locations should only be shown if it's not clear from context.
+> Display other trial information that is important.
+
+Textual eligibility criteria can be expanded and a link to the original ClinicalTrials.gov website is provided.
+If looking at non-matching trials, the reason of why a trial is not suitable for a patient is also shown.
+
+There will be a possibility to add or remove patient criteria to narrow down or broaden the search scope.
 
 [smart]: http://smartplatforms.org
 

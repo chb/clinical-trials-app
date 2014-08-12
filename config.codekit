@@ -8,7 +8,7 @@
 		"expandTabs": 1,
 		"fileType": 4096,
 		"ignore": 1,
-		"ignoreWasSetByUser": 1,
+		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/ClinicalTrials\/jsondocument\/README.md",
 		"outputAbbreviatedPath": "\/ClinicalTrials\/jsondocument\/README.html",
 		"outputPathIsOutsideProject": 0,
@@ -26,15 +26,15 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
-	"\/ClinicalTrials\/UMLS\/README.md": {
+	"\/ClinicalTrials\/umls\/README.md": {
 		"enableFootnoteSupport": 0,
 		"enableSmartyPants": 1,
 		"expandTabs": 1,
 		"fileType": 4096,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/ClinicalTrials\/UMLS\/README.md",
-		"outputAbbreviatedPath": "\/ClinicalTrials\/UMLS\/README.html",
+		"inputAbbreviatedPath": "\/ClinicalTrials\/umls\/README.md",
+		"outputAbbreviatedPath": "\/ClinicalTrials\/umls\/README.html",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
@@ -143,6 +143,17 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/js\/TrialLocation.js",
 		"outputAbbreviatedPath": "\/static\/TrialLocation.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 0
+		},
+	"\/js\/TrialResult.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/TrialResult.js",
+		"outputAbbreviatedPath": "\/static\/TrialResult.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
@@ -366,26 +377,32 @@
 	"\/js\/main.js": [
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/js\/TrialFinder.js",
+			"linkedFileAbbreviatedPath": "\/js\/Patient.js",
 			"position": 0,
 			"type": 1
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/js\/Patient.js",
+			"linkedFileAbbreviatedPath": "\/js\/TrialFinder.js",
 			"position": 1,
 			"type": 1
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/js\/Trial.js",
+			"linkedFileAbbreviatedPath": "\/js\/TrialResult.js",
 			"position": 2,
 			"type": 1
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/js\/TrialLocation.js",
+			"linkedFileAbbreviatedPath": "\/js\/Trial.js",
 			"position": 3,
+			"type": 1
+			},
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/js\/TrialLocation.js",
+			"position": 4,
 			"type": 1
 			}
 		]
