@@ -269,9 +269,6 @@ def find():
 		pat = session.get('patient')
 		patient = Patient(id, pat)
 	
-	# force country to be US for now
-	patient.country = "United States"
-	
 	finder = TrialFinder(trialserver, patient)
 	found = finder.find(request.args)
 	

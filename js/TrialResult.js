@@ -12,12 +12,13 @@ var TrialResult = can.Model.extend({
 		var results = [];
 		for (var i = 0; i < array.length; i++) {
 			var result = new TrialResult(array[i]);
-			result.trials = Trial.fromJSON(result.trials);
 			results.push(result);
 		}
 		return results;
 	},
 },
 {
-	
+	init: function(json) {
+		this.trial = new Trial(json.trial);
+	}
 });

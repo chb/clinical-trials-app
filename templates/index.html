@@ -22,7 +22,7 @@
 			{%- endif %}
 			
 			{#- Trial list item template #}
-			<script type="text/mustache" id="trialresult_tmpl">{% raw %}
+			<script type="text/mustache" id="app_tmpl">{% raw %}
 			{{#finder.patient}}
 			<div id="demographics">
 				{{#full_name}}
@@ -42,13 +42,14 @@
 				 	
 					<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="age_years" min="0" max="120"> y
 					{{#birthday}}<span class="demo_birthday">
-						({{^deathdate}}born {{/}} {{ birthday }}{{#deathdate}} – {{deathdate}}{{/}})
+						({{^deathdate}}born {{/}}{{ birthday }}{{#deathdate}} – {{deathdate}}{{/}})
 					</span>{{/}}
 				</div>
 				
 				<div class="demo_row">
 					<input type="text" id="demo_location" placeholder="City, State" can-value="location" can-enter="save">
 					<!--button onclick="locatePatient()">Locate</button-->
+					<input type="text" id="demo_country" placeholder="Country" can-value="country" can-enter="save">
 				</div>
 			</div>
 			
@@ -122,26 +123,21 @@
 				<ul id="trial_list" class="trial_list">
 				{{#results}}
 					<li class="trial" {{ data 'trial' }}>
-						<div class="trial_locations"></div>
-						
 						<div class="trial_info">
 							{{ trial.title }}
 							<div class="supplement">{{ trial.phase }}</div>
-							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ _id }}" target="_blank"><{{ trial._id }}</a>
+							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
 							
 							<!-- keywords here -->
-							
-							<div class="show_elig_toggle supplement">
-								<a href="javascript:void(0);" can-click="toggleEligibilityCriteria">Show eligibility criteria</a>
-							</div>
+							<!-- link to show eligibility criteria -->
 							
 							{{#reason}}
 							<tt class="exclusion_reason">{{ reason }}</tt>
 							{{/}}
+							{{#property}}
+							<tt class="exclusion_reason">{{ property }}</tt>
+							{{/}}
 						</div>
-						
-						<div style="clear: right;"> </div>
-						<div class="formatted_criteria"></div>
 					</li>
 				{{/}}
 				</ul>

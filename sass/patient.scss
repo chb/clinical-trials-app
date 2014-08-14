@@ -19,7 +19,7 @@
 		font-size: 1.2em;
 	}
 	
-	#demo_location, #demo_age {
+	input[type="text"], input[type="number"] {
 		margin: 0; padding: 0.2em 0.4em;
 		font-size: 1em;
 		border: 1px solid $col-main-fg; border-radius: $border-radius;
@@ -30,6 +30,9 @@
 	}
 	#demo_location {
 		width: 13.15em;
+	}
+	#demo_country {
+		width: 9em;
 	}
 	#demo_age {
 		margin-left: 2em;

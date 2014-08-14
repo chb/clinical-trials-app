@@ -14,7 +14,7 @@ function initApp() {
 		finder.attr('patient', patient);
 		
 		// render the finder into the template
-		$('#app').html(can.view('trialresult_tmpl', {
+		$('#app').html(can.view('app_tmpl', {
 			finder: finder,
 		}));
 	});

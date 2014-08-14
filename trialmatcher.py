@@ -10,12 +10,12 @@ class TrialMatchResult(object):
 	OK = True
 	FAIL = False
 	
-	def __init__(self, trial, flag, reason=None):
+	def __init__(self, trial, flag, reason=None, property=None):
 		self.trial = trial
 		self.ok = TrialMatchResult.OK if flag else TrialMatchResult.FAIL
 		self.reason = reason
+		self.property = property
 	
-		
 	@property
 	def js(self):
 		js = {
@@ -24,6 +24,8 @@ class TrialMatchResult(object):
 		}
 		if self.reason is not None:
 			js['reason'] = self.reason
+		if self.property is not None:
+			js['property'] = self.property
 		
 		return js
 
@@ -92,9 +94,9 @@ class TrialGenderMatcher(TrialMatcher):
 		want = trial.eligibility.get('gender')
 		if want is not None and have is not None:
 			if 'f' == want[0].lower() and 'f' != want[0].lower():
-				return TrialMatchResult(trial, False, "Trial only accepts female patients")
+				return TrialMatchResult(trial, False, "Trial only accepts female patients", 'patient.gender')
 			if 'm' == want[0].lower() and 'm' != want[0].lower():
-				return TrialMatchResult(trial, False, "Trial only accepts male patients")
+				return TrialMatchResult(trial, False, "Trial only accepts male patients", 'patient.gender')
 		else:
 			logging.info("Not enough information to match by gender. Patient gender: {}, trial: {}".format(have, want))
 		
@@ -105,7 +107,9 @@ class TrialAgeMatcher(TrialMatcher):
 	""" Matches a trial by patient age.
 	"""
 	def match_trial(self, trial):
-		""" Retrieves the patient's age (...)
+		""" Retrieves the patient's age from CTG's "minimum_age" and
+		"maximum_age" fields and compares it to the patient's age_years
+		property.
 		"""
 		age = int(self.patient.age_years) if self.patient.age_years is not None else None
 		elig = trial.eligibility
@@ -113,9 +117,9 @@ class TrialAgeMatcher(TrialMatcher):
 		maxAge = self.sanitize_ctg_age(elig.get('maximum_age')) if elig is not None else None
 		if age is not None and (minAge is not None or maxAge is not None):
 			if minAge is not None and age < minAge:
-				return TrialMatchResult(trial, False, "Must be at least {} years old, but is {}".format(minAge, age))
+				return TrialMatchResult(trial, False, "Must be at least {} years old, but is {}".format(minAge, age), 'patient.age_years')
 			if maxAge is not None and age > maxAge:
-				return TrialMatchResult(trial, False, "Must be no more than {} years old, but is {}".format(maxAge, age))
+				return TrialMatchResult(trial, False, "Must be no more than {} years old, but is {}".format(maxAge, age), 'patient.age_years')
 		else:
 			logging.info("Not enough information to match by age. Patient: {}, min: {}, max: {}".format(age, minAge, maxAge))
 		
@@ -123,6 +127,8 @@ class TrialAgeMatcher(TrialMatcher):
 	
 	def sanitize_ctg_age(self, age_string):
 		""" Return the age in years, as integer, if possible.
+		
+		:returns: An int for the patient's age in years or None
 		"""
 		if not age_string or 'N/A' == age_string:
 			return None

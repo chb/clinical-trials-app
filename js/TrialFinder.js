@@ -8,8 +8,7 @@ var TrialFinder = can.Model.extend({
 	error: null,
 	patient: null,
 	
-	// the result object will have `results`, `interventions` and `phases`.
-	// `interventions` and `phases` needs: huid, name, num_results
+	// the result object is a `TrialFinderResult` instance
 	result: null,
 	
 	/// Search for trials for the given term
@@ -19,15 +18,14 @@ var TrialFinder = can.Model.extend({
 		self.attr('error', null);
 		self.attr('result', null);
 		
-		var search = null;
-		
-		if (this.patient) {
-			this.patient.save();
-			search = this.patient.last_manual_search;
-		}
-		
+		var search = this.patient ? this.patient.last_manual_search: null;
 		if (!search) {
 			search = $('#manual_problem').val(); // element.val() || 
+		}
+		
+		if (this.patient) {
+			this.patient.attr('last_manual_search', search);
+			this.patient.save();
 		}
 		
 		$.ajax({
@@ -41,12 +39,8 @@ var TrialFinder = can.Model.extend({
 			// success: instantiate TrialResult objects
 			if ('success' == message) {
 				self.attr('status', "Sorting...");
-				if (json && 'results' in json) {
-					self.attr('result', {
-						'results': TrialResult.fromJSON(json['results']),
-						'interventions': [],
-						'phases': [],
-					});
+				if (json) {
+					self.attr('result', new TrialFinderResult(json));
 					self.attr('complete', true);
 				}
 			}

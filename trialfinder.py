@@ -25,7 +25,7 @@ class TrialFinder(object):
 	
 	def find(self, params):
 		""" Find trials with the given parameters, enhanced with params from the
-		current patient.
+		current patient. Will return at max 500 trials.
 		"""
 		if params is None:
 			raise Exception("Cannot find trials without parameters")
@@ -41,7 +41,7 @@ class TrialFinder(object):
 		req = self.server.search_request(prms)
 		trials = self._find(req)
 		total = self.search_meta.get('total') or 0
-		if self.fetch_all and total <= 200:
+		if self.fetch_all and total <= 500:
 			while self.hasMore():
 				trials.extend(self.more())
 		
