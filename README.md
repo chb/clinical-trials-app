@@ -1,7 +1,7 @@
 Clinical Trials App
 ===================
 
-A Python/Flask web app that screens a patient's eligibility for certain clinical trials.
+A Python 3/Flask web app that screens a patient's eligibility for certain clinical trials.
 Trial data is obtained via [LillyCOI's][lilly] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
 
 [lilly]: http://www.lillycoi.com
@@ -89,3 +89,27 @@ It stores patient data in the session object, ultimately using the server's stan
 (...)
 
 [canjs]: http://canjs.com/
+
+
+Installation
+============
+
+This is a Python 3 app running on the [Flask][flask] framework.
+Easiest setup is by using a virtual environment, which requires `virtualenv`, as follows:
+
+```bash
+git clone --recursive 
+cd clinical-trials-app
+virtualenv -p python3 env
+. env/bin/activate
+pip install -r requirements.txt
+```
+
+You should now copy `environment.sh` to `env.sh` and adjust the settings.
+When done you can run the server:
+
+```bash
+./run.sh
+```
+
+[flask]: http://flask.pocoo.org
