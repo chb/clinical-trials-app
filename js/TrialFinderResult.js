@@ -1,3 +1,9 @@
+
+var _intervention_map = {
+	"Biological": "Drug/Biological",
+	"Drug": "Drug/Biological",
+};
+
 /**
  *  An object handling the overall trial search result.
  */
@@ -27,42 +33,31 @@ var TrialFinderResult = can.Model.extend({
 			return;
 		}
 		
+		var arr = [];
 		var assoc = {};
 		for (var i = 0; i < this.results.length; i++) {
 			var trial = this.results[i].trial;
 			if (trial && trial.interventions) {
 				for (var j = 0; j < trial.interventions.length; j++) {
 					var inter = trial.interventions[j];
-					var exist = assoc[inter];
+					if (inter in _intervention_map) {
+						inter = _intervention_map[inter];
+					}
 					
+					var exist = assoc[inter];
 					if (exist) {
-						exist.num_matches += 1;
+						exist.addMatch();
 					}
 					else {
-						var dict = {
-							name: inter,
-							huid: 'intervention_' + inter.replace(/\W\D/, '_'),
-							num_matches: 0,
-						};
-						assoc[inter] = dict;
+						var ti = new TrialIntervention(inter);
+						assoc[inter] = ti;
+						arr.push(ti);
 					}
 				}
 			}
 		}
 		
-		// create array and sort by name
-		var arr = [];
-		for (var p in assoc) {
-			arr.push(assoc[p]);
-		}
-		
-		this.attr('interventions', arr.sort(function(a, b) {
-			if (a.name > b.name)
-				return 1;
-			if (a.name < b.name)
-				return -1;
-			return 0;
-		}));
+		this.attr('interventions', arr.sort(TrialGroupable.sortByName));
 	},
 	
 	/// Collect trial phases from all the trials into a unique Array
@@ -71,14 +66,74 @@ var TrialFinderResult = can.Model.extend({
 			return;
 		}
 		
-		var assoc = [];
+		var arr = [];
+		var assoc = {};
 		for (var i = 0; i < this.results.length; i++) {
 			var trial = this.results[i].trial;
 			if (trial && trial.phases) {
 				for (var j = 0; j < trial.phases.length; j++) {
-					assoc.push(trial.phases[j]);
+					var phase = trial.phases[j];
+					
+					var exist = assoc[phase];
+					if (exist) {
+						exist.addMatch();
+					}
+					else {
+						var ph = new TrialPhase(phase);
+						assoc[phase] = ph;
+						arr.push(ph);
+					}
 				}
 			}
 		}
+		
+		this.attr('phases', arr.sort(TrialGroupable.sortByName));
+	},
+});
+
+
+var TrialGroupable = can.Model.extend({
+	sortByName: function(a, b) {
+		if (a.name > b.name)
+			return 1;
+		if (a.name < b.name)
+			return -1;
+		return 0;
+	},
+},
+{
+	name: null,
+	huid: null,
+	num_matches: 1,
+	
+	addMatch: function() {
+		this.attr('num_matches', this.num_matches + 1);
+	},
+	
+	toggle: function(self, elem, evt) {
+	},
+});
+
+var TrialIntervention = TrialGroupable.extend({},
+{
+	init: function(name) {
+		this.attr('name', name);
+		this.attr('huid', 'intervention_' + this.name.replace(/\W\D/, '_'));
+	},
+	
+	toggle: function(self, elem, evt) {
+		console.log("Toggle intervention", this.name);
+	},
+});
+
+var TrialPhase = TrialGroupable.extend({},
+{
+	init: function(name) {
+		this.attr('name', name);
+		this.attr('huid', 'phase_' + this.name.replace(/\W\D/, '_'));
+	},
+	
+	toggle: function(self, elem, evt) {
+		console.log("Toggle phase", this.name);
 	},
 });

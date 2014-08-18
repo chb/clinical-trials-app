@@ -85,7 +85,7 @@
 					<ul id="selector_inv_type">
 					{{#interventions}}
 						<li>
-							<input type="checkbox" id="{{ huid }}">
+							<input type="checkbox" id="{{ huid }}" can-change="toggle">
 							<label for="{{ huid }}">{{ name }}</label>
 							<span class="num_matches">{{ num_matches }}</span>
 						</li>
@@ -97,7 +97,7 @@
 					<ul id="selector_inv_phase">
 					{{#phases}}
 						<li>
-							<input type="checkbox" id="{{ huid }}">
+							<input type="checkbox" id="{{ huid }}" can-change="toggle">
 							<label for="{{ huid }}">{{ name }}</label>
 							<span class="num_matches">{{ num_matches }}</span>
 						</li>
