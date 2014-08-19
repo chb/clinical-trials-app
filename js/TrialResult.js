@@ -18,7 +18,20 @@ var TrialResult = can.Model.extend({
 	},
 },
 {
+	reason: null,
+	
+	shown: false,
+	shownForInterventions: false,
+	shownForPhases: false,
+	
 	init: function(json) {
 		this.trial = new Trial(json.trial);
+		
+		this.bind('shownForInterventions', function(ev, newVal, oldVal) {
+			this.attr('shown', newVal && this.shownForPhases);
+		});
+		this.bind('shownForPhases', function(ev, newVal, oldVal) {
+			this.attr('shown', newVal && this.shownForInterventions);
+		});
 	}
 });

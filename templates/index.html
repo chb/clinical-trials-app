@@ -80,30 +80,35 @@
 			{{#finder.result}}
 			<div id="trial_selectors">
 				<ul id="selector_goodbad" class="trial_selector"></ul>
-				<div id="selector_inv_type_parent" class="trial_opt_selector">
+				<div class="trial_opt_selector">
 					<h2>Intervention / Observation</h2>
 					<ul id="selector_inv_type">
 					{{#interventions}}
 						<li>
-							<input type="checkbox" id="{{ huid }}" can-change="toggle">
+							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
 							<label for="{{ huid }}">{{ name }}</label>
 							<span class="num_matches">{{ num_matches }}</span>
 						</li>
 					{{/}}
+					{{^interventions}}
+						<li><h3>No results</h3></li>
+					{{/}}
 					</ul>
 				</div>
-				<div id="selector_inv_phase_parent" class="trial_opt_selector">
+				{{#showPhases}}
+				<div class="trial_opt_selector">
 					<h2>Trial phase</h2>
 					<ul id="selector_inv_phase">
 					{{#phases}}
 						<li>
-							<input type="checkbox" id="{{ huid }}" can-change="toggle">
+							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
 							<label for="{{ huid }}">{{ name }}</label>
 							<span class="num_matches">{{ num_matches }}</span>
 						</li>
 					{{/}}
 					</ul>
 				</div>
+				{{/}}
 			</div>
 			<div style="clear:left;"> </div>
 			
@@ -124,8 +129,8 @@
 				{{#results}}
 					<li class="trial" {{ data 'trial' }}>
 						<div class="trial_info">
-							{{ trial.title }}
-							<div class="supplement">{{ trial.phase }}</div>
+							<h3>{{ trial.title }}</h3>
+							<div class="supplement">{{ trial.phases }}</div>
 							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
 							
 							<!-- keywords here -->
@@ -133,9 +138,6 @@
 							
 							{{#reason}}
 							<tt class="exclusion_reason">{{ reason }}</tt>
-							{{/}}
-							{{#property}}
-							<tt class="exclusion_reason">{{ property }}</tt>
 							{{/}}
 						</div>
 					</li>

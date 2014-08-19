@@ -2,7 +2,10 @@
 var _intervention_map = {
 	"Biological": "Drug/Biological",
 	"Drug": "Drug/Biological",
+	"Behavioral": "Behavioral/Other",
+	"Other": "Behavioral/Other",
 };
+
 
 /**
  *  An object handling the overall trial search result.
@@ -10,9 +13,12 @@ var _intervention_map = {
 var TrialFinderResult = can.Model.extend({
 },
 {
-	// `interventions` and `phases` needs: huid, name, num_matches
-	interventions: [],
-	phases: [],
+	results: null,
+	
+	// `interventions` and `phases` are TrialGroupable subclasses
+	interventions: null,
+	phases: null,
+	showPhases: false,
 	
 	/// Instantiate from an array of results
 	init: function(json) {
@@ -25,6 +31,54 @@ var TrialFinderResult = can.Model.extend({
 		this.results = TrialResult.fromJSON(array);
 		this.collectInterventions();
 		this.collectPhases();
+	},
+	
+	
+	/// Updates the `shown` property on the result instances
+	updateTrialShownState: function() {
+		var shownIntv = $.map(this.interventions, function(item, idx) {
+			return item.active ? item.name : null;
+		});
+		var shownPhs = $.map(this.phases, function(item, idx) {
+			return item.active ? item.name : null;
+		});
+		
+		var num = {};
+		for (var i = 0; i < this.results.length; i++) {
+			var result = this.results[i];
+			var trial = result.trial;
+			
+			// update shown status based on interventions 
+			if (trial && trial.interventions) {
+				for (var j = 0; j < trial.interventions.length; j++) {
+					var inter = trial.interventions[j];
+					inter = inter in _intervention_map ? _intervention_map[inter] : inter;
+					
+					result.attr('shownForInterventions', shownIntv.indexOf(inter) >= 0);
+				}
+			}
+			
+			// update shown status based on phase
+			if (trial && trial.phases) {
+				for (var j = 0; j < trial.phases.length; j++) {
+					var phase = trial.phases[j];
+					result.attr('shownForPhases', shownPhs.indexOf(phase) >= 0);
+					
+					if (result.shownForInterventions) {
+						var exist = num[phase] || 0;
+						num[phase] = exist + 1;
+					}
+				}
+			}
+		}
+		
+		// update phase counts
+		for (var i = 0; i < this.phases.length; i++) {
+			var phase = this.phases[i];
+			phase.attr('num_matches', num[phase.name] || 0);
+		};
+		
+		this.attr('showPhases', shownIntv.length > 0);
 	},
 	
 	/// Collect interventions from all the trials into a unique Array
@@ -49,7 +103,8 @@ var TrialFinderResult = can.Model.extend({
 						exist.addMatch();
 					}
 					else {
-						var ti = new TrialIntervention(inter);
+						var ti = new TrialIntervention(null, inter);		// cannot supply "this" in a constructor??
+						ti.parent = this;
 						assoc[inter] = ti;
 						arr.push(ti);
 					}
@@ -57,7 +112,9 @@ var TrialFinderResult = can.Model.extend({
 			}
 		}
 		
-		this.attr('interventions', arr.sort(TrialGroupable.sortByName));
+		if (arr.length > 0) {
+			this.attr('interventions', arr.sort(TrialGroupable.sortByName));
+		}
 	},
 	
 	/// Collect trial phases from all the trials into a unique Array
@@ -79,7 +136,8 @@ var TrialFinderResult = can.Model.extend({
 						exist.addMatch();
 					}
 					else {
-						var ph = new TrialPhase(phase);
+						var ph = new TrialPhase(null, phase);
+						ph.parent = this;
 						assoc[phase] = ph;
 						arr.push(ph);
 					}
@@ -102,38 +160,32 @@ var TrialGroupable = can.Model.extend({
 	},
 },
 {
+	parent: null,
 	name: null,
 	huid: null,
+	active: false,
 	num_matches: 1,
 	
 	addMatch: function() {
 		this.attr('num_matches', this.num_matches + 1);
 	},
-	
-	toggle: function(self, elem, evt) {
-	},
 });
 
 var TrialIntervention = TrialGroupable.extend({},
 {
-	init: function(name) {
+	init: function(parent, name) {
+		//this.attr('parent', parent);		// supplying `this` in a constructor trips up Can.js
 		this.attr('name', name);
 		this.attr('huid', 'intervention_' + this.name.replace(/\W\D/, '_'));
-	},
-	
-	toggle: function(self, elem, evt) {
-		console.log("Toggle intervention", this.name);
 	},
 });
 
 var TrialPhase = TrialGroupable.extend({},
 {
-	init: function(name) {
+	init: function(parent, name) {
+		//this.attr('parent', parent);
 		this.attr('name', name);
 		this.attr('huid', 'phase_' + this.name.replace(/\W\D/, '_'));
-	},
-	
-	toggle: function(self, elem, evt) {
-		console.log("Toggle phase", this.name);
+		this.attr('active', true);
 	},
 });
