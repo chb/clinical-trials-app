@@ -4,6 +4,9 @@
 	<title>Trial Eligibility</title>
 	<link rel="stylesheet" type="text/css" href="static/style.css">
 	<link rel="icon" type="image/png" href="static/favicon.png">
+	
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 	<div id="container">
@@ -49,7 +52,8 @@
 				<div class="demo_row">
 					<input type="text" id="demo_location" placeholder="City, State" can-value="location" can-enter="save">
 					<!--button onclick="locatePatient()">Locate</button-->
-					<input type="text" id="demo_country" placeholder="Country" can-value="country" can-enter="save">
+					<input type="text" id="demo_country" placeholder="Country" can-value="country" can-enter="save" onfocus="$('#demo_country_hint').show()" onblur="$('#demo_country_hint').fadeOut()">
+					<label id="demo_country_hint" for="demo_country" class="xsmall faded" style="display:none; margin-left:1em;">Trial search will be limited to this country</label>
 				</div>
 			</div>
 			
@@ -126,22 +130,22 @@
 			
 			<div id="trials">
 				<ul id="trial_list" class="trial_list">
-				{{#results}}
+				{{#results}}{{#shown}}
 					<li class="trial" {{ data 'trial' }}>
 						<div class="trial_info">
 							<h3>{{ trial.title }}</h3>
-							<div class="supplement">{{ trial.phases }}</div>
+							<div class="supplement">{{ trial.phasesFormatted }}</div>
 							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
 							
 							<!-- keywords here -->
 							<!-- link to show eligibility criteria -->
 							
 							{{#reason}}
-							<tt class="exclusion_reason">{{ reason }}</tt>
+							<tt class="exclusion_reason">{{ . }}</tt>
 							{{/}}
 						</div>
 					</li>
-				{{/}}
+				{{/}}{{/}}
 				</ul>
 			</div>
 			{{/}}

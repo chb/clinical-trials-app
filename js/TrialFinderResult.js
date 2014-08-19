@@ -27,8 +27,7 @@ var TrialFinderResult = can.Model.extend({
 		}
 		
 		// fill properties
-		var array = ('results' in json) ? json['results'] : [];
-		this.results = TrialResult.fromJSON(array);
+		this.attr('results', TrialResult.fromJSON(json['results']));
 		this.collectInterventions();
 		this.collectPhases();
 	},
@@ -46,6 +45,8 @@ var TrialFinderResult = can.Model.extend({
 		var num = {};
 		for (var i = 0; i < this.results.length; i++) {
 			var result = this.results[i];
+			result.attr('shownForInterventions', false);
+			result.attr('shownForPhases', false);
 			var trial = result.trial;
 			
 			// update shown status based on interventions 
@@ -54,7 +55,9 @@ var TrialFinderResult = can.Model.extend({
 					var inter = trial.interventions[j];
 					inter = inter in _intervention_map ? _intervention_map[inter] : inter;
 					
-					result.attr('shownForInterventions', shownIntv.indexOf(inter) >= 0);
+					if (shownIntv.indexOf(inter) >= 0) {
+						result.attr('shownForInterventions', true);
+					}
 				}
 			}
 			
@@ -62,7 +65,7 @@ var TrialFinderResult = can.Model.extend({
 			if (trial && trial.phases) {
 				for (var j = 0; j < trial.phases.length; j++) {
 					var phase = trial.phases[j];
-					result.attr('shownForPhases', shownPhs.indexOf(phase) >= 0);
+					result.attr('shownForPhases', result.shownForPhases || shownPhs.indexOf(phase) >= 0);
 					
 					if (result.shownForInterventions) {
 						var exist = num[phase] || 0;
@@ -104,7 +107,8 @@ var TrialFinderResult = can.Model.extend({
 					}
 					else {
 						var ti = new TrialIntervention(null, inter);		// cannot supply "this" in a constructor??
-						ti.parent = this;
+						ti.parent = this;									// workaround
+						ti.num_matches = 1;
 						assoc[inter] = ti;
 						arr.push(ti);
 					}
@@ -132,10 +136,7 @@ var TrialFinderResult = can.Model.extend({
 					var phase = trial.phases[j];
 					
 					var exist = assoc[phase];
-					if (exist) {
-						exist.addMatch();
-					}
-					else {
+					if (!exist) {
 						var ph = new TrialPhase(null, phase);
 						ph.parent = this;
 						assoc[phase] = ph;
@@ -164,7 +165,7 @@ var TrialGroupable = can.Model.extend({
 	name: null,
 	huid: null,
 	active: false,
-	num_matches: 1,
+	num_matches: 0,
 	
 	addMatch: function() {
 		this.attr('num_matches', this.num_matches + 1);

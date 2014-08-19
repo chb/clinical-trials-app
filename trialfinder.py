@@ -41,8 +41,9 @@ class TrialFinder(object):
 		req = self.server.search_request(prms)
 		trials = self._find(req)
 		total = self.search_meta.get('total') or 0
-		if self.fetch_all and total <= 500:
-			while self.hasMore():
+		if self.fetch_all:
+			logging.warn("There are {} trials, I am only going to fetch the first 1000".format(total))
+			while self.hasMore() and len(trials) <= 1000:
 				trials.extend(self.more())
 		
 		return trials

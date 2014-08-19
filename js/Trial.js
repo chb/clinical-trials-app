@@ -25,5 +25,10 @@ var Trial = can.Model.extend({
 	},
 },
 {
+	interventions: null,
+	phases: null,
 	
+	init: function(json) {
+		this.attr('phasesFormatted', $.makeArray(this.phases).sort().join(', '));
+	},
 });

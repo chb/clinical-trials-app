@@ -147,6 +147,8 @@ div.supplement { margin-top: 0.5em; }
 
 .small { font-size: 0.85em; }
 
+.xsmall { font-size: x-small; }
+
 .tag { display: inline-block; margin: 0.4em 0.5em 0 0; padding: 0 0.4em; border: 1px solid #b9b9b9; border-radius: 2pt; }
 .tag.active { color: black; background-color: #b9b9b9; }
 
