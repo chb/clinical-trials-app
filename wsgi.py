@@ -49,7 +49,7 @@ class BeakerSessionInterface(SessionInterface):
 	def save_session(self, app, session, response):
 		session.save()
 
-app = application = Flask(__name__)
+app = Flask(__name__)
 
 # Trial Server
 trialserver = None
@@ -156,11 +156,6 @@ def index():
 			logging.debug("Have request token, redirecting to authorize token")
 			redirect(smart_client.auth_redirect_url)
 			return
-	
-	# DEBUG
-	res = trialserver.get('target-profile/53d68f03e4b04df571c6e63a', 'application/wds+json')
-	print(res.text)
-	print(json.dumps(json.loads(res.json().get('content', ''))))
 	
 	# everything in order, render index
 	defs = {
