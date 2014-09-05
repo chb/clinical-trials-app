@@ -1,3 +1,3 @@
-[submodule "ClinicalTrials"]
-	path = ClinicalTrials
-	url = git@github.com:p2/ClinicalTrials.git
+[submodule "py/clinicaltrials"]
+	path = py/clinicaltrials
+	url = https://github.com/p2/py-clinical-trials.git

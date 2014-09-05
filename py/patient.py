@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
+import os.path
+sys.path.insert(0, os.path.dirname(__file__))
+
 import logging
 import datetime
 from dateutil.parser import *
 from dateutil.relativedelta import *
 
-from ClinicalTrials.jsondocument.jsondocument import JSONDocument
+from clinicaltrials.jsondocument.jsondocument import JSONDocument
 
 
 class Patient(JSONDocument):

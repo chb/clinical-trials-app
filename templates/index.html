@@ -160,11 +160,6 @@
 	<script src="//maps.googleapis.com/maps/api/js?key={{ defs.google_api_key }}&sensor=false"></script>
 	<script src="static/markerclusterer.js"></script>
 	<script src="static/main.js"></script>
-	{%- if defs.smart_v05 %}
-	<!-- SMART v0.5 hack -->
-	<script src="http://sample-apps-v05.smartplatforms.org/framework/smart/scripts/smart-api-client.js"></script>
-	<script src="static/smart-v05.js"></script>
-	{%- endif %}
 	<script>
 	$(document).ready(function() {
 		initApp();

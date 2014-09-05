@@ -30,7 +30,6 @@ class TrialMatchResult(object):
 		return js
 
 
-
 class TrialMatcher(object):
 	""" An object to evaluate a list of trials against a given patient.
 	"""

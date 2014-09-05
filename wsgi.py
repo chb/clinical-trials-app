@@ -18,7 +18,6 @@ from beaker.middleware import SessionMiddleware
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
 USE_SMART = int(os.environ.get('USE_SMART', 0)) > 0
-USE_SMART_05 = int(os.environ.get('USE_SMART_05', 0)) > 0
 USE_NLP = int(os.environ.get('USE_NLP', 0)) > 0
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 
@@ -27,11 +26,11 @@ if USE_SMART:
 	import smart
 
 # App
-from ClinicalTrials.trial import Trial
-from ClinicalTrials.lillyserver import LillyV2Server
-from patient import Patient
-from trialfinder import TrialFinder
-from trialmatcher import *
+from py.clinicaltrials.trial import Trial
+from py.clinicaltrials.lillyserver import LillyV2Server
+from py.patient import Patient
+from py.trialfinder import TrialFinder
+from py.trialmatcher import *
 
 # session setup
 session_opts = {
@@ -158,11 +157,15 @@ def index():
 			redirect(smart_client.auth_redirect_url)
 			return
 	
+	# DEBUG
+	res = trialserver.get('target-profile/53d68f03e4b04df571c6e63a', 'application/wds+json')
+	print(res.text)
+	print(json.dumps(json.loads(res.json().get('content', ''))))
+	
 	# everything in order, render index
 	defs = {
 		'debug': DEBUG,
 		'use_smart': USE_SMART,
-		'smart_v05': USE_SMART_05,
 		'google_api_key': os.environ.get('GOOGLE_API_KEY')
 	}
 	
@@ -270,6 +273,7 @@ def find():
 		patient = Patient(id, pat)
 	
 	finder = TrialFinder(trialserver, patient)
+	finder.fetch_all = False
 	found = finder.find(request.args)
 	
 	results = []
