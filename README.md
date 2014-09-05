@@ -98,7 +98,7 @@ This is a Python 3 app running on the [Flask][flask] framework.
 Easiest setup is by using a virtual environment, which requires `virtualenv`, as follows:
 
 ```bash
-git clone --recursive 
+git clone --recursive https://github.com/chb/clinical-trials-app.git
 cd clinical-trials-app
 virtualenv -p python3 env
 . env/bin/activate
