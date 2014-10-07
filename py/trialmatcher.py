@@ -51,7 +51,7 @@ class TrialMatcher(object):
 	
 	def match_trial(self, trial):
 		""" Perform the actual matching logic. Subclasses should override this
-		method and override `TrialMatchResult` suitably.
+		method and return a suitable `TrialMatchResult`.
 		
 		:note: The `patient` property might be None
 		:returns: A `TrialMatchResult` instance for the given trial.

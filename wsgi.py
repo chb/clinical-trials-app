@@ -64,7 +64,7 @@ trialmatcher.modules = [
 ]
 
 
-# ------------------------------------------------------------------------------ Utilities
+# MARK: Utilities
 
 def _reset_session(with_runs=False):
 	""" Removes patient-related session settings.
@@ -86,7 +86,7 @@ def _get_smart():
 		return smart.client()
 	return None
 
-# ------------------------------------------------------------------------------ Index
+# MARK: Index
 
 @app.route('/')
 @app.route('/index.html')
@@ -232,7 +232,7 @@ def endpoints():
 	return render_template('endpoint_select.html', endpoints=smart.endpoints(), callback=callback)
 
 
-# ------------------------------------------------------------------------------ Patient
+# MARK: Patient
 
 @app.route('/patients/<id>', methods=['GET', 'PUT'])
 def patients(id):
@@ -253,7 +253,7 @@ def patients(id):
 	return jsonify(patient.api)
 
 
-# ------------------------------------------------------------------------------ Trials
+# MARK: Trials
 
 @app.route('/find', methods=['GET', 'PUT'])
 def find():
@@ -279,14 +279,14 @@ def find():
 	return jsonify({'results': results or []})
 
 
-# ------------------------------------------------------------------------------ Enrolling
+# MARK: Enrolling
 
 @app.route('/enroll')
 def enroll():
 	return render_template('enroll.html', {'title': "Randomize"})
 
 
-# ------------------------------------------------------------------------------ Static Files
+# MARK: Static Files
 
 @app.route('/static/<filename>')
 def static_file(filename):
