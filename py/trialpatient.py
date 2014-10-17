@@ -10,10 +10,10 @@ import datetime
 from dateutil.parser import *
 from dateutil.relativedelta import *
 
-from clinicaltrials.jsondocument.jsondocument import JSONDocument
+import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
-class Patient(JSONDocument):
+class TrialPatient(jsondocument.JSONDocument):
 	""" A representation for a patient.
 	
 	Properties:

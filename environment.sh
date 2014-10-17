@@ -6,8 +6,9 @@
 export DEBUG=1
 
 # SMART
-export USE_SMART=0
-export USE_APP_ID="clinical-trials@apps.chip.org"
+export SMART_APP_ID="my_web_app"
+export SMART_API_BASE="https://fhir-api.smartplatforms.org"
+export SMART_REDIRECT="http://localhost:8000/fhir-app/"
 
 # LillyCOI API key (base64 encoded "key:secret" string)
 export LILLY_SECRET=
