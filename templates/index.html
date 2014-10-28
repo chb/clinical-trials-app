@@ -15,12 +15,9 @@
 		</header>
 		
 		<div id="content">
-			{%- if defs.use_smart %}
+			{%- if defs.need_patient_banner %}
 			<div class="back_to_select">
-				{% if 'none' != api_base %}
-				<a id="back_to_patient" href="index.html?api_base={{ api_base }}&amp;record_id=0">« Change patient</a>
-				{% endif %}
-				<a href="index.html?api_base=">« Start over</a>
+				<a id="back_to_patient" href="logout">« Change patient</a>
 			</div>
 			{%- endif %}
 			

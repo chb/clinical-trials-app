@@ -16,7 +16,6 @@ import py.flaskbeaker as flaskbeaker
 
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
-USE_NLP = int(os.environ.get('USE_NLP', 0)) > 0
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 SMART_DEFAULTS = {
 	'app_id': os.environ.get('SMART_APP_ID'),
@@ -57,11 +56,19 @@ def _reset_session():
 	if 'smart_state' in session:
 		del session['smart_state']
 
-def _get_smart():
+def _get_smart(iss=None, launch=None):
+	settings = SMART_DEFAULTS
+	if iss is not None:		# launched from EHR, restart
+		_reset_session()
+		settings['api_base'] = iss
+		if launch is not None:
+			settings['launch_token'] = launch
+	
+	# use state if we have state or init from settings
 	state = session.get('smart_state')
 	if state:
 		return smart.FHIRClient(state=state)
-	return smart.FHIRClient(settings=SMART_DEFAULTS)
+	return smart.FHIRClient(settings=settings)
 
 def _save_smart(client):
 	session['smart_state'] = client.state
@@ -74,7 +81,7 @@ def _save_smart(client):
 def index():
 	""" The app's main page.
 	"""
-	smart_client = _get_smart()
+	smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
 	
 	# no patient yet, maybe need to authorize
 	if smart_client.patient is None:
@@ -89,11 +96,22 @@ def index():
 	# patient data ready
 	defs = {
 		'debug': DEBUG,
-		'use_smart': True,
+		'need_patient_banner': True,
 		'google_api_key': os.environ.get('GOOGLE_API_KEY')
 	}
 	
 	return render_template('index.html', defs=defs)
+
+@app.route('/fhir-app/launch.html')
+def from_fhir_app():
+	return redirect('/?{}'.format(request.query_string.decode("utf-8")))
+
+@app.route('/logout')
+def logout():
+	""" Throws away all state.
+	"""
+	_reset_session()
+	return redirect('/')
 
 
 @app.route('/help')
@@ -153,26 +171,32 @@ def endpoints():
 
 # MARK: Patient
 
-@app.route('/patients/x')				# TODO: remove
-@app.route('/patient', methods=['GET', 'PUT'])
-def patient():
-	""" Updates - if PUT - and returns the current patient's data as JSON.
+@app.route('/patients/<id>')						# placeholder, id will be ignored
+@app.route('/patient')
+def patient(id=None):
+	""" Returns the current patient's data as JSON.
 	"""
 	client = _get_smart()
-	patient = client.patient
-	if patient is None:
+	fpat = client.patient
+	if fpat is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
 		return 401
 	
-	# TODO: REFACTOR
+	# create TrialPatient instance from FHIR Patient resource
+	patient = TrialPatient(fpat._remote_id)
+	patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
+	patient.gender = client.string_gender(fpat.gender)
+	patient.birthday = fpat.birthDate.isostring
 	
-	pat = session.get('patient')
-	patient = TrialPatient('x', pat)
-	
-	# PUT new demographics
-	if 'PUT' == request.method:
-		patient.updateWith(request.form)
-		session['patient'] = patient.json
+	if fpat.address is not None and len(fpat.address) > 0:
+		address = fpat.address[0]
+		for addr in fpat.address:
+			if 'home' == addr.use:
+				address = addr
+				break
+		patient.city = address.city
+		patient.region = address.state
+		patient.country = address.country
 	
 	return jsonify(patient.api)
 

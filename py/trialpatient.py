@@ -21,8 +21,8 @@ class TrialPatient(jsondocument.JSONDocument):
 	- full_name [string]
 	- gender [string, "female" or "male"]
 	
-	- birthday
-	- deathdate
+	- birthday [ISO-8601 date string]
+	- deathdate [ISO-8601 date string]
 	- age_years [int]
 	- age_string [string]
 	
@@ -30,7 +30,6 @@ class TrialPatient(jsondocument.JSONDocument):
 	- region [string]
 	- country [string]
 	- location = city, region [string]
-	- country [string]
 	"""
 	
 	def __init__(self, ident, json=None):
@@ -42,10 +41,16 @@ class TrialPatient(jsondocument.JSONDocument):
 		if self.location is None:
 			self.update_location()
 	
-	def didFetch(self):
-		self.did_fetch = True
-	
-	
+	def __setattr__(self, name, value):
+		""" Overridden to perform some value generation after setting certain
+		properties.
+		"""
+		super().__setattr__(name, value)
+		if 'birthday' == name:
+			self.update_age_years()
+		if 'country' == name or 'city' == name or 'region' == name:
+			self.update_location()
+
 	# MARK: Birthday & Age
 	
 	def age_delta(self):
@@ -69,13 +74,16 @@ class TrialPatient(jsondocument.JSONDocument):
 	@property
 	def age_years(self):
 		if self.__dict__.get('age_years') is None:
-			delta = self.age_delta()
-			self.age_years = delta.years if delta is not None else None
+			self.update_age_years()
 		return self.__dict__.get('age_years')
 	
 	@age_years.setter
 	def age_years(self, years):
 		self.__dict__['age_years'] = years
+	
+	def update_age_years(self):
+		delta = self.age_delta()
+		self.age_years = delta.years if delta is not None else None
 	
 	@property
 	def age_string(self):
@@ -95,11 +103,6 @@ class TrialPatient(jsondocument.JSONDocument):
 	
 	
 	# MARK: Location
-	
-	# def __setattr__(self, name, value):
-	# 	super().__setattr__(name, value)
-	# 	if 'country' == name or 'city' == name or 'region' == name:
-	# 		self.update_location()
 	
 	def update_location(self):
 		parts = []
