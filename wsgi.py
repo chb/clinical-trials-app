@@ -12,7 +12,6 @@ from datetime import datetime
 
 # flask
 from flask import Flask, request, redirect, render_template, session, jsonify, send_from_directory
-import py.flaskbeaker as flaskbeaker
 
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
@@ -247,6 +246,7 @@ def ejs(ejs_name):
 
 # start the app
 if '__main__' == __name__:
+	import py.smartclient.flaskbeaker as flaskbeaker
 	flaskbeaker.FlaskBeaker.setup_app(app)
 	
 	if DEBUG:
