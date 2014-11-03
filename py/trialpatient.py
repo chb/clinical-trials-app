@@ -50,7 +50,38 @@ class TrialPatient(jsondocument.JSONDocument):
 			self.update_age_years()
 		if 'country' == name or 'city' == name or 'region' == name:
 			self.update_location()
-
+	
+	
+	@classmethod
+	def fromFHIR(cls, client):
+		""" Instantiates a TrialPatient with data from a FHIR Patient resource,
+		retrieved from a SMART client (fhirclient) instance.
+		
+		:param client: A handle to a `fhirclient` instance
+		:returns: A TrialPatient instance, or None on error
+		"""
+		fpat = client.patient if client is not None else None
+		if fpat is None:
+			return None
+		
+		patient = cls(fpat._remote_id)
+		patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
+		patient.gender = client.string_gender(fpat.gender)
+		patient.birthday = fpat.birthDate.isostring
+		
+		if fpat.address is not None and len(fpat.address) > 0:
+			address = fpat.address[0]
+			for addr in fpat.address:
+				if 'home' == addr.use:
+					address = addr
+					break
+			patient.city = address.city
+			patient.region = address.state
+			patient.country = address.country
+		
+		return patient
+	
+	
 	# MARK: Birthday & Age
 	
 	def age_delta(self):

@@ -18,22 +18,7 @@ var TrialFinder = can.Model.extend({
 		self.attr('error', null);
 		self.attr('result', null);
 		
-		var search = this.patient ? this.patient.last_manual_search: null;
-		if (!search) {
-			search = $('#manual_problem').val(); // element.val() || 
-		}
-		
-		if (this.patient) {
-			this.patient.attr('last_manual_search', search);
-			this.patient.save();
-		}
-		
-		$.ajax({
-			url: '/find?term=' + encodeURIComponent(search),
-			type: this.patient ? 'PUT' : 'GET',
-			data: this.patient ? this.patient._data : null,
-			dataType: 'json'
-		})
+		$.getJSON('/find')
 		.always(function(json, message, req) {
 			
 			// success: instantiate TrialResult objects

@@ -56,11 +56,6 @@
 			
 			<div id="patient_problems">
 				<ul id="problem_list">
-					<li id="prob_manual"{{^problems}} class="active"{{/}}>
-						<input type="text" size="50" class="problem_name" id="manual_problem" placeholder="Enter search terms" can-value="last_manual_search" can-enter="finder.find">
-						<button id="manual_cancel" type="button" onclick="window.event.stopPropagation(); cancelTrialSearchAndShowProblemList('prob_manual');">Cancel</button>
-						<button id="manual_submit" type="button" can-click="finder.find">Search</button>
-					</li>
 					{{#problems}}
 					<li can-click="" {{data 'problem'}}>
 						<div class="problem_name">{{ name }}</div>

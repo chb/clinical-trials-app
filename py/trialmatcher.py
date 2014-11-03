@@ -34,26 +34,25 @@ class TrialMatcher(object):
 	""" An object to evaluate a list of trials against a given patient.
 	"""
 	
-	def __init__(self, patient=None):
-		self.patient = patient
-	
-	def match(self, trials):
-		""" Match the provided trials against our patient.
+	def match(self, trials, patient):
+		""" Match the provided trials against a patient.
 		
+		:param trial: A list of Trial instances to match
+		:param patient: A TrialPatient instance to match for
 		:returns: A list of `TrialMatchResult` results, one per trial.
 		"""
 		results = []
 		if trials is not None and len(trials) > 0:
 			for trial in trials:
-				results.append(self.match_trial(trial))
+				results.append(self.match_trial(trial, patient))
 		
 		return results
 	
-	def match_trial(self, trial):
+	def match_trial(self, trial, patient):
 		""" Perform the actual matching logic. Subclasses should override this
 		method and return a suitable `TrialMatchResult`.
 		
-		:note: The `patient` property might be None
+		:note: `patient` might be None
 		:returns: A `TrialMatchResult` instance for the given trial.
 		"""
 		return TrialMatchResult(trial, True)
@@ -65,15 +64,14 @@ class TrialSerialMatcher(TrialMatcher):
 	module fails a trial.
 	"""
 	
-	def __init__(self, patient=None):
-		super().__init__(patient)
+	def __init__(self):
+		super().__init__()
 		self.modules = []
 	
-	def match_trial(self, trial):
+	def match_trial(self, trial, patient):
 		if len(self.modules) > 0:
 			for module in self.modules:
-				module.patient = self.patient
-				res = module.match_trial(trial)
+				res = module.match_trial(trial, patient)
 				if not res.ok:
 					return res
 			return res
@@ -83,13 +81,13 @@ class TrialSerialMatcher(TrialMatcher):
 class TrialGenderMatcher(TrialMatcher):
 	""" Matches trials by patient gender.
 	"""
-	def match_trial(self, trial):
+	def match_trial(self, trial, patient):
 		""" Retrieves the patient's gender string and the trial's eligibility.gender
 		string. If the trial's string starts with an "f" and the patient's
 		gender does not (and the same with "m") the trial is marked as a
 		no-match.
 		"""
-		have = self.patient.gender
+		have = patient.gender
 		want = trial.eligibility.get('gender')
 		if want is not None and have is not None:
 			if 'f' == want[0].lower() and 'f' != want[0].lower():
@@ -105,12 +103,12 @@ class TrialGenderMatcher(TrialMatcher):
 class TrialAgeMatcher(TrialMatcher):
 	""" Matches a trial by patient age.
 	"""
-	def match_trial(self, trial):
+	def match_trial(self, trial, patient):
 		""" Retrieves the patient's age from CTG's "minimum_age" and
 		"maximum_age" fields and compares it to the patient's age_years
 		property.
 		"""
-		age = int(self.patient.age_years) if self.patient.age_years is not None else None
+		age = int(patient.age_years) if patient.age_years is not None else None
 		elig = trial.eligibility
 		minAge = self.sanitize_ctg_age(elig.get('minimum_age')) if elig is not None else None
 		maxAge = self.sanitize_ctg_age(elig.get('maximum_age')) if elig is not None else None

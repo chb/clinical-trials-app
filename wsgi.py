@@ -175,52 +175,31 @@ def endpoints():
 def patient(id=None):
 	""" Returns the current patient's data as JSON.
 	"""
-	client = _get_smart()
-	fpat = client.patient
-	if fpat is None:
+	patient = TrialPatient.fromFHIR(_get_smart())
+	if patient is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
 		return 401
-	
-	# create TrialPatient instance from FHIR Patient resource
-	patient = TrialPatient(fpat._remote_id)
-	patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
-	patient.gender = client.string_gender(fpat.gender)
-	patient.birthday = fpat.birthDate.isostring
-	
-	if fpat.address is not None and len(fpat.address) > 0:
-		address = fpat.address[0]
-		for addr in fpat.address:
-			if 'home' == addr.use:
-				address = addr
-				break
-		patient.city = address.city
-		patient.region = address.state
-		patient.country = address.country
 	
 	return jsonify(patient.api)
 
 
 # MARK: Trials
 
-@app.route('/find', methods=['GET', 'PUT'])
+@app.route('/find/')
 def find():
-	""" Retrieve trials for the given patient.
+	""" Retrieve trials for the current patient.
 	"""
-	id = 'x'
-	if 'PUT' == request.method:
-		patient = Patient(id)
-		patient.updateWith(request.form)
-	else:
-		pat = session.get('patient')
-		patient = Patient(id, pat)
+	patient = TrialPatient.fromFHIR(_get_smart())
+	if patient is None:
+		logging.info("Trying to find trials for a patient without authorized smart client")
+		return 401
 	
 	finder = TrialFinder(trialserver, patient)
 	finder.fetch_all = False
 	found = finder.find(request.args)
 	
 	results = []
-	trialmatcher.patient = patient
-	for result in trialmatcher.match(found):
+	for result in trialmatcher.match(found, patient):
 		results.append(result.js)
 	
 	return jsonify({'results': results or []})

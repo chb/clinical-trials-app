@@ -17,33 +17,9 @@ function initApp() {
 		$('#app').html(can.view('app_tmpl', {
 			finder: finder,
 		}));
-	});
-}
-
-
-/**
- *  Generic AJAX loader.
- */
- function loadJSON(url, success_func, error_func) {
-	$.ajax({
-		'url': url,
-		'dataType': 'json'
-	})
-	.always(function(obj1, status, obj2) {
-		if ('success' == status) {
-			if (success_func) {
-				success_func(obj1, status, obj2);
-			}
-			else {
-				console.warn('Successfully loaded', url, 'but no success func is set');
-			}
-		}
-		else {
-			console.error('ERROR loading URL:', url, 'RETURNED', obj1, status, obj2);
-			if (success_func) {
-				error_func(obj1, status, obj2);
-			}
-		}
+		
+		// search trials
+		finder.find(patient);
 	});
 }
 

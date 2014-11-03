@@ -64,7 +64,6 @@ ul.trial_selector, .trial_opt_selector ul {
 	
 	li {
 		font-size: 1.1em;
-		color: $col-link;
 		
 		&.active {
 			font-weight: bold;
@@ -74,7 +73,9 @@ ul.trial_selector, .trial_opt_selector ul {
 			vertical-align: 15%;
 			margin-right: 0.75em;
 		}
-		
+		label {
+			color: $col-link;
+		}
 		span {
 			white-space: nowrap;
 			
