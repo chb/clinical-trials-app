@@ -2,12 +2,11 @@
  *  Styles for trial data
  */
 
-.trial_status, #trial_selectors {
+.trial_status, #trials {
 	margin: 3em 0;
-	font-size: 120%;
 }
-#trials {
-	margin: 3em 0;
+.trial_status, #trial_selectors {
+	font-size: 120%;
 }
 
 .trial_selector {
@@ -151,6 +150,9 @@ ul.trial_list {
 	}
 }
 
+.condition + .condition:before {
+	content: ", "
+}
 
 .trial {
 	& > a:first-child {

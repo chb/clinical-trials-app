@@ -3,7 +3,6 @@
  */
 var Trial = can.Model.extend({
 	findAll: 'GET /trials',
-	eligibilityCriteria: 'GET /trials/{id}/criteria',
 	
 	/// Geocode an array of trials.
 	geocode: function(trials, to_location) {
@@ -30,5 +29,6 @@ var Trial = can.Model.extend({
 	
 	init: function(json) {
 		this.attr('phasesFormatted', $.makeArray(this.phases).sort().join(', '));
+		this.attr('keywordsFormatted', $.makeArray(this.keyword).sort().join(', '));
 	},
 });

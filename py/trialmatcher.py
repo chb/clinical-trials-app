@@ -10,11 +10,11 @@ class TrialMatchResult(object):
 	OK = True
 	FAIL = False
 	
-	def __init__(self, trial, flag, reason=None, property=None):
+	def __init__(self, trial, flag, fail_reason=None, fail_property=None):
 		self.trial = trial
 		self.ok = TrialMatchResult.OK if flag else TrialMatchResult.FAIL
-		self.reason = reason
-		self.property = property
+		self.fail_reason = fail_reason
+		self.fail_property = fail_property
 	
 	@property
 	def js(self):
@@ -22,10 +22,10 @@ class TrialMatchResult(object):
 			'ok': self.ok,
 			'trial': self.trial.js
 		}
-		if self.reason is not None:
-			js['reason'] = self.reason
-		if self.property is not None:
-			js['property'] = self.property
+		if self.fail_reason is not None:
+			js['reason'] = self.fail_reason
+		if self.fail_property is not None:
+			js['property'] = self.fail_property
 		
 		return js
 

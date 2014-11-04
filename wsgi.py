@@ -26,7 +26,6 @@ SMART_DEFAULTS = {
 import py.smartclient.fhirclient.client as smart
 
 # App
-from py.clinicaltrials.trial import Trial
 from py.clinicaltrials.lillyserver import LillyV2Server
 from py.trialpatient import TrialPatient
 from py.trialfinder import TrialFinder

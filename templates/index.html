@@ -7,6 +7,7 @@
 	
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
 	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 </head>
 <body>
 	<div id="container">
@@ -75,7 +76,6 @@
 			
 			{{#finder.result}}
 			<div id="trial_selectors">
-				<ul id="selector_goodbad" class="trial_selector"></ul>
 				<div class="trial_opt_selector">
 					<h2>Intervention / Observation</h2>
 					<ul id="selector_inv_type">
@@ -114,26 +114,90 @@
 			</div-->
 			
 			<div id="trials">
+				{{#numShown}}<h2>{{numShown}} Trials<!-- no way to check for num 1 in mustache, doh!! --></h2>{{/}}
 				<ul id="trial_list" class="trial_list">
 				{{#results}}{{#shown}}
-					<li class="trial" {{ data 'trial' }}>
-						<div class="trial_info">
-							<h3>{{ trial.title }}</h3>
-							<div class="supplement">{{ trial.phasesFormatted }}</div>
-							<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
-							
-							<!-- keywords here -->
-							<!-- link to show eligibility criteria -->
-							
-							{{#reason}}
-							<tt class="exclusion_reason">{{ . }}</tt>
-							{{/}}
-						</div>
-					</li>
+					{{>"trial_tmpl"}}
 				{{/}}{{/}}
 				</ul>
 			</div>
 			{{/}}
+			</script>
+			
+			<script type="text/mustache" id="trial_tmpl">
+			<li class="trial" {{ data 'trial' }}>
+				<div class="trial_info">
+					<h3>{{ trial.title }}</h3>
+					<p class="supplement">{{ trial.phasesFormatted }}</p>
+					<p class="supplement">{{ trial.keywordsFormatted }}</p>
+					<p class="supplement">{{#trial.condition}}<span class="condition">{{.}}</span>{{/}}</p>
+					<p class="supplement">{{ trial.source }}</p>
+					
+					{{#if trial.primary_outcome}}
+					<div>
+						<h3>Primary Outcome</h3>
+						{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}
+					</div>
+					{{/}}
+					{{#if trial.secondary_outcome}}
+					<div>
+						<h3>Secondary Outcome</h3>
+						{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}
+					</div>
+					{{/}}
+					
+					{{#trial.brief_summary}}
+					<p>{{ textblock }}</p>
+					{{/}}
+					
+					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
+					
+					<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
+					{{#reason}}
+					<tt class="exclusion_reason">{{ . }}</tt>
+					{{/}}
+					
+					{{#trial.eligibility}}
+					<p>
+						{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
+						{{{ html }}}
+					</p>
+					{{/}}
+				</div>
+			</li>
+			</script>
+			
+			<script type="text/mustache" id="outcome_tmpl">
+			<div>{{#safety_issue}}<b class="red">DANGER {{.}}</b>{{/}}
+				<button onclick="$(this).next().toggle().next().toggle()">{{ measure }}</button>
+				<p style="display:none;">{{ time_frame }}</p>
+				<p style="display:none;" class="small">{{ description }}</p>
+			</div>
+			</script>
+			
+			<script type="text/mustache" id="location_tmpl">
+			<div class="trial_location">
+				<div class="loc_status">
+					<span style="color:{{ status_color }};">{{ status }}</span>
+					{{#contact}}
+					–
+					<a href="javascript:void(0);" onclick="$(this).next().toggle()">contact</a>
+					<div class="loc_contact">
+						<div class="cont_name">{{ contact.name }}</div>
+						{{#contact.email}}
+						<div class="cont_email"><a href="mailto:{{ contact.email }}?subject=Trial+{{ trial.nct }}">{{ contact.email }}</a></div>
+						{{/}}
+						{{#contact.phone}}
+						<div class="cont_phone">{{ contact.phone }}</div>
+						{{/}}
+					</div>
+					{{/}}
+				</div>
+				{{#facility.name}}<div class="loc_name">{{ . }}</div>{{/}}
+				{{#facility.city}}<div class="loc_city">{{ . }}</div>{{/}}
+				<div class="loc_country">{{ facility.country }}</div>
+				{{#distance}}<div class="loc_distance">{{ distance }} Miles</div>{{/}}
+			</div>
 			{% endraw %}</script>
 			
 			<div id="app"><h1>Loading...</h1></div>

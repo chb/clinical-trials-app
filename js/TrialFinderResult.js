@@ -14,13 +14,14 @@ var TrialFinderResult = can.Model.extend({
 },
 {
 	results: null,
+	numShown: 0,
 	
 	// `interventions` and `phases` are TrialGroupable subclasses
 	interventions: null,
 	phases: null,
 	showPhases: false,
 	
-	/// Instantiate from an array of results
+	/** Instantiate from an array of results. */
 	init: function(json) {
 		if (!json) {
 			return null;
@@ -32,8 +33,7 @@ var TrialFinderResult = can.Model.extend({
 		this.collectPhases();
 	},
 	
-	
-	/// Updates the `shown` property on the result instances
+	/** Updates the `shown` property on the result instances. */
 	updateTrialShownState: function() {
 		var shownIntv = $.map(this.interventions, function(item, idx) {
 			return item.active ? item.name : null;
@@ -75,6 +75,15 @@ var TrialFinderResult = can.Model.extend({
 			}
 		}
 		
+		// determine num shown
+		var n = 0;
+		for (var i = 0; i < this.results.length; i++) {
+			if (this.results[i].attr('shown')) {
+				n++;
+			}
+		}
+		this.attr('numShown', n);
+		
 		// update phase counts
 		for (var i = 0; i < this.phases.length; i++) {
 			var phase = this.phases[i];
@@ -84,7 +93,7 @@ var TrialFinderResult = can.Model.extend({
 		this.attr('showPhases', shownIntv.length > 0);
 	},
 	
-	/// Collect interventions from all the trials into a unique Array
+	/** Collect interventions from all the trials into a unique Array. */
 	collectInterventions: function() {
 		if (this.interventions && this.interventions.length > 0) {
 			return;
@@ -108,7 +117,7 @@ var TrialFinderResult = can.Model.extend({
 					else {
 						var ti = new TrialIntervention(null, inter);		// cannot supply "this" in a constructor??
 						ti.parent = this;									// workaround
-						ti.num_matches = 1;
+						ti.addMatch();
 						assoc[inter] = ti;
 						arr.push(ti);
 					}
@@ -121,7 +130,7 @@ var TrialFinderResult = can.Model.extend({
 		}
 	},
 	
-	/// Collect trial phases from all the trials into a unique Array
+	/** Collect trial phases from all the trials into a unique Array. */
 	collectPhases: function() {
 		if (this.phases && this.phases.length > 0) {
 			return;
