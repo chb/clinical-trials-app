@@ -194,7 +194,7 @@ def find():
 		logging.info("Trying to find trials for a patient without authorized smart client")
 		return 401
 	
-	finder = TrialFinder(trialserver, patient)
+	finder = TrialFinder(trialserver)
 	finder.fetch_all = False
 	found = finder.find(request.args)
 	

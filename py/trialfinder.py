@@ -8,11 +8,9 @@ class TrialFinder(object):
 	""" Find trials on a server.
 	"""
 	
-	def __init__(self, server, patient):
-		assert(server)
-		assert(patient)
+	def __init__(self, server):
+		assert server
 		self.server = server
-		self.patient = patient
 		
 		self.fetch_all = True
 		self.recruiting_only = True
