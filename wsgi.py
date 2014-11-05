@@ -146,7 +146,7 @@ def callback():
 		smart_client.handle_callback(request.url)
 		_save_smart(smart_client)
 	except Exception as e:
-		return """<h1>Authorization Error</h1><p>{}</p><p><a href="/">Start over</a></p>""".format(e)
+		return """<h1>Authorization Error</h1><p>{}</p><p><a href="/logout">Start over</a></p>""".format(e)
 	logging.debug("Got an access token, returning home")
 	return redirect('/')
 
@@ -194,12 +194,12 @@ def find():
 		return 401
 	
 	finder = TrialFinder(trialserver)
-	finder.fetch_all = False
+	#finder.fetch_all = False
 	found = finder.find(request.args)
 	
 	results = []
 	for result in trialmatcher.match(found, patient):
-		results.append(result.js)
+		results.append(result.json)
 	
 	return jsonify({'results': results or []})
 
@@ -216,10 +216,6 @@ def enroll():
 @app.route('/static/<filename>')
 def static_file(filename):
 	return send_from_directory('static', filename)
-
-@app.route('/templates/<ejs_name>.ejs')
-def ejs(ejs_name):
-	return send_from_directory('templates', '%s.ejs' % ejs_name)
 
 
 # start the app

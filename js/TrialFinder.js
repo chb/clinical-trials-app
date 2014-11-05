@@ -18,7 +18,7 @@ var TrialFinder = can.Model.extend({
 		self.attr('error', null);
 		self.attr('result', null);
 		
-		$.getJSON('/find')
+		$.getJSON('/find', {'condition': 'Breast Cancer'})
 		.always(function(json, message, req) {
 			
 			// success: instantiate TrialResult objects

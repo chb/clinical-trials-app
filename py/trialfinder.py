@@ -54,6 +54,8 @@ class TrialFinder(object):
 				locs = []
 				for loc in trial.location:
 					name = loc.get('facility', {}).get('name')
-					if not name or self.limit_location in name:
+					if name and self.limit_location in name:
 						locs.append(loc)
+				if 0 == len(locs) and len(trial.location) > 0:
+					locs = trial.location[0]
 				trial.location = locs

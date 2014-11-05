@@ -28,7 +28,26 @@ var Trial = can.Model.extend({
 	phases: null,
 	
 	init: function(json) {
-		this.attr('phasesFormatted', $.makeArray(this.phases).sort().join(', '));
-		this.attr('keywordsFormatted', $.makeArray(this.keyword).sort().join(', '));
+		if (this.phases) {
+			this.attr('phasesFormatted', $.makeArray(this.phases).sort().join(', '));
+		}
+		
+		// "fix" outcomes
+		if (this.attr('primary_outcome')) {
+			for (var i = 0; i < this.attr('primary_outcome').length; i++) {
+				var out = this.attr('primary_outcome')[i];
+				if ('safety_issue' in out) {
+					out.attr('safety_issue', ('Yes' == out['safety_issue']));
+				}
+			}
+		}
+		if (this.attr('secondary_outcome')) {
+			for (var i = 0; i < this.attr('secondary_outcome').length; i++) {
+				var out = this.attr('secondary_outcome')[i];
+				if ('safety_issue' in out) {
+					out.attr('safety_issue', ('Yes' == out['safety_issue']));
+				}
+			}
+		}
 	},
 });

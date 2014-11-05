@@ -17,10 +17,10 @@ class TrialMatchResult(object):
 		self.fail_property = fail_property
 	
 	@property
-	def js(self):
+	def json(self):
 		js = {
 			'ok': self.ok,
-			'trial': self.trial.js
+			'trial': self.trial.json
 		}
 		if self.fail_reason is not None:
 			js['reason'] = self.fail_reason

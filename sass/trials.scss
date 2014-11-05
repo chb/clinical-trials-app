@@ -150,67 +150,81 @@ ul.trial_list {
 	}
 }
 
-.condition + .condition:before {
-	content: ", "
+// these need to be standing alone, inside ".trial" will create wrong rules
+.condition + .condition:before, .keyword + .keyword:before {
+	content: ", ";
+}
+.phases + .condition:before {
+	content: " – ";
 }
 
 .trial {
-	& > a:first-child {
-		margin-right: 1em;
+	.condition {
+		
 	}
 	
-	.trial_info {
-		.exclusion_reason {
-			display: block; margin-top: 0.3em;
-			font-size: 10pt; color: #A00;
+	.trial_location {
+		float: right;
+		max-width: 16em;
+		margin: 0 0 1.5em 1.5em; padding: 0.75em;
+		vertical-align: top; text-align: center;
+		border-radius: $border-boxradius;
+		background: $col-boxbg;
+		
+		.loc_distance {
+			color: $col-trans-faded; font-size: 0.9em;
+		}
+		.loc_city {
+			font-weight: bold;
+		}
+		.loc_country {
+			font-size: 1.2em; font-weight: bold;
+		}
+		
+		.loc_contact {
+			margin: 0.25em -0.75em; padding: 1.2em;
+			color: black;
+			background-color: $col-note;
+			border: 1px solid rgba(0,0,0,0.2); border-left: none; border-right: none;
+			
+			div {
+				word-wrap: break-word;
+			}
 		}
 	}
 	
-	.trial_locations {
-		float: right; width: 65%;
-		
+	.details {
 		& > div {
 			display: none;
 		}
 		
-		.trial_location {
-			display: inline-block;
-			max-width: 44%;					// don't ask why 45% + 5% will force a line break
-			margin: 0 0 1.5em 5%;
-			vertical-align: top; text-align: center;
-			
-			.loc_status, .loc_distance {
-				color: $col-trans-faded; font-size: 0.9em;
-			}
-			.loc_city {
-				font-weight: bold;
-			}
-			.loc_country {
-				font-size: 1.2em; font-weight: bold;
-			}
-			
-			.loc_contact {
-				position: absolute; display: none;
-				top: 1.5em; left: 0;
-				padding: 1.2em;
-				color: black; font-size: 110%; line-height: 1.6;
-				background-color: $col-note;
-				border: 1em solid rgba(0,0,0,0.2); border-radius: 1em;
-				z-index: 2;
-				
-				div {
-					white-space: nowrap;
-				}
-			}
+		.outcome_details {
+			margin: 0.5em 0;
+		}
+		.summary {
+			margin: 1em 0;
 		}
 	}
 	
-	.formatted_criteria {
-		clear: right;
-		display: none;
-		margin: 0.5em 0 1.5em; padding: 1em;
-		border: 1px solid $col-border; border-radius: $border-radius;
-		background-color: $col-bg; 
+	.criteria {
+		margin-top: 0.5em;
+		
+		.summary {
+			margin: 1em 0;
+		}
+		
+		.formatted_criteria {
+			clear: right;
+			display: none;
+			margin: 0.5em 0 1.5em; padding: 1em;
+			border-radius: $border-boxradius;
+			background-color: $col-boxbg;
+		}
+	}
+	
+	.exclusion_reason {
+		display: block; margin-top: 0.3em;
+		font-size: 10pt; color: #A00;
 	}
 }
 

@@ -117,7 +117,7 @@
 				{{#numShown}}<h2>{{numShown}} Trials<!-- no way to check for num 1 in mustache, doh!! --></h2>{{/}}
 				<ul id="trial_list" class="trial_list">
 				{{#results}}{{#shown}}
-					{{>"trial_tmpl"}}
+					<li {{ data 'trial' }}>{{>"trial_tmpl"}}</li>
 				{{/}}{{/}}
 				</ul>
 			</div>
@@ -125,54 +125,65 @@
 			</script>
 			
 			<script type="text/mustache" id="trial_tmpl">
-			<li class="trial" {{ data 'trial' }}>
-				<div class="trial_info">
+				<div class="trial">
 					<h3>{{ trial.title }}</h3>
-					<p class="supplement">{{ trial.phasesFormatted }}</p>
-					<p class="supplement">{{ trial.keywordsFormatted }}</p>
-					<p class="supplement">{{#trial.condition}}<span class="condition">{{.}}</span>{{/}}</p>
-					<p class="supplement">{{ trial.source }}</p>
-					
-					{{#if trial.primary_outcome}}
-					<div>
-						<h3>Primary Outcome</h3>
-						{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}
-					</div>
-					{{/}}
-					{{#if trial.secondary_outcome}}
-					<div>
-						<h3>Secondary Outcome</h3>
-						{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}
-					</div>
-					{{/}}
-					
-					{{#trial.brief_summary}}
-					<p>{{ textblock }}</p>
-					{{/}}
+					<p class="supplement">
+						<span class="phases">{{ trial.phasesFormatted }}</span>
+						{{#trial.condition}}<strong class="condition">{{.}}</strong>{{/}}
+						{{#trial.source}}({{ . }}){{/}}
+					</p>
 					
 					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
 					
-					<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
+					<div class="details">
+						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Details</strong>
+						<div class="supplement">
+							Keywords: {{#trial.keyword}}<span class="keyword">{{ . }}</span>{{/}}{{^trial.keyword}}none{{/}}
+						</div>
+						
+						{{#if trial.primary_outcome}}<div>
+							<h4>Primary Outcome</h4>
+							<ul>{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
+						</div>{{/}}
+						{{#if trial.secondary_outcome}}<div>
+							<h4>Secondary Outcome</h4>
+							<ul>{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
+						</div>{{/}}
+						
+						{{#trial.brief_summary}}
+						<div><p class="summary">{{ textblock }}</p></div>
+						{{/}}
+					</div>
+					
+					{{#trial.eligibility}}
+					<div class="criteria">
+						<strong class="toggle" onclick="$(this).next().toggle()">Eligibility</strong>
+						<p class="formatted_criteria" style="display:none;">
+							{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
+							{{{ html }}}
+						</p>
+					</div>
+					{{/}}
+					
+					<p><a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a></p>
+					
 					{{#reason}}
 					<tt class="exclusion_reason">{{ . }}</tt>
 					{{/}}
 					
-					{{#trial.eligibility}}
-					<p>
-						{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
-						{{{ html }}}
-					</p>
-					{{/}}
+					<div style="clear:right;"> </div>
 				</div>
-			</li>
 			</script>
 			
 			<script type="text/mustache" id="outcome_tmpl">
-			<div>{{#safety_issue}}<b class="red">DANGER {{.}}</b>{{/}}
-				<button onclick="$(this).next().toggle().next().toggle()">{{ measure }}</button>
-				<p style="display:none;">{{ time_frame }}</p>
-				<p style="display:none;" class="small">{{ description }}</p>
-			</div>
+				<li>
+					<span class="toggle" onclick="$(this).siblings('.outcome_details').toggle()">{{ measure }}</span>
+					{{#safety_issue}}<b class="red">Safety Issue</b>{{/}}
+					<div class="outcome_details" style="display:none;">
+						<p>{{ time_frame }}</p>
+						<p class="supplement">{{ description }}</p>
+					</div>
+				</li>
 			</script>
 			
 			<script type="text/mustache" id="location_tmpl">
@@ -182,20 +193,19 @@
 					{{#contact}}
 					–
 					<a href="javascript:void(0);" onclick="$(this).next().toggle()">contact</a>
-					<div class="loc_contact">
-						<div class="cont_name">{{ contact.name }}</div>
+					<div class="loc_contact" style="display:none;">
+						<p class="cont_name">{{ contact.name }}</p>
 						{{#contact.email}}
-						<div class="cont_email"><a href="mailto:{{ contact.email }}?subject=Trial+{{ trial.nct }}">{{ contact.email }}</a></div>
+						<p class="cont_email"><a href="mailto:{{ contact.email }}?subject=Trial+{{ trial.nct }}">{{ contact.email }}</a></p>
 						{{/}}
 						{{#contact.phone}}
-						<div class="cont_phone">{{ contact.phone }}</div>
+						<p class="cont_phone">{{ contact.phone }}</p>
 						{{/}}
 					</div>
 					{{/}}
 				</div>
 				{{#facility.name}}<div class="loc_name">{{ . }}</div>{{/}}
-				{{#facility.city}}<div class="loc_city">{{ . }}</div>{{/}}
-				<div class="loc_country">{{ facility.country }}</div>
+				{{#facility.address.city}}<div class="loc_city">{{ . }}{{#facility.address.state}}, {{ . }}{{/}}</div>{{/}}
 				{{#distance}}<div class="loc_distance">{{ distance }} Miles</div>{{/}}
 			</div>
 			{% endraw %}</script>
@@ -206,8 +216,10 @@
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="static/can.jquery{% if defs.debug %}.dev{% endif %}.js"></script>
+	{%- if google_api_key %}
 	<script src="//maps.googleapis.com/maps/api/js?key={{ defs.google_api_key }}&sensor=false"></script>
 	<script src="static/markerclusterer.js"></script>
+	{%- endif %}
 	<script src="static/main.js"></script>
 	<script>
 	$(document).ready(function() {

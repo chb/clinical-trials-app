@@ -17,13 +17,14 @@ $col-trans-faded:		rgba(0,0,0,0.4);
 $col-border:			rgb(200,200,200);
 $col-border-inactive:	rgb(185,185,185);
 
-$col-bg:				rgb(246,246,246);
-$col-boxbg:				rgb(230,230,230);
+$col-bg:				rgb(242,242,242);
+$col-boxbg:				$col-bg;
 $col-redbg:				rgb(200,30,20);
 $col-greenbg:			rgb(160,255,110);
 $col-note:				rgb(255,255,200);
 
 $border-radius:			2pt;
+$border-boxradius:		3pt;
 
 
 html, body {
@@ -35,16 +36,17 @@ html, body {
 h1 {
 	font-weight: 300;
 }
-
 h2 {
 	margin: 2em 0 0.3em;
 	font-weight: 300;
 }
-
 h3 {
 	margin-bottom: 0.5em;
 	font-weight: 400;
 	&:first-child { margin-top: 0.3em; }
+}
+h4 {
+	margin-bottom: 0.5em;
 }
 
 a {
@@ -130,7 +132,6 @@ header {
 
 @import "patient";
 @import "trials";
-@import "smart";
 
 
 // Generic
@@ -171,6 +172,11 @@ div.supplement {
 		color: black;
 		background-color: $col-border-inactive;
 	}
+}
+
+.toggle {
+	cursor: pointer;
+	color: $col-link;
 }
 	
 span.tag {
