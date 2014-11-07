@@ -89,10 +89,10 @@ class TrialGenderMatcher(TrialMatcher):
 		"""
 		have = patient.gender
 		want = trial.eligibility.get('gender')
-		if want is not None and have is not None:
-			if 'f' == want[0].lower() and 'f' != want[0].lower():
+		if want is not None and len(want) > 1 and have is not None and len(have) > 1:
+			if 'f' == want[0].lower() and 'f' != have[0].lower():
 				return TrialMatchResult(trial, False, "Trial only accepts female patients", 'patient.gender')
-			if 'm' == want[0].lower() and 'm' != want[0].lower():
+			if 'm' == want[0].lower() and 'm' != have[0].lower():
 				return TrialMatchResult(trial, False, "Trial only accepts male patients", 'patient.gender')
 		else:
 			logging.info("Not enough information to match by gender. Patient gender: {}, trial: {}".format(have, want))
