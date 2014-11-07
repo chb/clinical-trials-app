@@ -15,6 +15,7 @@ class TrialFinder(object):
 		self.fetch_all = True
 		self.recruiting_only = True
 		self.limit_location = 'Sarah Cannon'
+		self.limit_countries = ['United States']
 	
 	def find(self, params):
 		""" Find trials with the given parameters. Will return at max 1000
@@ -29,6 +30,8 @@ class TrialFinder(object):
 			prms['recruiting'] = self.recruiting_only
 		if self.limit_location is not None:
 			prms['location_term'] = self.limit_location
+		if self.limit_countries is not None:
+			prms['countries'] = self.limit_countries
 		
 		# perform search
 		trials, meta, more = self.server.find(params=prms)

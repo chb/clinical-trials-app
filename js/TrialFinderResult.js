@@ -43,6 +43,7 @@ var TrialFinderResult = can.Model.extend({
 		});
 		
 		var num = {};
+		var shown = 0;
 		for (var i = 0; i < this.results.length; i++) {
 			var result = this.results[i];
 			result.attr('shownForInterventions', false);
@@ -73,16 +74,13 @@ var TrialFinderResult = can.Model.extend({
 					}
 				}
 			}
-		}
-		
-		// determine num shown
-		var n = 0;
-		for (var i = 0; i < this.results.length; i++) {
-			if (this.results[i].attr('shown')) {
-				n++;
+			
+			// count
+			if (result.attr('shown')) {
+				shown++;
 			}
 		}
-		this.attr('numShown', n);
+		this.attr('numShown', shown);
 		
 		// update phase counts
 		for (var i = 0; i < this.phases.length; i++) {
@@ -104,23 +102,25 @@ var TrialFinderResult = can.Model.extend({
 		for (var i = 0; i < this.results.length; i++) {
 			var trial = this.results[i].trial;
 			if (trial && trial.interventions) {
+				var did_count = [];			// collect counted interventions because we map, avoiding double counts
 				for (var j = 0; j < trial.interventions.length; j++) {
 					var inter = trial.interventions[j];
 					if (inter in _intervention_map) {
 						inter = _intervention_map[inter];
 					}
+					if (did_count.contains(inter)) {
+						continue;
+					}
+					did_count.push(inter);
 					
 					var exist = assoc[inter];
-					if (exist) {
-						exist.addMatch();
+					if (!exist) {
+						exist = new TrialIntervention(null, inter);		// cannot supply "this" in a constructor??
+						exist.parent = this;							// workaround
+						assoc[inter] = exist;
+						arr.push(exist);
 					}
-					else {
-						var ti = new TrialIntervention(null, inter);		// cannot supply "this" in a constructor??
-						ti.parent = this;									// workaround
-						ti.addMatch();
-						assoc[inter] = ti;
-						arr.push(ti);
-					}
+					exist.addMatch();
 				}
 			}
 		}
@@ -146,10 +146,10 @@ var TrialFinderResult = can.Model.extend({
 					
 					var exist = assoc[phase];
 					if (!exist) {
-						var ph = new TrialPhase(null, phase);
-						ph.parent = this;
-						assoc[phase] = ph;
-						arr.push(ph);
+						exist = new TrialPhase(null, phase);
+						exist.parent = this;
+						assoc[phase] = exist;
+						arr.push(exist);
 					}
 				}
 			}

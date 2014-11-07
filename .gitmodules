@@ -4,3 +4,6 @@
 [submodule "py/smartclient"]
 	path = py/smartclient
 	url = https://github.com/smart-on-fhir/client-py.git
+[submodule "py/targetprofiles"]
+	path = py/targetprofiles
+	url = https://github.com/chb/py-target-profiles.git
