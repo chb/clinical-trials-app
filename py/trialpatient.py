@@ -10,7 +10,9 @@ import datetime
 from dateutil.parser import *
 from dateutil.relativedelta import *
 
+import trialcondition
 import clinicaltrials.jsondocument.jsondocument as jsondocument
+import smartclient.fhirclient.models.condition as condition
 
 
 class TrialPatient(jsondocument.JSONDocument):
@@ -18,18 +20,20 @@ class TrialPatient(jsondocument.JSONDocument):
 	
 	Properties:
 	
-	- full_name [string]
-	- gender [string, "female" or "male"]
+	- full_name: string
+	- gender: string, "female" or "male"
 	
-	- birthday [ISO-8601 date string]
-	- deathdate [ISO-8601 date string]
-	- age_years [int]
-	- age_string [string]
+	- birthday: ISO-8601 date string
+	- deathdate: ISO-8601 date string
+	- age_years: int
+	- age_string: string
 	
-	- city [string]
-	- region [string]
-	- country [string]
-	- location = city, region [string]
+	- city: string
+	- region: string
+	- country: string
+	- location = city, region: string
+	
+	- conditions: [TrialCondition]
 	"""
 	
 	def __init__(self, ident, json=None):
@@ -53,7 +57,7 @@ class TrialPatient(jsondocument.JSONDocument):
 	
 	
 	@classmethod
-	def fromFHIR(cls, client):
+	def load_from_fhir(cls, client):
 		""" Instantiates a TrialPatient with data from a FHIR Patient resource,
 		retrieved from a SMART client (fhirclient) instance.
 		
@@ -78,6 +82,10 @@ class TrialPatient(jsondocument.JSONDocument):
 			patient.city = address.city
 			patient.region = address.state
 			patient.country = address.country
+		
+		# retrieve problem list
+		cond_search = condition.Condition.where(struct={'subject': fpat._remote_id})
+		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform(fpat._server)]
 		
 		return patient
 	

@@ -174,12 +174,12 @@ def endpoints():
 def patient(id=None):
 	""" Returns the current patient's data as JSON.
 	"""
-	patient = TrialPatient.fromFHIR(_get_smart())
+	patient = TrialPatient.load_from_fhir(_get_smart())
 	if patient is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
 		return 401
 	
-	return jsonify(patient.api)
+	return jsonify(patient.for_api())
 
 
 # MARK: Trials
@@ -188,7 +188,7 @@ def patient(id=None):
 def find():
 	""" Retrieve trials for the current patient.
 	"""
-	patient = TrialPatient.fromFHIR(_get_smart())
+	patient = TrialPatient.load_from_fhir(_get_smart())
 	if patient is None:
 		logging.info("Trying to find trials for a patient without authorized smart client")
 		return 401
@@ -199,7 +199,7 @@ def find():
 	
 	results = []
 	for result in trialmatcher.match(found, patient):
-		results.append(result.json)
+		results.append(result.for_api())
 	
 	return jsonify({'results': results or []})
 
