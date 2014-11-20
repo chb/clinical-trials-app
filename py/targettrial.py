@@ -14,8 +14,9 @@ class TargetTrial(clintrial.Trial):
 	"""
 	cache = None
 	
-	def __init__(self, nct=None, json=None):
-		super().__init__(nct, json)
+	def __init__(self, nct=None, json_dict=None):
+		super().__init__(nct, json_dict)
+		self.score = json_dict.get('_meta', {}).get('score') if json_dict is not None else None
 		self.find_target_profile()
 	
 	def find_target_profile(self):
@@ -33,3 +34,8 @@ class TargetTrial(clintrial.Trial):
 			if profile is not None:
 				self.target_profile = tarprof.TargetProfile(profile)
 	
+	def for_api(self):
+		js = super().for_api()
+		if self.score is not None:
+			js['score'] = self.score
+		return js

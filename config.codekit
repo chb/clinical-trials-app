@@ -963,7 +963,7 @@
 	"sassUseLibsass": 0,
 	"shouldRunAutoprefixer": 0,
 	"shouldRunBless": 0,
-	"skippedItemsString": "\/py, _logs, .hg, _cache, log, \/__pycache__, logs, cache, \/env, .svn, .git, \/session_data",
+	"skippedItemsString": "\/py, \/sarah-cannon-pilot, _logs, .hg, _cache, log, \/__pycache__, logs, cache, \/env, .svn, .git, \/session_data",
 	"slimAutoOutputPathEnabled": 1,
 	"slimAutoOutputPathFilenamePattern": "*.html",
 	"slimAutoOutputPathRelativePath": "",

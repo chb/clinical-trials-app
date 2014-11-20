@@ -36,7 +36,7 @@ class TrialMatcher(object):
 	def match(self, trials, patient):
 		""" Match the provided trials against a patient.
 		
-		:param trial: A list of Trial instances to match
+		:param trial: A list of TargetTrial instances to match
 		:param patient: A TrialPatient instance to match for
 		:returns: A list of `TrialMatchResult` results, one per trial.
 		"""
@@ -94,7 +94,7 @@ class TrialGenderMatcher(TrialMatcher):
 			if 'm' == want[0].lower() and 'm' != have[0].lower():
 				return TrialMatchResult(trial, False, "Trial only accepts male patients", 'patient.gender')
 		else:
-			logging.info("Not enough information to match by gender. Patient gender: {}, trial: {}".format(have, want))
+			logging.debug('Not enough information to match {} by gender. Patient gender: {}, trial: {}'.format(trial.nct, have, want))
 		
 		return TrialMatchResult(trial, True)
 
@@ -117,7 +117,7 @@ class TrialAgeMatcher(TrialMatcher):
 			if maxAge is not None and age > maxAge:
 				return TrialMatchResult(trial, False, "Must be no more than {} years old, but is {}".format(maxAge, age), 'patient.age_years')
 		else:
-			logging.info("Not enough information to match by age. Patient: {}, min: {}, max: {}".format(age, minAge, maxAge))
+			logging.debug('Not enough information to match {} by age. Patient: {}, min: {}, max: {}'.format(trial.nct, age, minAge, maxAge))
 		
 		return TrialMatchResult(trial, True)
 	
@@ -138,5 +138,113 @@ class TrialAgeMatcher(TrialMatcher):
 			return int(age_string.replace(' Month', '')) * 12
 		logging.error("Haven't seen this age string before: {}".format(age_string))
 		return None
+
+
+class TrialProfileMatcher(TrialMatcher):
+	""" Matches a trial by its target profile.
+	"""
+	def match_trial(self, trial, patient):
+		""" If the trial has a profile, loops over the profile's rules and
+		determines if the patient is disqualified or not.
+		"""
+		if trial.target_profile is None:
+			logging.debug('No target profile for {}, cannot match'.format(trial.nct))
+			return TrialMatchResult(trial, True)
+		
+		# match over all rules
+		for rule in trial.target_profile.rules:
+			matcher = TargetProfileRuleMatcher.get_matcher(rule)
+			if matcher is None:
+				logging.debug('No target profile rule matcher is available for {} "{}"'.format(rule.for_type, rule.description))
+			elif not matcher.matches(patient):
+				return TrialMatchResult(trial, False, rule.description)
+		
+		return TrialMatchResult(trial, True)
+
+
+class TargetProfileRuleMatcher():
+	""" Match one target profile rule.
+	"""
+	rule_type = None
+	matcher_classes = {}
+	
+	@classmethod
+	def register_rule(cls, klass):
+		""" Register a TargetProfileRuleMatcher to match to rules of a given
+		type.
+		"""
+		if klass is None:
+			raise Exception('I need a class')
+		for_type = klass.rule_type
+		if not for_type:
+			raise Exception('I need a class with a rule_type')
+		if for_type in cls.matcher_classes:		# could check if class is different to fail gracefully on double-imports
+			raise Exception('I have already registered {} for {}'.format(cls.matcher_classes[for_type]), for_type)
+		cls.matcher_classes[for_type] = klass
+	
+	@classmethod
+	def get_matcher(cls, for_rule):
+		if for_rule is None or not for_rule.for_type:
+			return None
+		
+		klass = cls.matcher_classes.get(for_rule.for_type)
+		return klass(for_rule) if klass is not None else None
+	
+	def __init__(self, rule):
+		self.rule = rule
+	
+	def matches(self, patient):
+		""" Performs the matching logic, returning True if the patient meets
+		the criteria and False otherwise, meaning she fails to qualify for the
+		trial.
+		"""
+		return True
 	
 
+class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'gender'
+
+
+class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'age'
+
+
+class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'state'
+
+
+class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
+	""" Determines if a patient matches a diagnosis by looking at her
+	documented conditions.
+	"""
+	rule_type = 'diagnosis'
+	
+	def matches(self, patient):
+		include = self.rule.include
+		
+		# compare SNOMED-CT codes
+		if 'snomed' == self.rule.diagnosis.system:
+			code = self.rule.diagnosis.code
+			for condition in patient.conditions:
+				if code == condition.snomed:
+					return include
+		else:
+			logging.debug('I cannot match to diagnoses of type "{}"'.format(self.rule.diagnosis.system))
+		
+		return False if include else True
+
+
+class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'medication'
+
+
+class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'score'
+
+
+TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)

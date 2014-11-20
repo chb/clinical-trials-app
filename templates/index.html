@@ -27,7 +27,7 @@
 			{{#finder.patient}}
 			<div id="demographics">
 				{{#full_name}}
-				<h1>Trials for {{ full_name }}</h1>
+				<h1>Trials for {{ . }}</h1>
 				{{/}}
 				{{^full_name}}
 				<h1>Trial Eligibility</h1>
@@ -43,7 +43,7 @@
 				 	
 					<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="age_years" min="0" max="120"> y
 					{{#birthday}}<span class="demo_birthday">
-						({{^deathdate}}born {{/}}{{ birthday }}{{#deathdate}} – {{deathdate}}{{/}})
+						({{^deathdate}}born {{/}}{{ birthday }}{{#deathdate}} – {{ . }}{{/}})
 					</span>{{/}}
 				</div>
 				
@@ -126,7 +126,7 @@
 			
 			<script type="text/mustache" id="trial_tmpl">
 				<div class="trial">
-					<h3>{{ trial.title }}</h3>
+					<h3>{{ trial.title }} ({{ trial.score }})</h3>
 					<p class="supplement">
 						<span class="phases">{{ trial.phasesFormatted }}</span>
 						{{#trial.condition}}<strong class="condition">{{.}}</strong>{{/}}
@@ -134,6 +134,8 @@
 					</p>
 					
 					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
+					
+					{{#reason}}<tt class="exclusion_reason">{{ . }}</tt>{{/}}
 					
 					<div class="details">
 						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Details</strong>
@@ -165,12 +167,9 @@
 					</div>
 					{{/}}
 					
-					<p><a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a></p>
-					
-					{{#reason}}
-					<tt class="exclusion_reason">{{ . }}</tt>
-					{{/}}
-					
+					<p>
+						<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">{{ trial._id }}</a>
+					</p>
 					<div style="clear:right;"> </div>
 				</div>
 			</script>

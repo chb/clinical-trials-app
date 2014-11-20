@@ -44,7 +44,8 @@ if LILLY_SECRET is not None:
 trialmatcher = TrialSerialMatcher()
 trialmatcher.modules = [
 	TrialGenderMatcher(),
-	TrialAgeMatcher()
+	TrialAgeMatcher(),
+	TrialProfileMatcher(),
 ]
 
 

@@ -127,8 +127,7 @@ ul.trial_list > li h1 { text-align: center; }
 .trial .trial_location .loc_distance { color: rgba(0, 0, 0, 0.4); font-size: 0.9em; }
 .trial .trial_location .loc_city { font-weight: bold; }
 .trial .trial_location .loc_country { font-size: 1.2em; font-weight: bold; }
-.trial .trial_location .loc_contact { margin: 0.25em -0.75em; padding: 1.2em; color: black; background-color: #ffffc8; border: 1px solid rgba(0, 0, 0, 0.2); border-left: none; border-right: none; }
-.trial .trial_location .loc_contact div { word-wrap: break-word; }
+.trial .trial_location .loc_contact { margin: 0.25em -0.75em; padding: 1.2em; color: black; word-break: break-word; background-color: #ffffc8; border: 1px solid rgba(0, 0, 0, 0.2); border-left: none; border-right: none; }
 .trial .details > div { display: none; }
 .trial .details .outcome_details { margin: 0.5em 0; }
 .trial .details .summary { margin: 1em 0; }
