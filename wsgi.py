@@ -18,6 +18,7 @@ DEBUG = int(os.environ.get('DEBUG', 0)) > 0
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 SMART_DEFAULTS = {
 	'app_id': os.environ.get('SMART_APP_ID'),
+	'auth_type': 'oauth2',
 	'api_base': os.environ.get('SMART_API_BASE'),
 	'redirect_uri': os.environ.get('SMART_REDIRECT'),
 }
@@ -29,6 +30,7 @@ import py.smartclient.fhirclient.client as smart
 from py.clinicaltrials.lillyserver import LillyV2Server
 from py.trialpatient import TrialPatient
 from py.trialfinder import TrialFinder
+from py.targettrial import TargetTrial
 from py.trialmatcher import *
 
 app = Flask(__name__)
@@ -193,7 +195,7 @@ def find():
 		logging.info("Trying to find trials for a patient without authorized smart client")
 		return 401
 	
-	finder = TrialFinder(trialserver)
+	finder = TrialFinder(trialserver, trial_class=TargetTrial)
 	#finder.fetch_all = False
 	found = finder.find(request.args)
 	

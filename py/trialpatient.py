@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-import os.path
-sys.path.insert(0, os.path.dirname(__file__))
-
 import logging
 import datetime
 from dateutil.parser import *

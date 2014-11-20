@@ -8,9 +8,10 @@ class TrialFinder(object):
 	""" Find trials on a server.
 	"""
 	
-	def __init__(self, server):
+	def __init__(self, server, trial_class=None):
 		assert server
 		self.server = server
+		self.trial_class = trial_class
 		
 		self.fetch_all = True
 		self.recruiting_only = True
@@ -34,12 +35,12 @@ class TrialFinder(object):
 			prms['countries'] = self.limit_countries
 		
 		# perform search
-		trials, meta, more = self.server.find(params=prms)
+		trials, meta, more = self.server.find(params=prms, trial_class=self.trial_class)
 		total = meta.get('total') or 0
 		if self.fetch_all:
 			logging.warn("There are {} trials, I am only going to fetch the first 1000".format(total))
 			while more and len(trials) <= 1000:
-				more_trials, more_meta, more = self.server.find(request=more)
+				more_trials, more_meta, more = self.server.find(request=more, trial_class=self.trial_class)
 				trials.extend(more_trials)
 		
 		self.tamper_with(trials)
