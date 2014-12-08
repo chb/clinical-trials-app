@@ -7,3 +7,6 @@
 [submodule "py/targetprofiles"]
 	path = py/targetprofiles
 	url = https://github.com/chb/py-target-profiles.git
+[submodule "sarah-cannon-pilot"]
+	path = sarah-cannon-pilot
+	url = git@github.com:lillyoi/sarah-cannon-pilot.git
