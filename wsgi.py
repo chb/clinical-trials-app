@@ -27,18 +27,26 @@ SMART_DEFAULTS = {
 import py.smartclient.fhirclient.client as smart
 
 # App
-from py.clinicaltrials.lillyserver import LillyV2Server
 from py.trialpatient import TrialPatient
 from py.trialfinder import TrialFinder
 from py.targettrial import TargetTrial
 from py.trialmatcher import *
+from py.clinicaltrials.lillyserver import LillyV2Server
+from py.localutils import LocalTrialServer, LocalJSONCache
 
 app = Flask(__name__)
+
+# Trial Caches
+LocalTrialServer.trial_cache = LocalJSONCache('trial-cache')
+tpdir = os.path.join('sarah-cannon-pilot', 'breast-target-profiles', 'JSON')
+LocalTrialServer.profile_cache = LocalJSONCache(tpdir)
+LocalTrialServer.profile_cache.can_write = False
 
 # Trial Server
 trialserver = None
 if LILLY_SECRET is not None:
 	trialserver = LillyV2Server(LILLY_SECRET)
+trialserver = LocalTrialServer('sarah-cannon-pilot/breast-target-profiles/JSON/', trialserver)
 
 # Trial Matcher
 trialmatcher = TrialSerialMatcher()

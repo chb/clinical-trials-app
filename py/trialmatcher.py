@@ -87,7 +87,7 @@ class TrialGenderMatcher(TrialMatcher):
 		no-match.
 		"""
 		have = patient.gender
-		want = trial.eligibility.get('gender')
+		want = trial.eligibility.get('gender') if trial.eligibility else None
 		if want is not None and len(want) > 1 and have is not None and len(have) > 1:
 			if 'f' == want[0].lower() and 'f' != have[0].lower():
 				return TrialMatchResult(trial, False, "Trial only accepts female patients", 'patient.gender')

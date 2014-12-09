@@ -36,11 +36,12 @@ class TrialFinder(object):
 		
 		# perform search
 		trials, meta, more = self.server.find(params=prms, trial_class=self.trial_class)
-		if self.fetch_all:
+		if more and self.fetch_all:
+			maximum = 1000
 			total = int(meta.get('total') or 0)
-			if total > 1000:
-				logging.warn("There are {} trials, I am only going to fetch the first 1000".format(total))
-			while more and len(trials) <= 1000:
+			if total > maximum:
+				logging.warn("There are {} trials, I am only going to fetch the first {}".format(total, maximum))
+			while more and len(trials) <= maximum:
 				more_trials, more_meta, more = self.server.find(request=more, trial_class=self.trial_class)
 				trials.extend(more_trials)
 		

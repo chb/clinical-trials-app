@@ -6,9 +6,10 @@ static/help.html
 env
 
 # IDE settings
-project.sublime-*
+*.sublime-*
 
 # Other
+trial-cache
 __pycache__
 .sass-cache
 .DS_Store
