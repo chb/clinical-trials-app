@@ -61,15 +61,15 @@ header { padding: 0.5em 3em 0; text-align: right; }
 #demographics #select_female_label { border-right-color: #000d22; border-radius: 2pt 0 0 2pt; }
 #demographics #select_male_label { border-left: none; border-radius: 0 2pt 2pt 0; }
 
-#patient_problems { clear: left; padding-top: 1em; }
+#patient_problems { clear: left; padding-top: 2em; }
+#patient_problems h2 { margin-top: 0; cursor: pointer; }
 
 ul#problem_list { padding: 0; list-style-type: none; }
-ul#problem_list li { padding: 0.5em 0; line-height: 1.6; cursor: pointer; }
+ul#problem_list li { padding: 0.15em 0; line-height: 1.6; }
 ul#problem_list li .problem_name { font-size: 1.2em; }
 ul#problem_list li#prob_manual { cursor: default; }
 ul#problem_list li#prob_manual input { width: 50%; margin: 0 0.5em 0 0; }
 ul#problem_list li#prob_manual button { font-size: 1.1em; }
-ul#problem_list li:hover { background-color: #f2f2f2; }
 ul#problem_list li.active { padding: 0.5em; border: 1px solid #000d22; border-radius: 2pt; background-color: #88b5ff; }
 ul#problem_list li #refresh_trials, ul#problem_list li #cancel_trials { float: right; font-size: 1.2em; }
 ul#problem_list li #cancel_trials { margin-right: 1em; font-size: 1em; }
@@ -121,13 +121,16 @@ ul.trial_list > li h1 { text-align: center; }
 
 .condition + .condition:before, .keyword + .keyword:before { content: ", "; }
 
-.phases + .condition:before { content: " – "; }
+.phases + .source:before, .source + .condition:before, .phases + .condition:before { content: " – "; }
 
+.trial .source { font-style: italic; }
+.trial .condition { font-weight: bold; }
 .trial .trial_location { float: right; max-width: 16em; margin: 0 0 1.5em 1.5em; padding: 0.75em; vertical-align: top; text-align: center; border-radius: 3pt; background: #f2f2f2; }
 .trial .trial_location .loc_distance { color: rgba(0, 0, 0, 0.4); font-size: 0.9em; }
 .trial .trial_location .loc_city { font-weight: bold; }
 .trial .trial_location .loc_country { font-size: 1.2em; font-weight: bold; }
 .trial .trial_location .loc_contact { margin: 0.25em -0.75em; padding: 1.2em; color: black; word-break: break-word; background-color: #ffffc8; border: 1px solid rgba(0, 0, 0, 0.2); border-left: none; border-right: none; }
+.trial .details { margin-top: 0.5em; }
 .trial .details > div { display: none; }
 .trial .details .outcome_details { margin: 0.5em 0; }
 .trial .details .summary { margin: 1em 0; }

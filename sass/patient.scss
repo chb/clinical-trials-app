@@ -72,7 +72,12 @@
 
 #patient_problems {
 	clear: left;
-	padding-top: 1em;
+	padding-top: 2em;
+	
+	h2 {
+		margin-top: 0;
+		cursor: pointer;
+	}
 }
 
 ul#problem_list {
@@ -80,9 +85,9 @@ ul#problem_list {
 	list-style-type: none;
 	
 	li {
-		padding: 0.5em 0;
+		padding: 0.15em 0;
 		line-height: 1.6;
-		cursor: pointer;
+		//cursor: pointer;
 		
 		.problem_name {
 			font-size: 1.2em;
@@ -98,10 +103,6 @@ ul#problem_list {
 			button {
 				font-size: 1.1em;
 			}
-		}
-		
-		&:hover {
-			background-color: $col-boxbg;
 		}
 		
 		&.active {

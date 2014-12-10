@@ -15,6 +15,7 @@ var TrialFinderResult = can.Model.extend({
 {
 	results: null,
 	numShown: 0,
+	numShownTitle: null,		// cannot check for "numShown == 1" in Mustache
 	
 	// `interventions` and `phases` are TrialGroupable subclasses
 	interventions: null,
@@ -81,6 +82,12 @@ var TrialFinderResult = can.Model.extend({
 			}
 		}
 		this.attr('numShown', shown);
+		if (shown > 1) {
+			this.attr('numShownTitle', shown + " Trials");
+		}
+		else {
+			this.attr('numShownTitle', (shown > 0) ? "1 Trial" : null);
+		}
 		
 		// update phase counts
 		for (var i = 0; i < this.phases.length; i++) {

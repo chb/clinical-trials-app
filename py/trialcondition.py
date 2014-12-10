@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import re
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
@@ -32,6 +33,8 @@ class TrialCondition(jsondocument.JSONDocument):
 		cond.date_resolution = fhir_cond.abatementDate.isostring if fhir_cond.abatementDate is not None else None
 		cond.status = fhir_cond.status
 		cond.summary = fhir_cond.text.div if fhir_cond.text is not None else None
+		if cond.summary is not None:
+			cond.summary = re.sub('<[^<]+?>', '', cond.summary)		# good enough
 		cond.notes = fhir_cond.notes
 		
 		return cond

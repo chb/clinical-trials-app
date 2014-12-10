@@ -51,6 +51,11 @@ class TrialPatient(jsondocument.JSONDocument):
 		if 'country' == name or 'city' == name or 'region' == name:
 			self.update_location()
 	
+	def for_api(self):
+		js_dict = super().for_api()
+		if self.conditions is not None:
+			js_dict['conditions'] = [c.for_api() for c in self.conditions]
+		return js_dict
 	
 	@classmethod
 	def load_from_fhir(cls, client):

@@ -154,13 +154,16 @@ ul.trial_list {
 .condition + .condition:before, .keyword + .keyword:before {
 	content: ", ";
 }
-.phases + .condition:before {
+.phases + .source:before, .source + .condition:before, .phases + .condition:before {
 	content: " – ";
 }
 
 .trial {
+	.source {
+		font-style: italic;
+	}
 	.condition {
-		
+		font-weight: bold;
 	}
 	
 	.trial_location {
@@ -190,6 +193,8 @@ ul.trial_list {
 	}
 	
 	.details {
+		margin-top: 0.5em;
+		
 		& > div {
 			display: none;
 		}

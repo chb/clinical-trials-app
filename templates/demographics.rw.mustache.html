@@ -1,0 +1,40 @@
+<div id="demographics">
+	{{#full_name}}
+	<h1>Trials for {{ . }}</h1>
+	{{/}}
+	{{^full_name}}
+	<h1>Trial Eligibility</h1>
+	{{/}}
+	
+	<div class="patient_portrait"></div>
+	
+	<div class="demo_row">
+		<input type="radio" id="select_female" name="demo_gender" value="female" can-value="gender" can-click="save"><!--
+	 --><label for="select_female" id="select_female_label" class="demo_gender">Female</label><!--
+	 --><input type="radio" id="select_male" name="demo_gender" value="male" can-value="gender" can-click="save"><!--
+	 --><label for="select_male" id="select_male_label" class="demo_gender">Male</label>
+	 	
+		<input type="number" id="demo_age" name="demo_age" placeholder="Age" can-value="age_years" min="0" max="120"> y
+		{{#birthday}}<span class="demo_birthday">
+			({{^deathdate}}born {{/}}{{ birthday }}{{#deathdate}} – {{ . }}{{/}})
+		</span>{{/}}
+	</div>
+	
+	<div class="demo_row">
+		<input type="text" id="demo_location" placeholder="City, State" can-value="location" can-enter="save">
+		<!--button onclick="locatePatient()">Locate</button-->
+		<input type="text" id="demo_country" placeholder="Country" can-value="country" can-enter="save" onfocus="$('#demo_country_hint').show()" onblur="$('#demo_country_hint').fadeOut()">
+		<label id="demo_country_hint" for="demo_country" class="xsmall faded" style="display:none; margin-left:1em;">Trial search will be limited to this country</label>
+	</div>
+</div>
+
+<div id="patient_problems">
+	<ul id="problem_list">
+		{{#problems}}
+		<li can-click="" {{data 'problem'}}>
+			<div class="problem_name">{{ name }}</div>
+			<div class="supplement">{{ period }}</div>
+		</li>
+		{{/}}
+	</ul>
+</div>

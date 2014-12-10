@@ -228,6 +228,10 @@ def enroll():
 def static_file(filename):
 	return send_from_directory('static', filename)
 
+@app.route('/templates/<filename>')
+def template_file(filename):
+	return send_from_directory('templates', filename)
+
 
 # start the app
 if '__main__' == __name__:
