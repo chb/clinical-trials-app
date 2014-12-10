@@ -1,8 +1,8 @@
 /**
  *  An object encapsulating trial search results.
  */
-var TrialResult = can.Model.extend({
-	
+var TrialResult = can.Model.extend(
+{
 	/// Instantiate from an array of results
 	fromJSON: function(array) {
 		if (!array) {
@@ -18,7 +18,8 @@ var TrialResult = can.Model.extend({
 	},
 },
 {
-	reason: null,
+	trial: null,
+	tests: null,
 	
 	shown: false,
 	shownForInterventions: false,
@@ -26,6 +27,7 @@ var TrialResult = can.Model.extend({
 	
 	init: function(json) {
 		this.attr('trial', new Trial(json.trial));
+		this.attr('tests', new TrialResultTest.fromJSON(json.tests))
 		
 		this.bind('shownForInterventions', function(ev, newVal, oldVal) {
 			this.attr('shown', newVal && this.shownForPhases);
@@ -34,4 +36,26 @@ var TrialResult = can.Model.extend({
 			this.attr('shown', newVal && this.shownForInterventions);
 		});
 	}
+});
+
+
+/**
+ *  One trial match test.
+ */
+var TrialResultTest = can.Model.extend(
+{
+	/// Instantiate from an array of tests
+	fromJSON: function(array) {
+		if (!array) {
+			return null;
+		}
+		
+		var tests = [];
+		for (var i = 0; i < array.length; i++) {
+			tests.push(new TrialResultTest(array[i]));
+		}
+		return tests;
+	},
+},
+{
 });

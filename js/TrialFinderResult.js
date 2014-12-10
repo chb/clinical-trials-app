@@ -92,7 +92,7 @@ var TrialFinderResult = can.Model.extend({
 		// update phase counts
 		for (var i = 0; i < this.phases.length; i++) {
 			var phase = this.phases[i];
-			phase.attr('num_matches', num[phase.name] || 0);
+			phase.attr('numMatches', num[phase.name] || 0);
 		};
 		
 		this.attr('showPhases', shownIntv.length > 0);
@@ -181,10 +181,10 @@ var TrialGroupable = can.Model.extend({
 	name: null,
 	huid: null,
 	active: false,
-	num_matches: 0,
+	numMatches: 0,
 	
 	addMatch: function() {
-		this.attr('num_matches', this.num_matches + 1);
+		this.attr('numMatches', this.numMatches + 1);
 	},
 });
 

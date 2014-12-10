@@ -44,7 +44,7 @@
 						<li>
 							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
 							<label for="{{ huid }}">{{ name }}</label>
-							<span class="num_matches">{{ num_matches }}</span>
+							<span class="num_matches">{{ numMatches }}</span>
 						</li>
 					{{/}}
 					{{^interventions}}
@@ -57,10 +57,10 @@
 					<h2>Trial phase</h2>
 					<ul id="selector_inv_phase">
 					{{#phases}}
-						<li{{^num_matches}} style="display:none;"{{/}}>
+						<li{{^numMatches}} style="display:none;"{{/}}>
 							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
 							<label for="{{ huid }}">{{ name }}</label>
-							<span class="num_matches">{{ num_matches }}</span>
+							<span class="num_matches">{{ numMatches }}</span>
 						</li>
 					{{/}}
 					</ul>
@@ -96,7 +96,7 @@
 					
 					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
 					
-					{{#reason}}<tt class="exclusion_reason">{{ . }}</tt>{{/}}
+					{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
 					
 					<div class="details">
 						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Details</strong>

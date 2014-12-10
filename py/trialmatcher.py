@@ -7,22 +7,51 @@ import logging
 class TrialMatchResult(object):
 	""" Indicates the matching result between a patient and a trial.
 	"""
-	OK = True
+	PASS = True
+	UNSURE = None
 	FAIL = False
 	
-	def __init__(self, trial, flag, fail_reason=None, fail_property=None):
+	def __init__(self, trial, tests):
 		self.trial = trial
-		self.ok = TrialMatchResult.OK if flag else TrialMatchResult.FAIL
-		self.fail_reason = fail_reason
+		self.tests = tests
+	
+	def for_api(self):
+		return {
+			'trial': self.trial.for_api(),
+			'tests': [c.for_api() for c in self.tests],
+		}
+
+
+class TrialMatchTest(object):
+	""" One condition that a trial must pass in order to be suitable for a
+	patient.
+	"""
+	
+	@classmethod
+	def passed(cls, test):
+		return cls(TrialMatchResult.PASS, test)
+	
+	@classmethod
+	def failed(cls, test, fail_property):
+		return cls(TrialMatchResult.FAIL, test, fail_property)
+	
+	@classmethod
+	def unsure(cls, test):
+		return cls(TrialMatchResult.UNSURE, test)
+	
+	def __init__(self, result, test, fail_property=None):
+		self.result = result
+		self.test = test
 		self.fail_property = fail_property
 	
 	def for_api(self):
 		js = {
-			'ok': self.ok,
-			'trial': self.trial.for_api()
+			'test': self.test,
 		}
-		if self.fail_reason is not None:
-			js['reason'] = self.fail_reason
+		if TrialMatchResult.PASS == self.result:
+			js['status'] = 'pass'
+		elif TrialMatchResult.FAIL == self.result:
+			js['status'] = 'fail'
 		if self.fail_property is not None:
 			js['property'] = self.fail_property
 		
@@ -33,28 +62,30 @@ class TrialMatcher(object):
 	""" An object to evaluate a list of trials against a given patient.
 	"""
 	
-	def match(self, trials, patient):
+	def match(self, patient, trials):
 		""" Match the provided trials against a patient.
 		
-		:param trial: A list of TargetTrial instances to match
 		:param patient: A TrialPatient instance to match for
+		:param trials: A list of TargetTrial instances to match
 		:returns: A list of `TrialMatchResult` results, one per trial.
 		"""
 		results = []
 		if trials is not None and len(trials) > 0:
 			for trial in trials:
-				results.append(self.match_trial(trial, patient))
+				tests = self.test_against_trial(patient, trial)
+				results.append(TrialMatchResult(trial, tests))
 		
 		return results
 	
-	def match_trial(self, trial, patient):
+	def test_against_trial(self, patient, trial):
 		""" Perform the actual matching logic. Subclasses should override this
-		method and return a suitable `TrialMatchResult`.
+		method and return a list of `TrialMatchTest` instances.
 		
 		:note: `patient` might be None
-		:returns: A `TrialMatchResult` instance for the given trial.
+		:returns: A list of `TrialMatchTest` instances for the given trial,
+			never None.
 		"""
-		return TrialMatchResult(trial, True)
+		return [TrialMatchTest.unsure(None)]
 
 
 class TrialSerialMatcher(TrialMatcher):
@@ -67,59 +98,84 @@ class TrialSerialMatcher(TrialMatcher):
 		super().__init__()
 		self.modules = []
 	
-	def match_trial(self, trial, patient):
+	def test_against_trial(self, patient, trial):
+		tests = []
 		if len(self.modules) > 0:
 			for module in self.modules:
-				res = module.match_trial(trial, patient)
-				if not res.ok:
-					return res
-			return res
-		return None
+				ext = module.test_against_trial(patient, trial)
+				tests.extend(ext)
+		return tests
 
 
 class TrialGenderMatcher(TrialMatcher):
 	""" Matches trials by patient gender.
 	"""
-	def match_trial(self, trial, patient):
+	def test_against_trial(self, patient, trial):
 		""" Retrieves the patient's gender string and the trial's eligibility.gender
 		string. If the trial's string starts with an "f" and the patient's
 		gender does not (and the same with "m") the trial is marked as a
 		no-match.
 		"""
-		have = patient.gender
 		want = trial.eligibility.get('gender') if trial.eligibility else None
-		if want is not None and len(want) > 1 and have is not None and len(have) > 1:
-			if 'f' == want[0].lower() and 'f' != have[0].lower():
-				return TrialMatchResult(trial, False, "Trial only accepts female patients", 'patient.gender')
-			if 'm' == want[0].lower() and 'm' != have[0].lower():
-				return TrialMatchResult(trial, False, "Trial only accepts male patients", 'patient.gender')
-		else:
-			logging.debug('Not enough information to match {} by gender. Patient gender: {}, trial: {}'.format(trial.nct, have, want))
+		if want is not None and len(want) > 0:
+			if 'both' == want.lower():
+				return [TrialMatchTest.passed("Trial accepts patients of any gender")]
+			
+			have = patient.gender
+			
+			if 'f' == want[0].lower():
+				if have is not None and len(have) > 0:
+					if 'f' != have[0].lower():
+						return [TrialMatchTest.failed("Trial only accepts female patients", 'patient.gender')]
+					return [TrialMatchTest.passed("Trial only accepts female patients")]
+				return [TrialMatchTest.unsure("Trial only accepts female patients")]
+			
+			if 'm' == want[0].lower():
+				if have is not None and len(have) > 0:
+					if 'm' != have[0].lower():
+						return [TrialMatchTest.failed("Trial only accepts male patients", 'patient.gender')]
+					return [TrialMatchTest.passed("Trial only accepts male patients")]
+				return [TrialMatchTest.unsure("Trial only accepts male patients")]
+			
+			logging.warning('Not sure which gender is expected by "{}", trial: {}'.format(want, trial.nct))
+			return [TrialMatchTest.unsure("Trial requests unknown gender \"{}\"".format(want))]
 		
-		return TrialMatchResult(trial, True)
+		return []
 
 
 class TrialAgeMatcher(TrialMatcher):
 	""" Matches a trial by patient age.
 	"""
-	def match_trial(self, trial, patient):
+	def test_against_trial(self, patient, trial):
 		""" Retrieves the patient's age from CTG's "minimum_age" and
 		"maximum_age" fields and compares it to the patient's age_years
 		property.
 		"""
+		tests = []
 		age = int(patient.age_years) if patient.age_years is not None else None
 		elig = trial.eligibility
 		minAge = self.sanitize_ctg_age(elig.get('minimum_age')) if elig is not None else None
 		maxAge = self.sanitize_ctg_age(elig.get('maximum_age')) if elig is not None else None
-		if age is not None and (minAge is not None or maxAge is not None):
-			if minAge is not None and age < minAge:
-				return TrialMatchResult(trial, False, "Must be at least {} years old, but is {}".format(minAge, age), 'patient.age_years')
-			if maxAge is not None and age > maxAge:
-				return TrialMatchResult(trial, False, "Must be no more than {} years old, but is {}".format(maxAge, age), 'patient.age_years')
-		else:
-			logging.debug('Not enough information to match {} by age. Patient: {}, min: {}, max: {}'.format(trial.nct, age, minAge, maxAge))
 		
-		return TrialMatchResult(trial, True)
+		if minAge is not None:
+			if age is not None:
+				if age < minAge:
+					tests.append(TrialMatchTest.failed("Must be at least {} years old, but is {}".format(minAge, age), 'patient.age_years'))
+				else:
+					tests.append(TrialMatchTest.passed("Must be at least {} years old".format(minAge)))
+			else:
+				tests.append(TrialMatchTest.unsure("Must be at least {} years old").format(minAge))
+				
+		if maxAge is not None:
+			if age is not None:
+				if age > maxAge:
+					tests.append(TrialMatchTest.failed("Must be no more than {} years old, but is {}".format(maxAge, age), 'patient.age_years'))
+				else:
+					tests.append(TrialMatchTest.passed("Must be no more than {} years old".format(maxAge)))
+			else:
+				tests.append(TrialMatchTest.unsure("Must be no more than {} years old".format(maxAge)))
+		
+		return tests
 	
 	def sanitize_ctg_age(self, age_string):
 		""" Return the age in years, as integer, if possible.
@@ -143,23 +199,25 @@ class TrialAgeMatcher(TrialMatcher):
 class TrialProfileMatcher(TrialMatcher):
 	""" Matches a trial by its target profile.
 	"""
-	def match_trial(self, trial, patient):
+	def test_against_trial(self, patient, trial):
 		""" If the trial has a profile, loops over the profile's rules and
 		determines if the patient is disqualified or not.
 		"""
 		if trial.target_profile is None:
 			logging.debug('No target profile for {}, cannot match'.format(trial.nct))
-			return TrialMatchResult(trial, True)
+			return []
 		
 		# match over all rules
+		tests = []
 		for rule in trial.target_profile.rules:
 			matcher = TargetProfileRuleMatcher.get_matcher(rule)
 			if matcher is None:
 				logging.debug('No target profile rule matcher is available for {} "{}"'.format(rule.for_type, rule.description))
-			elif not matcher.matches(patient):
-				return TrialMatchResult(trial, False, rule.description)
+				tests.append(TrialMatchTest.unsure("No rule matcher to test {} rule \"{}\"".format(rule.for_type, rule.description)))
+			else:
+				tests.append(matcher.test(patient))
 		
-		return TrialMatchResult(trial, True)
+		return tests
 
 
 class TargetProfileRuleMatcher():
@@ -173,9 +231,7 @@ class TargetProfileRuleMatcher():
 		""" Register a TargetProfileRuleMatcher to match to rules of a given
 		type.
 		"""
-		if klass is None:
-			raise Exception('I need a class')
-		for_type = klass.rule_type
+		for_type = klass.rule_type if klass else None
 		if not for_type:
 			raise Exception('I need a class with a rule_type')
 		if for_type in cls.matcher_classes:		# could check if class is different to fail gracefully on double-imports
@@ -193,13 +249,14 @@ class TargetProfileRuleMatcher():
 	def __init__(self, rule):
 		self.rule = rule
 	
-	def matches(self, patient):
-		""" Performs the matching logic, returning True if the patient meets
-		the criteria and False otherwise, meaning she fails to qualify for the
-		trial.
+	def test(self, patient):
+		""" Performs the matching logic, returning a TrialMatchTest describing
+		if the patient meets the criteria.
+		
+		:returns: TrialMatchTest instance describing the test outcome
 		"""
-		return True
-	
+		return TrialMatchTest.unsure(self.rule.description)
+
 
 class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'gender'
@@ -219,19 +276,24 @@ class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
 	"""
 	rule_type = 'diagnosis'
 	
-	def matches(self, patient):
+	def test(self, patient):
 		include = self.rule.include
 		
 		# compare SNOMED-CT codes
-		if 'snomed' == self.rule.diagnosis.system:
+		if 'snomedct' == self.rule.diagnosis.system:
 			code = self.rule.diagnosis.code
 			for condition in patient.conditions:
 				if code == condition.snomed:
-					return include
+					if include:
+						return TrialMatchTest.passed(self.rule.description)
+					return TrialMatchTest.failed(self.rule.description, condition.summary)
 		else:
 			logging.debug('I cannot match to diagnoses of type "{}"'.format(self.rule.diagnosis.system))
 		
-		return False if include else True
+		# no documentation of the patient having the condition
+		if include:
+			return TrialMatchTest.failed(self.rule.description, 'patient.conditions')
+		return TrialMatchTest.passed(self.rule.description)
 
 
 class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):

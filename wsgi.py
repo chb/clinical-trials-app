@@ -209,7 +209,7 @@ def find():
 	found = finder.find(request.args)
 	
 	results = []
-	for result in trialmatcher.match(found, patient):
+	for result in trialmatcher.match(patient, found):
 		results.append(result.for_api())
 	
 	return jsonify({'results': results or []})
