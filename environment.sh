@@ -13,5 +13,10 @@ export SMART_REDIRECT="http://localhost:8000/fhir-app/"
 # LillyCOI API key (base64 encoded "key:secret" string)
 export LILLY_SECRET=
 
-# Google Maps API key
-export GOOGLE_API_KEY=
+# Mongo params; leave host/port/db empty for default localhost connection
+export MONGO_HOST=
+export MONGO_PORT=
+export MONGO_DB=
+export MONGO_USER=
+export MONGO_PASS=
+export MONGO_BUCKET=

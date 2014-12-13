@@ -93,7 +93,7 @@ header {
 	margin: 0 auto;
 	background-color: white;
 	
-	@media screen and (min-width: 72em) {
+	@media screen and (min-width: 64em) {
 		border: 1px solid $col-border; border-width: 0 1px;
 	}	
 }

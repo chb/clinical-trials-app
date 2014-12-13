@@ -11,7 +11,7 @@ import codecs
 from datetime import datetime
 
 # flask
-from flask import Flask, request, redirect, render_template, session, jsonify, send_from_directory
+from flask import Flask, request, redirect, render_template, abort, session, jsonify, send_from_directory
 
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
@@ -29,10 +29,11 @@ import py.smartclient.fhirclient.client as smart
 # App
 from py.trialpatient import TrialPatient
 from py.trialfinder import TrialFinder
-from py.targettrial import TargetTrial
+from py.targettrial import TargetTrial, TargetTrialInfo
 from py.trialmatcher import *
 from py.clinicaltrials.lillyserver import LillyV2Server
 from py.localutils import LocalTrialServer, LocalJSONCache
+from py.clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
 
@@ -42,19 +43,9 @@ tpdir = os.path.join('sarah-cannon-pilot', 'breast-target-profiles', 'JSON')
 LocalTrialServer.profile_cache = LocalJSONCache(tpdir)
 LocalTrialServer.profile_cache.can_write = False
 
-# Trial Server
-trialserver = None
-if LILLY_SECRET is not None:
-	trialserver = LillyV2Server(LILLY_SECRET)
-trialserver = LocalTrialServer('sarah-cannon-pilot/breast-target-profiles/JSON/', trialserver)
-
-# Trial Matcher
-trialmatcher = TrialSerialMatcher()
-trialmatcher.modules = [
-	TrialGenderMatcher(),
-	TrialAgeMatcher(),
-	TrialProfileMatcher(),
-]
+# Local Storage
+jsonserver = MongoServer()
+TargetTrialInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 
 
 # MARK: Utilities
@@ -204,15 +195,44 @@ def find():
 		logging.info("Trying to find trials for a patient without authorized smart client")
 		return 401
 	
+	# find trials
+	trialserver = None
+	if LILLY_SECRET is not None:
+		trialserver = LillyV2Server(LILLY_SECRET)
+	trialserver = LocalTrialServer('sarah-cannon-pilot/breast-target-profiles/JSON/', trialserver)
+	
 	finder = TrialFinder(trialserver, trial_class=TargetTrial)
 	#finder.fetch_all = False
 	found = finder.find(request.args)
 	
+	# match trials
+	trialmatcher = TrialSerialMatcher()
+	trialmatcher.modules = [
+		TrialGenderMatcher(),
+		TrialAgeMatcher(),
+		TrialProfileMatcher(),
+	]
 	results = []
 	for result in trialmatcher.match(patient, found):
 		results.append(result.for_api())
 	
 	return jsonify({'results': results or []})
+
+@app.route('/trials/<trial_id>/info', methods=['GET', 'PUT'])
+def trial_info(trial_id):
+	trial = TargetTrial(trial_id)
+	
+	# check method
+	if 'PUT' == request.method:
+		if request.json is None:
+			abort(400)
+		trial.set_local_info(request.json)
+	
+	# check if trial info exists
+	if trial.trial_info is None:
+		abort(404)
+	
+	return jsonify({'trial': trial.trial_info.for_api()})
 
 
 # MARK: Enrolling
