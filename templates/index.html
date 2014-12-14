@@ -87,7 +87,19 @@
 			
 			<script type="text/mustache" id="trial_tmpl">
 				<div class="trial">
-					<h3>{{ trial.title }}{{#trial.score}} ({{ . }}){{/}}</h3>
+					{{#trial.editing}}
+					<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
+					<button type="reset" can-click="trial.edit">Cancel</button>
+					<button type="submit" can-click="trial.save">Save Changes</button>
+					<div class="supplement"><i>Original:</i> {{ trial.title }}</div>
+					{{/}}
+					{{^trial.editing}}
+					<h3 class="title">
+						{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}
+						{{#trial.canEdit}}<button class="edit_trial" can-click="trial.edit">Edit Trial</a>{{/}}
+					</h3>
+					{{/}}
+					
 					<p class="supplement">
 						<span class="phases">{{ trial.phasesFormatted }}</span>
 						{{#trial.source}}<span class="source">{{ . }}</span>{{/}}
@@ -95,6 +107,13 @@
 					</p>
 					
 					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
+					
+					{{#trial.editing}}
+					<textarea id="edit_notes" name="edit_notes" class="notes" rows="5", cols="30">{{ trial.info.notes }}</textarea>
+					{{/}}
+					{{^trial.editing}}{{#trial.info.notes}}
+					<p class="notes">{{ . }}</p>
+					{{/}}{{/}}
 					
 					{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
 					

@@ -220,6 +220,8 @@ def find():
 
 @app.route('/trials/<trial_id>/info', methods=['GET', 'PUT'])
 def trial_info(trial_id):
+	""" "PUT" will update the trial info for the given trial.
+	"""
 	trial = TargetTrial(trial_id)
 	
 	# check method

@@ -27,6 +27,8 @@ class TargetTrial(clintrial.Trial):
 		js = super().for_api()
 		if self.score is not None:
 			js['score'] = self.score
+		if self.trial_info is not None:
+			js['info'] = self.trial_info.for_api()
 		return js
 	
 	

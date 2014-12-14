@@ -28,6 +28,9 @@ var Trial = can.Model.extend({
 	phases: null,
 	
 	init: function(json) {
+		this.attr('canEdit', true);
+		this.updateFromInfo(json.info)
+		
 		if (this.phases) {
 			this.attr('phasesFormatted', $.makeArray(this.phases).sort().join(', '));
 		}
@@ -49,5 +52,45 @@ var Trial = can.Model.extend({
 				}
 			}
 		}
+	},
+	
+	
+	// MARK: Local Trial Info
+	
+	updateFromInfo: function(info) {
+		this.attr('mainTitle', (info && info.title) ? info.title : this.title);
+	},
+	
+	edit: function() {
+		this.attr('editing', !this.attr('editing'));
+	},
+	
+	allowEditing: function(flag) {
+		this.attr('canEdit', flag);
+	},
+	
+	save: function() {
+		if (!this.attr('editing')) {
+			alert("Not currently editing this trial");
+			return;
+		}
+		
+		// save values
+		var self = this;
+		this.allowEditing(false);
+		$.putJSON('trials/' + this._id + '/info', {
+			'title': $('#edit_title').val(),
+			'notes': $('#edit_notes').val(),
+		})
+		.done(function(json, status, xhr) {
+			self.updateFromInfo(json ? json.trial : null);
+			self.allowEditing(true);
+		})
+		.fail(function(xhr, status, error) {
+			console.log('FAILED to save trial:', status, error);
+			alert("Failed to save trial info: " + error);
+			self.allowEditing(true);
+		});
+		this.edit();
 	},
 });

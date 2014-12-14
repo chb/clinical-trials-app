@@ -159,6 +159,14 @@ ul.trial_list {
 }
 
 .trial {
+	.title {
+		.edit_trial {
+			float: right;
+		}
+	}
+	input[type="text"].title {
+		width: 80%;
+	}
 	.source {
 		font-style: italic;
 	}

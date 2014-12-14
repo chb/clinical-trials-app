@@ -24,6 +24,19 @@ function initApp() {
 }
 
 
+jQuery.extend({
+	putJSON: function(url, data) {
+		return $.ajax({
+			type: 'PUT',
+			url: url,
+			contentType: 'application/json',
+			data: JSON.stringify(data),
+			dataType: 'json',
+		});
+	}
+});
+
+
 /*
  *  ----------------------------
  *  Extending Array capabilities
