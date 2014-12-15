@@ -105,6 +105,17 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 0
 		},
+	"\/js\/TrialEditor.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/TrialEditor.js",
+		"outputAbbreviatedPath": "\/static\/TrialEditor.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 0
+		},
 	"\/js\/TrialFinder.js": {
 		"fileType": 64,
 		"ignore": 1,
@@ -248,6 +259,12 @@
 			"followForSyntaxChecking": 1,
 			"linkedFileAbbreviatedPath": "\/js\/Trial.js",
 			"position": 4,
+			"type": 1
+			},
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/js\/TrialEditor.js",
+			"position": 5,
 			"type": 1
 			}
 		]

@@ -124,9 +124,12 @@ ul.trial_list > li h1 { text-align: center; }
 .phases + .source:before, .source + .condition:before, .phases + .condition:before { content: " – "; }
 
 .trial .title .edit_trial { float: right; }
-.trial input[type="text"].title { width: 80%; }
+.trial input[type="text"].title { width: 80%; font-size: 1.1em; }
 .trial .source { font-style: italic; }
 .trial .condition { font-weight: bold; }
+.trial .notes { margin: 0.5em 0; padding: 0.5em; background-color: #f2f2f2; }
+.trial p.notes { border-left: 0.5em solid #c8c8c8; }
+.trial textarea.notes { width: 80%; padding: 0.2em 0.4em; font-size: 1em; border-color: #c8c8c8; }
 .trial .trial_location { float: right; max-width: 16em; margin: 0 0 1.5em 1.5em; padding: 0.75em; vertical-align: top; text-align: center; border-radius: 3pt; background: #f2f2f2; }
 .trial .trial_location .loc_distance { color: rgba(0, 0, 0, 0.4); font-size: 0.9em; }
 .trial .trial_location .loc_city { font-weight: bold; }

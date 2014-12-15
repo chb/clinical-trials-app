@@ -1,5 +1,5 @@
 /**
- *  An object encapsulating trial search results.
+ *  An object encapsulating matching results for one trial.
  */
 var TrialResult = can.Model.extend(
 {
@@ -18,13 +18,6 @@ var TrialResult = can.Model.extend(
 	},
 },
 {
-	trial: null,
-	tests: null,
-	
-	shown: false,
-	shownForInterventions: false,
-	shownForPhases: false,
-	
 	init: function(json) {
 		this.attr('trial', new Trial(json.trial));
 		this.attr('tests', new TrialResultTest.fromJSON(json.tests))

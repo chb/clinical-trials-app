@@ -78,7 +78,7 @@
 				{{#numShownTitle}}<h2>{{ . }}</h2>{{/}}
 				<ul id="trial_list" class="trial_list">
 				{{#results}}
-					<li {{ data 'trial' }}{{^shown}} style="display:none;"{{/}}>{{>"trial_tmpl"}}</li>
+					<li{{^shown}} style="display:none;"{{/}}>{{>"trial_tmpl"}}</li>
 				{{/}}
 				</ul>
 			</div>
@@ -89,14 +89,14 @@
 				<div class="trial">
 					{{#trial.editing}}
 					<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
-					<button type="reset" can-click="trial.edit">Cancel</button>
+					<button type="reset" can-click="trial.cancel">Cancel</button>
 					<button type="submit" can-click="trial.save">Save Changes</button>
-					<div class="supplement"><i>Original:</i> {{ trial.title }}</div>
+					<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
 					{{/}}
 					{{^trial.editing}}
 					<h3 class="title">
-						{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}
 						{{#trial.canEdit}}<button class="edit_trial" can-click="trial.edit">Edit Trial</a>{{/}}
+						{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}
 					</h3>
 					{{/}}
 					
@@ -109,10 +109,10 @@
 					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
 					
 					{{#trial.editing}}
-					<textarea id="edit_notes" name="edit_notes" class="notes" rows="5", cols="30">{{ trial.info.notes }}</textarea>
+					<textarea id="edit_notes" name="edit_notes" class="notes" rows="5" cols="30" placeholder="Notes">{{ trial.info.notes.raw }}</textarea>
 					{{/}}
 					{{^trial.editing}}{{#trial.info.notes}}
-					<p class="notes">{{ . }}</p>
+					<p class="notes">{{{ html }}}</p>
 					{{/}}{{/}}
 					
 					{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
@@ -123,11 +123,11 @@
 							Keywords: {{#trial.keyword}}<span class="keyword">{{ . }}</span>{{/}}{{^trial.keyword}}none{{/}}
 						</div>
 						
-						{{#if trial.primary_outcome}}<div>
+						{{#trial.primary_outcome}}<div>
 							<h4>Primary Outcome</h4>
 							<ul>{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
 						</div>{{/}}
-						{{#if trial.secondary_outcome}}<div>
+						{{#trial.secondary_outcome}}<div>
 							<h4>Secondary Outcome</h4>
 							<ul>{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
 						</div>{{/}}

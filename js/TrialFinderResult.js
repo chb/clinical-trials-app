@@ -20,7 +20,6 @@ var TrialFinderResult = can.Model.extend({
 	// `interventions` and `phases` are TrialGroupable subclasses
 	interventions: null,
 	phases: null,
-	showPhases: false,
 	
 	/** Instantiate from an array of results. */
 	init: function(json) {

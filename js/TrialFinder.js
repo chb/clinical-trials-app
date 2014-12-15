@@ -4,8 +4,6 @@
 var TrialFinder = can.Model.extend({
 },
 {
-	status: null,
-	error: null,
 	patient: null,
 	
 	// the result object is a `TrialFinderResult` instance
@@ -25,7 +23,8 @@ var TrialFinder = can.Model.extend({
 			if ('success' == message) {
 				self.attr('status', "Sorting...");
 				if (json) {
-					self.attr('result', new TrialFinderResult(json));
+					var result = new TrialFinderResult(json);
+					self.attr('result', result);
 					self.attr('complete', true);
 				}
 			}
@@ -34,7 +33,5 @@ var TrialFinder = can.Model.extend({
 			}
 			self.attr('status', null);
 		});
-		
-		// TODO: hide problem list
 	},
 });

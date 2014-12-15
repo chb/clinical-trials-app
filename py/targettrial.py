@@ -3,6 +3,7 @@
 
 import os
 import json
+import markdown
 
 import clinicaltrials.trial as clintrial
 import clinicaltrials.lillyserver as lillysrv
@@ -47,5 +48,14 @@ class TargetTrial(clintrial.Trial):
 
 
 class TargetTrialInfo(jsondoc.JSONDocument):
-	 def __init__(self, ident, json=None):
-	 	super().__init__(ident, 'trial-info', json)
+	def __init__(self, ident, json=None):
+		super().__init__(ident, 'trial-info', json)
+	
+	def for_api(self):
+		js = super().for_api()
+		if self.notes:
+			js['notes'] = {
+				'raw': self.notes,
+				'html': markdown.markdown(self.notes),
+			}
+		return js

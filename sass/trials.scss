@@ -166,12 +166,26 @@ ul.trial_list {
 	}
 	input[type="text"].title {
 		width: 80%;
+		font-size: 1.1em;
 	}
 	.source {
 		font-style: italic;
 	}
 	.condition {
 		font-weight: bold;
+	}
+	
+	.notes {
+		margin: 0.5em 0; padding: 0.5em;
+		background-color: $col-bg;
+	}
+	p.notes {
+		border-left: 0.5em solid $col-border;
+	}
+	textarea.notes {
+		width: 80%; padding: 0.2em 0.4em;
+		font-size: 1em;
+		border-color: $col-border;
 	}
 	
 	.trial_location {
