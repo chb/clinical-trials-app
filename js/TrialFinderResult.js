@@ -14,6 +14,9 @@ var TrialFinderResult = can.Model.extend({
 },
 {
 	results: null,
+	numSuggested: "~",
+	numEligible: "~",
+	numIneligible: "~",
 	numShown: 0,
 	numShownTitle: null,		// cannot check for "numShown == 1" in Mustache
 	
@@ -29,8 +32,26 @@ var TrialFinderResult = can.Model.extend({
 		
 		// fill properties
 		this.attr('results', TrialResult.fromJSON(json['results']));
+		this.countResults();
 		this.collectInterventions();
 		this.collectPhases();
+	},
+	
+	countResults: function() {
+		var sugg = 0;
+		var elig = 0;
+		var inelig = 0;
+		for (var i = 0; i < this.results.length; i++) {
+			if (this.results[i].hasFail()) {
+				inelig++;
+			}
+			else {
+				elig++;
+			}
+		}
+		this.attr('numSuggested', sugg);
+		this.attr('numEligible', elig);
+		this.attr('numIneligible', inelig);
 	},
 	
 	/** Updates the `shown` property on the result instances. */

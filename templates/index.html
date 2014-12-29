@@ -24,8 +24,46 @@
 			
 			{#- Trial list item template #}
 			<script type="text/mustache" id="app_tmpl">{% raw %}
-			{{#finder.patient}}
-			{{>"//templates/demographics.ro.mustache.html"}}
+			{{#finder.patient.full_name}}
+			<h1>Trials for {{ . }}</h1>
+			{{/}}
+			{{^finder.patient.full_name}}
+			<h1>Trial Eligibility</h1>
+			{{/}}
+			
+			<div id="overview">
+				{{#finder.patient}}
+				{{>"//templates/demographics.ro.mustache.html"}}
+				{{/}}
+				
+				<div id="status">
+					<div class="suggested">
+						<em>{{#finder.result}}{{ numSuggested }}{{/}}{{^finder.result}}~{{/}}</em>
+						<p>Suggested</p>
+					</div>
+					<div class="eligible">
+						<em>{{#finder.result}}{{ numEligible }}{{/}}{{^finder.result}}~{{/}}</em>
+						<p>Eligible</p>
+					</div>
+					<div class="ineligible">
+						<em>{{#finder.result}}{{ numIneligible }}{{/}}{{^finder.result}}~{{/}}</em>
+						<p>Not Eligible</p>
+					</div>
+				</div>
+			</div>
+			
+			{{#finder.patient.hasConditions}}
+			<div id="patient_problems">
+				<h2 class="hide_next" onclick="$(this).toggleClass('hide_next')">Conditions</h2>
+				<ul id="problem_list">
+					{{#finder.patient.conditions}}
+					<li>
+						<span class="problem_name">{{ summary }}</span>
+						<span class="supplement">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</span>
+					</li>
+					{{/}}
+				</ul>
+			</div>
 			{{/}}
 			
 			{{#finder.status}}

@@ -28,6 +28,19 @@ var TrialResult = can.Model.extend(
 		this.bind('shownForPhases', function(ev, newVal, oldVal) {
 			this.attr('shown', newVal && this.shownForInterventions);
 		});
+	},
+	
+	/** Returns true if at least one test's status is "fail". */
+	hasFail: function() {
+		var tests = this.attr('tests');
+		if (tests) {
+			for (var i = 0; i < tests.length; i++) {
+				if ('fail' == tests[i].status) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 });
 

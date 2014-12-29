@@ -19,14 +19,14 @@ $col-border-inactive:	rgb(185,185,185);
 
 $col-bg:				rgb(242,242,242);
 $col-boxbg:				$col-bg;
-$col-redbg:				rgb(200,30,20);
-$col-greenbg:			rgb(160,255,110);
+$col-redbg:				rgb(255,125,125);
+$col-greenbg:			rgb(168,255,126);
+$col-bluebg:			rgb(125,212,255);
 $col-note:				rgb(255,255,200);
 $col-red:				#A00;
 $col-green:				#1A0;
 
-$border-radius:			2pt;
-$border-boxradius:		3pt;
+$border-radius:			3pt;
 
 
 html, body {
@@ -100,6 +100,50 @@ header {
 
 #content {
 	padding: 1em 3em 2em;
+}
+
+#overview {
+	@include display(flex);
+	@include align-items(stretch);
+	@include flex-direction(row);
+	
+	& > div {
+		@include flex(1);
+	}
+	#status {
+		@include flex(1.2);
+		
+		@include display(flex);
+		@include align-items(stretch);
+		@include flex-direction(row);
+		
+		& > div {
+			@include flex(1);
+			margin: 0 0 0 2em; padding: 1em 0.75em 0.75em;
+			text-align: center;
+			border-radius: 2pt; background-color: $col-boxbg;
+			
+			&:first-of-type {
+				margin-left: 0;
+			}
+			em {
+				font-size: 1.9em; font-style: normal; font-weight: 300;
+			}
+			p {
+				margin-top: 0.25em;
+				color: rgba(0,0,0,0.75);
+			}
+		}
+		.suggested {
+			background-color: $col-greenbg;
+		}
+		.eligible {
+			background-color: $col-bluebg;
+		}
+		.ineligible {
+			background-color: $col-redbg;
+		}
+	}
 }
 
 #footer {
@@ -179,6 +223,18 @@ div.supplement {
 .toggle {
 	cursor: pointer;
 	color: $col-link;
+}
+
+.hide_next {
+	&::after, &:after {
+		content: "(click to show)";
+		margin-left: 0.75em;
+		color: $col-faded; font-size: 0.75em;
+	}
+	
+	& + * {
+		display: none;
+	}
 }
 	
 span.tag {

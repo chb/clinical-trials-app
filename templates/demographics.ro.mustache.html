@@ -1,11 +1,4 @@
 <div id="demographics">
-	{{#full_name}}
-	<h1>Trials for {{ . }}</h1>
-	{{/}}
-	{{^full_name}}
-	<h1>Trial Eligibility</h1>
-	{{/}}
-	
 	<div class="patient_portrait"></div>
 	
 	<div class="demo_row">
@@ -19,17 +12,3 @@
 		{{#location}}{{ . }}{{#country}}, {{/}}{{/}}{{#country}}{{ . }}{{/}}
 	</div>
 </div>
-
-{{#hasConditions}}
-<div id="patient_problems">
-	<h2 onclick="$('#problem_list').toggle()">Conditions</h2>
-	<ul id="problem_list">
-		{{#conditions}}
-		<li>
-			<span class="problem_name">{{ summary }}</span>
-			<span class="supplement">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</span>
-		</li>
-		{{/}}
-	</ul>
-</div>
-{{/}}
