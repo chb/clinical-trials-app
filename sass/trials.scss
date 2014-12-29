@@ -50,10 +50,6 @@
 	float: left;
 	width: 50%;
 	line-height: 1.6;
-	
-	h2 {
-		margin: 1em 0 0.5em;
-	}
 }
 
 ul.trial_selector, .trial_opt_selector ul {
@@ -164,6 +160,19 @@ ul.trial_list {
 			float: right;
 		}
 	}
+	&.suggested .title {
+		margin-left: -1.25em; padding-left: 0.75em;
+		border-left: 0.5em solid $col-greenbg;
+	}
+	&.eligible .title {
+		margin-left: -1.25em; padding-left: 0.75em;
+		border-left: 0.5em solid $col-bluebg;
+	}
+	&.ineligible .title {
+		margin-left: -1.25em; padding-left: 0.75em;
+		border-left: 0.5em solid $col-redbg;
+	}
+	
 	input[type="text"].title {
 		width: 80%;
 		font-size: 1.1em;
@@ -176,11 +185,11 @@ ul.trial_list {
 	}
 	
 	.notes {
-		margin: 0.5em 0; padding: 0.5em;
+		margin: 1em 0; padding: 1em;
 		background-color: $col-bg;
 	}
 	p.notes {
-		border-left: 0.5em solid $col-border;
+		// border-left: 0.5em solid $col-border;
 	}
 	textarea.notes {
 		width: 80%; padding: 0.2em 0.4em;
@@ -229,6 +238,10 @@ ul.trial_list {
 		}
 	}
 	
+	.tests {
+		margin-top: 0.5em;
+	}
+	
 	.criteria {
 		margin-top: 0.5em;
 		
@@ -246,14 +259,18 @@ ul.trial_list {
 	}
 	
 	.exclusion_reason {
-		display: block; margin-top: 0.3em;
+		display: none; margin-top: 0.3em;
 		font-size: 10pt; color: #F90;
 		&.pass {
 			color: $col-green;
 		}
 		&.fail {
+			display: block;
 			color: $col-red;
 		}
+	}
+	.show_all .exclusion_reason {
+		display: block;
 	}
 }
 

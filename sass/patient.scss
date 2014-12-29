@@ -42,7 +42,7 @@
 	
 	.demo_birthday {
 		margin-left: 1em;
-		font-size: 0.833em;
+		font-size: 0.769em;
 	}
 	
 	#select_female, #select_male {
@@ -72,12 +72,7 @@
 
 #patient_problems {
 	clear: left;
-	padding-top: 2.5em;
-	
-	h2 {
-		margin-top: 0;
-		cursor: pointer;
-	}
+	padding-top: 1.25em;
 }
 
 ul#problem_list {

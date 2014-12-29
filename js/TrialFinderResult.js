@@ -14,8 +14,11 @@ var TrialFinderResult = can.Model.extend({
 },
 {
 	results: null,
+	showSuggested: true,
 	numSuggested: "~",
+	showEligible: true,
 	numEligible: "~",
+	showIneligible: false,
 	numIneligible: "~",
 	numShown: 0,
 	numShownTitle: null,		// cannot check for "numShown == 1" in Mustache
@@ -35,6 +38,7 @@ var TrialFinderResult = can.Model.extend({
 		this.countResults();
 		this.collectInterventions();
 		this.collectPhases();
+		this.updateTrialShownState();
 	},
 	
 	countResults: function() {
@@ -42,7 +46,7 @@ var TrialFinderResult = can.Model.extend({
 		var elig = 0;
 		var inelig = 0;
 		for (var i = 0; i < this.results.length; i++) {
-			if (this.results[i].hasFail()) {
+			if ('ineligible' == this.results[i].overallStatus()) {
 				inelig++;
 			}
 			else {
@@ -52,70 +56,6 @@ var TrialFinderResult = can.Model.extend({
 		this.attr('numSuggested', sugg);
 		this.attr('numEligible', elig);
 		this.attr('numIneligible', inelig);
-	},
-	
-	/** Updates the `shown` property on the result instances. */
-	updateTrialShownState: function() {
-		var shownIntv = $.map(this.interventions, function(item, idx) {
-			return item.active ? item.name : null;
-		});
-		var shownPhs = $.map(this.phases, function(item, idx) {
-			return item.active ? item.name : null;
-		});
-		
-		var num = {};
-		var shown = 0;
-		for (var i = 0; i < this.results.length; i++) {
-			var result = this.results[i];
-			result.attr('shownForInterventions', false);
-			result.attr('shownForPhases', false);
-			var trial = result.trial;
-			
-			// update shown status based on interventions 
-			if (trial && trial.interventions) {
-				for (var j = 0; j < trial.interventions.length; j++) {
-					var inter = trial.interventions[j];
-					inter = inter in _intervention_map ? _intervention_map[inter] : inter;
-					
-					if (shownIntv.indexOf(inter) >= 0) {
-						result.attr('shownForInterventions', true);
-					}
-				}
-			}
-			
-			// update shown status based on phase
-			if (trial && trial.phases) {
-				for (var j = 0; j < trial.phases.length; j++) {
-					var phase = trial.phases[j];
-					result.attr('shownForPhases', result.shownForPhases || shownPhs.indexOf(phase) >= 0);
-					
-					if (result.shownForInterventions) {
-						var exist = num[phase] || 0;
-						num[phase] = exist + 1;
-					}
-				}
-			}
-			
-			// count
-			if (result.attr('shown')) {
-				shown++;
-			}
-		}
-		this.attr('numShown', shown);
-		if (shown > 1) {
-			this.attr('numShownTitle', shown + " Trials");
-		}
-		else {
-			this.attr('numShownTitle', (shown > 0) ? "1 Trial" : null);
-		}
-		
-		// update phase counts
-		for (var i = 0; i < this.phases.length; i++) {
-			var phase = this.phases[i];
-			phase.attr('numMatches', num[phase.name] || 0);
-		};
-		
-		this.attr('showPhases', shownIntv.length > 0);
 	},
 	
 	/** Collect interventions from all the trials into a unique Array. */
@@ -147,7 +87,6 @@ var TrialFinderResult = can.Model.extend({
 						assoc[inter] = exist;
 						arr.push(exist);
 					}
-					exist.addMatch();
 				}
 			}
 		}
@@ -183,6 +122,115 @@ var TrialFinderResult = can.Model.extend({
 		}
 		
 		this.attr('phases', arr.sort(TrialGroupable.sortByName));
+	},
+	
+	
+	toggleShowSuggested: function() {
+		this.attr('showSuggested', !this.showSuggested);
+		this.updateTrialShownState();
+	},
+	
+	toggleShowEligible: function() {
+		this.attr('showEligible', !this.showEligible);
+		this.updateTrialShownState();
+	},
+	
+	toggleShowIneligible: function() {
+		this.attr('showIneligible', !this.showIneligible);
+		this.updateTrialShownState();
+	},
+	
+	/** Updates the `shownForXY` property on the result instances. */
+	updateTrialShownState: function() {
+		var shownIntv = $.map(this.interventions, function(item, idx) {
+			return item.active ? item.name : null;
+		});
+		var shownPhs = $.map(this.phases, function(item, idx) {
+			return item.active ? item.name : null;
+		});
+		
+		var numInterventions = {};
+		var numPhases = {};
+		var showPhases = false;
+		var shown = 0;
+		for (var i = 0; i < this.results.length; i++) {
+			var result = this.results[i];
+			result.attr('shownForInterventions', false);
+			result.attr('shownForPhases', false);
+			var trial = result.trial;
+			
+			// update shown status based on eligibility status
+			if (trial && trial.status) {
+				if ('suggested' == trial.status) {
+					result.attr('shownForStatus', this.showSuggested);
+				}
+				else if ('eligible' == trial.status) {
+					result.attr('shownForStatus', this.showEligible);
+				}
+				else if ('ineligible' == trial.status) {
+					result.attr('shownForStatus', this.showIneligible);
+				}
+				else {
+					console.warn('Trial has an unknown status:', trial.status);
+					result.attr('shownForStatus', true);
+				}
+			}
+			else {
+				console.error('No trial status, or worse: no trial', trial, trial ? trial.status : undefined);
+			}
+			
+			// update shown status based on interventions 
+			if (trial && trial.interventions) {
+				for (var j = 0; j < trial.interventions.length; j++) {
+					var inter = trial.interventions[j];
+					inter = inter in _intervention_map ? _intervention_map[inter] : inter;
+					result.attr('shownForInterventions', result.shownForInterventions || shownIntv.indexOf(inter) >= 0);
+					
+					if (result.shownForStatus) {
+						var exist = numInterventions[inter] || 0;
+						numInterventions[inter] = exist + 1;
+					}
+				}
+			}
+			
+			// update shown status based on phase
+			if (trial && trial.phases) {
+				for (var j = 0; j < trial.phases.length; j++) {
+					var phase = trial.phases[j];
+					result.attr('shownForPhases', result.shownForPhases || shownPhs.indexOf(phase) >= 0);
+					
+					if (result.shownForStatus && result.shownForInterventions) {
+						var exist = numPhases[phase] || 0;
+						numPhases[phase] = exist + 1;
+						showPhases = true;
+					}
+				}
+			}
+			
+			// count
+			if (result.shown) {
+				shown++;
+			}
+		}
+		this.attr('numShown', shown);
+		if (shown > 1) {
+			this.attr('numShownTitle', shown + " Trials");
+		}
+		else {
+			this.attr('numShownTitle', (shown > 0) ? "1 Trial" : null);
+		}
+		
+		// update intervention and phase counts
+		for (var i = 0; i < this.interventions.length; i++) {
+			var intervention = this.interventions[i];
+			intervention.attr('numMatches', numInterventions[intervention.name] || 0);
+		}
+		for (var i = 0; i < this.phases.length; i++) {
+			var phase = this.phases[i];
+			phase.attr('numMatches', numPhases[phase.name] || 0);
+		}
+		
+		this.attr('showPhases', showPhases);
 	},
 });
 

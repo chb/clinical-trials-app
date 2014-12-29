@@ -37,15 +37,15 @@
 				{{/}}
 				
 				<div id="status">
-					<div class="suggested">
+					<div class="suggested{{^finder.result.showSuggested}} inactive{{/}}" can-click="finder.result.toggleShowSuggested">
 						<em>{{#finder.result}}{{ numSuggested }}{{/}}{{^finder.result}}~{{/}}</em>
 						<p>Suggested</p>
 					</div>
-					<div class="eligible">
+					<div class="eligible{{^finder.result.showEligible}} inactive{{/}}" can-click="finder.result.toggleShowEligible">
 						<em>{{#finder.result}}{{ numEligible }}{{/}}{{^finder.result}}~{{/}}</em>
 						<p>Eligible</p>
 					</div>
-					<div class="ineligible">
+					<div class="ineligible{{^finder.result.showIneligible}} inactive{{/}}" can-click="finder.result.toggleShowIneligible">
 						<em>{{#finder.result}}{{ numIneligible }}{{/}}{{^finder.result}}~{{/}}</em>
 						<p>Not Eligible</p>
 					</div>
@@ -124,7 +124,7 @@
 			</script>
 			
 			<script type="text/mustache" id="trial_tmpl">
-				<div class="trial">
+				<div class="trial {{ trial.status }}">
 					{{#trial.editing}}
 					<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
 					<button type="reset" can-click="trial.cancel">Cancel</button>
@@ -153,10 +153,8 @@
 					<p class="notes">{{{ html }}}</p>
 					{{/}}{{/}}
 					
-					{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
-					
 					<div class="details">
-						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Details</strong>
+						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Trial Details</strong>
 						<div class="supplement">
 							Keywords: {{#trial.keyword}}<span class="keyword">{{ . }}</span>{{/}}{{^trial.keyword}}none{{/}}
 						</div>
@@ -175,9 +173,16 @@
 						{{/}}
 					</div>
 					
+					{{#hasTests}}
+					<div class="tests">
+						<strong class="toggle" onclick="$(this).parent().toggleClass('show_all')">Eligibility Tests</strong>
+						{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
+					</div>
+					{{/}}
+					
 					{{#trial.eligibility}}
 					<div class="criteria">
-						<strong class="toggle" onclick="$(this).next().toggle()">Eligibility</strong>
+						<strong class="toggle" onclick="$(this).next().toggle()">Eligibility Criteria</strong>
 						<p class="formatted_criteria" style="display:none;">
 							{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
 							{{{ html }}}

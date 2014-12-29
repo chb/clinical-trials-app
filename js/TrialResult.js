@@ -19,28 +19,35 @@ var TrialResult = can.Model.extend(
 },
 {
 	init: function(json) {
-		this.attr('trial', new Trial(json.trial));
-		this.attr('tests', new TrialResultTest.fromJSON(json.tests))
+		this.attr('tests', new TrialResultTest.fromJSON(json.tests));
+		this.attr('hasTests', this.tests && this.tests.length > 0);
 		
+		var trial = new Trial(json.trial);
+		trial.attr('status', this.overallStatus());
+		this.attr('trial', trial);
+		
+		this.bind('shownForStatus', function(ev, newVal, oldVal) {
+			this.attr('shown', newVal && this.shownForInterventions && this.shownForPhases)
+		});
 		this.bind('shownForInterventions', function(ev, newVal, oldVal) {
-			this.attr('shown', newVal && this.shownForPhases);
+			this.attr('shown', newVal && this.shownForStatus && this.shownForPhases);
 		});
 		this.bind('shownForPhases', function(ev, newVal, oldVal) {
-			this.attr('shown', newVal && this.shownForInterventions);
+			this.attr('shown', newVal && this.shownForStatus && this.shownForInterventions);
 		});
 	},
 	
 	/** Returns true if at least one test's status is "fail". */
-	hasFail: function() {
-		var tests = this.attr('tests');
-		if (tests) {
-			for (var i = 0; i < tests.length; i++) {
-				if ('fail' == tests[i].status) {
-					return true;
+	overallStatus: function() {
+		// if suggested...
+		if (this.tests) {
+			for (var i = 0; i < this.tests.length; i++) {
+				if ('fail' == this.tests[i].status) {
+					return 'ineligible';
 				}
 			}
 		}
-		return false;
+		return 'eligible';
 	}
 });
 
