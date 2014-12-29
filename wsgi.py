@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import io
 import sys
 import logging
 import json
@@ -15,6 +16,7 @@ from flask import Flask, request, redirect, render_template, abort, session, jso
 
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
+USE_TEST_PATIENT = True
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 SMART_DEFAULTS = {
 	'app_id': os.environ.get('SMART_APP_ID'),
@@ -73,6 +75,15 @@ def _get_smart(iss=None, launch=None):
 def _save_smart(client):
 	session['smart_state'] = client.state
 
+def _get_patient():
+	if USE_TEST_PATIENT:
+		js = None
+		with io.open('static/patient-test.json', 'r', encoding='utf-8') as h:
+			js = json.load(h)
+		return TrialPatient('x', js)
+	
+	return TrialPatient.load_from_fhir(_get_smart())
+
 
 # MARK: Index
 
@@ -81,17 +92,18 @@ def _save_smart(client):
 def index():
 	""" The app's main page.
 	"""
-	smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
-	
-	# no patient yet, maybe need to authorize
-	if smart_client.patient is None:
-		if not smart_client.ready:
-			auth_url = smart_client.authorize_url
-			_save_smart(smart_client)
-			logging.debug('redirecting to app launch page at {}'.format(auth_url))
-			return redirect(auth_url)
+	if not USE_TEST_PATIENT:
+		smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
 		
-		return "Ready, but no patient"
+		# no patient yet, maybe need to authorize
+		if smart_client.patient is None:
+			if not smart_client.ready:
+				auth_url = smart_client.authorize_url
+				_save_smart(smart_client)
+				logging.debug('redirecting to app launch page at {}'.format(auth_url))
+				return redirect(auth_url)
+			
+			return "Ready, but no patient"
 	
 	# patient data ready
 	defs = {
@@ -176,7 +188,7 @@ def endpoints():
 def patient(id=None):
 	""" Returns the current patient's data as JSON.
 	"""
-	patient = TrialPatient.load_from_fhir(_get_smart())
+	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
 		return 401
@@ -190,7 +202,7 @@ def patient(id=None):
 def find():
 	""" Retrieve trials for the current patient.
 	"""
-	patient = TrialPatient.load_from_fhir(_get_smart())
+	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to find trials for a patient without authorized smart client")
 		return 401

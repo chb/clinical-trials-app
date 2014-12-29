@@ -1,0 +1,126 @@
+{
+    "_id": "1540505",
+    "age_years": 50,
+    "birthday": "1964-01-21",
+    "city": "Bixby",
+    "conditions": [{
+        "date_onset": "2005-03-09",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "162031009",
+        "status": "confirmed",
+        "summary": "Dyspepsia and other specified disorders of function of stomach"
+    }, {
+        "date_onset": "2005-03-09",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "13200003",
+        "status": "confirmed",
+        "summary": "Peptic ulcer without hemorrhage, without perforation AND without obstruction"
+    }, {
+        "date_onset": "2005-03-12",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "21522001",
+        "status": "confirmed",
+        "summary": "Abdominal pain"
+    }, {
+        "date_onset": "2005-03-12",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "44054006",
+        "status": "confirmed",
+        "summary": "Diabetes mellitus type 2"
+    }, {
+        "date_onset": "2005-03-25",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "301717006",
+        "status": "confirmed",
+        "summary": "Right upper quadrant pain"
+    }, {
+        "date_onset": "2005-11-20",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "29857009",
+        "status": "confirmed",
+        "summary": "Chest pain"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "14302001",
+        "status": "confirmed",
+        "summary": "Absence of menstruation"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "59455009",
+        "status": "confirmed",
+        "summary": "Acidosis"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "14760008",
+        "status": "confirmed",
+        "summary": "Constipation"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "34095006",
+        "status": "confirmed",
+        "summary": "Dehydration"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "235595009",
+        "status": "confirmed",
+        "summary": "Gastroesophageal reflux disease"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "43339004",
+        "status": "confirmed",
+        "summary": "Hypokalemia"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "25374005",
+        "status": "confirmed",
+        "summary": "Other and unspecified noninfectious gastroenteritis and colitis"
+    }, {
+        "date_onset": "2005-12-30",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "267432004",
+        "status": "confirmed",
+        "summary": "Pure hypercholesterolemia"
+    }, {
+        "date_onset": "2006-04-10",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "38341003",
+        "status": "confirmed",
+        "summary": "Essential hypertension"
+    }, {
+        "date_onset": "2006-04-10",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "25064002",
+        "status": "confirmed",
+        "summary": "Headache"
+    }
+    ],
+    "country": "USA",
+    "full_name": "Amy E. Clark",
+    "gender": "female",
+    "location": "Bixby, OK",
+    "region": "OK",
+    "type": "patient"
+}

@@ -9,13 +9,14 @@ class TrialCondition(jsondocument.JSONDocument):
 	""" Represents one of a patient's conditions.
 	"""
 	
-	def __init__(self):
+	def __init__(self, json=None):
 		self.snomed = None
 		self.date_onset = None
 		self.date_resolution = None
 		self.status = None
 		self.summary = None
 		self.notes = None
+		super().__init__(None, "condition", json)
 	
 	@classmethod
 	def from_fhir(cls, fhir_cond):

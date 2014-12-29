@@ -40,6 +40,14 @@ class TrialPatient(jsondocument.JSONDocument):
 			self.country = "United States"
 		if self.location is None:
 			self.update_location()
+		if self.conditions is not None:
+			cond = []
+			for c in self.conditions:
+				if isinstance(c, trialcondition.TrialCondition):
+					cond.append(c)
+				else:
+					cond.append(trialcondition.TrialCondition(c))
+			self.conditions = cond
 	
 	def __setattr__(self, name, value):
 		""" Overridden to perform some value generation after setting certain
