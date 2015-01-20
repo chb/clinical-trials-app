@@ -30,6 +30,7 @@ class TrialPatient(jsondocument.JSONDocument):
 	- location = city, region: string
 	
 	- conditions: [TrialCondition]
+	- trial_info: [TrialPatientInfo] (loaded from db on init)
 	"""
 	
 	def __init__(self, ident, json=None):
@@ -48,6 +49,8 @@ class TrialPatient(jsondocument.JSONDocument):
 				else:
 					cond.append(trialcondition.TrialCondition(c))
 			self.conditions = cond
+		
+		self.trial_info = TrialPatientInfo.find({'type': 'trial-patient-info', 'patient_id': ident})
 	
 	def __setattr__(self, name, value):
 		""" Overridden to perform some value generation after setting certain
@@ -63,6 +66,8 @@ class TrialPatient(jsondocument.JSONDocument):
 		js_dict = super().for_api()
 		if self.conditions is not None:
 			js_dict['conditions'] = [c.for_api() for c in self.conditions]
+		if self.trial_info is not None:
+			js_dict['trial_info'] = [i.for_api() for i in self.trial_info]
 		return js_dict
 	
 	@classmethod
@@ -97,6 +102,16 @@ class TrialPatient(jsondocument.JSONDocument):
 		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform(fpat._server)]
 		
 		return patient
+	
+	
+	# MARK: Trial Info
+	
+	def info_for_trial(self, trial_id):
+		if self.trial_info is not None:
+			for trialinfo in self.trial_info:
+				if trialinfo.trial_id == trial_id:
+					return trialinfo
+		return None
 	
 	
 	# MARK: Birthday & Age
@@ -160,3 +175,37 @@ class TrialPatient(jsondocument.JSONDocument):
 			parts.append(self.region)
 		setattr(self, 'location', ', '.join(parts) if len(parts) > 0 else None)
 	
+
+class TrialPatientInfo(jsondocument.JSONDocument):
+	""" Information linking a patient and a trial, stored by app users.
+	"""
+	def __init__(self, trial_id=None, patient_id=None, json=None):
+		if json is not None:
+			if trial_id is None:
+				trial_id = json.get('trial_id')
+			if patient_id is None:
+				patient_id = json.get('patient_id')
+		if not trial_id or not patient_id:
+			raise Exception("Need both a trial- and patient-id, have trial: {}, patient: {}"
+				.format(trial_id, patient_id))
+		
+		ident = '{}-{}'.format(trial_id, patient_id)
+		super().__init__(ident, 'trial-patient-info', json)
+		self.trial_id = trial_id
+		self.patient_id = patient_id
+	
+	def for_api(self):
+		d = {'trial_id': self.trial_id}
+		if self.suggested:
+			d['suggested'] = True
+		
+		return d
+	
+	def update_from_api(self, json):
+		d = {}
+		if 'suggested' in json:
+			d['suggested'] = True if 'true' == json['suggested'] or 1 == int(json['suggested']) else False
+		
+		self.update_with(d)
+		self.store()
+

@@ -29,7 +29,7 @@ SMART_DEFAULTS = {
 import py.smartclient.fhirclient.client as smart
 
 # App
-from py.trialpatient import TrialPatient
+from py.trialpatient import TrialPatient, TrialPatientInfo
 from py.trialfinder import TrialFinder
 from py.targettrial import TargetTrial, TargetTrialInfo
 from py.trialmatcher import *
@@ -48,6 +48,7 @@ LocalTrialServer.profile_cache.can_write = False
 # Local Storage
 jsonserver = MongoServer()
 TargetTrialInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
+TrialPatientInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 
 
 # MARK: Utilities
@@ -236,10 +237,10 @@ def trial_info(trial_id):
 	"""
 	trial = TargetTrial(trial_id)
 	
-	# check method
+	# check method and update
 	if 'PUT' == request.method:
 		if request.json is None:
-			abort(400)
+			abort(400, "No JSON document body")
 		trial.set_local_info(request.json)
 	
 	# check if trial info exists
@@ -247,6 +248,30 @@ def trial_info(trial_id):
 		abort(404)
 	
 	return jsonify({'trial': trial.trial_info.for_api()})
+
+@app.route('/trials/<trial_id>/patient/<patient_id>/info', methods=['PUT'])
+def trial_patient_info(trial_id, patient_id):
+	""" Update info concerning a trial-patient combination.
+	"""
+	if request.json is None:
+		abort(400, "No JSON document body")
+	
+	# only allow to get info about the patient this user has currently selected
+	patient = _get_patient()
+	if patient.id != patient_id:
+		logging.info("Trying to update trial-patient info for patient {} while SMART has patient {}"
+			.format(patient_id, patient.id))
+		abort(401, "You are not authorized to update trial-patient-info for patient {}"
+			.format(patient_id))
+	
+	# update data
+	info = patient.info_for_trial(trial_id)
+	if info is None:
+		info = TrialPatientInfo(trial_id, patient_id)
+	info.update_from_api(request.json)
+	
+	return jsonify(info.as_json())
+	
 
 
 # MARK: Enrolling
