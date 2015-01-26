@@ -13,6 +13,7 @@ var _intervention_map = {
 var TrialFinderResult = can.Model.extend({
 },
 {
+	patient_id: null,
 	results: null,
 	showSuggested: true,
 	numSuggested: "~",
@@ -34,7 +35,7 @@ var TrialFinderResult = can.Model.extend({
 		}
 		
 		// fill properties
-		this.attr('results', TrialResult.fromJSON(json['results']));
+		this.attr('results', TrialResult.fromJSON(json['results'], this));
 		this.countResults();
 		this.collectInterventions();
 		this.collectPhases();

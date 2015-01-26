@@ -136,20 +136,25 @@ ul.trial_list > li h1 { text-align: center; }
 
 .phases + .source:before, .source + .condition:before, .phases + .condition:before { content: " – "; }
 
-.trial .title .edit_trial { float: right; }
-.trial.suggested .title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #a8ff7e; }
-.trial.eligible .title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #7dd4ff; }
-.trial.ineligible .title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #ff7d7d; }
-.trial input[type="text"].title { width: 80%; font-size: 1.1em; }
+.trial .trial_head { display: -webkit-box; display: -moz-box; display: box; display: -webkit-flex; display: -moz-flex; display: -ms-flexbox; display: flex; -webkit-box-align: stretch; -moz-box-align: stretch; box-align: stretch; -webkit-align-items: stretch; -moz-align-items: stretch; -ms-align-items: stretch; -o-align-items: stretch; align-items: stretch; -ms-flex-align: stretch; -webkit-box-orient: horizontal; -moz-box-orient: horizontal; box-orient: horizontal; -webkit-flex-direction: row; -moz-flex-direction: row; flex-direction: row; -ms-flex-direction: row; }
+.trial .trial_head .trial_head_text { -webkit-box-flex: 4; -moz-box-flex: 4; box-flex: 4; -webkit-flex: 4; -moz-flex: 4; -ms-flex: 4; flex: 4; }
+.trial .trial_head .trial_head_panel { -webkit-box-flex: 1; -moz-box-flex: 1; box-flex: 1; -webkit-flex: 1; -moz-flex: 1; -ms-flex: 1; flex: 1; text-align: right; }
+.trial .trial_head .trial_head_panel button { font-size: 1em; }
+.trial.suggested h3.title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #a8ff7e; }
+.trial.eligible h3.title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #7dd4ff; }
+.trial.ineligible h3.title { margin-left: -1.25em; padding-left: 0.75em; border-left: 0.5em solid #ff7d7d; }
+.trial input[type="text"].title { width: 98%; font-size: 1.1em; }
 .trial .source { font-style: italic; }
 .trial .condition { font-weight: bold; }
 .trial .notes { margin: 1em 0; padding: 1em; background-color: #f2f2f2; }
-.trial textarea.notes { width: 80%; padding: 0.2em 0.4em; font-size: 1em; border-color: #c8c8c8; }
+.trial .notes.patient_info { background-color: #ffe27d; }
+.trial h4 + p.notes { margin-top: 0; }
+.trial textarea.notes { width: 98%; margin: 0; padding: 0.2em 0.4em; font-size: 1em; border-color: #c8c8c8; }
 .trial .trial_location { float: right; max-width: 16em; margin: 0 0 1.5em 1.5em; padding: 0.75em; vertical-align: top; text-align: center; border-radius: 3pt; background: #f2f2f2; }
 .trial .trial_location .loc_distance { color: rgba(0, 0, 0, 0.4); font-size: 0.9em; }
 .trial .trial_location .loc_city { font-weight: bold; }
 .trial .trial_location .loc_country { font-size: 1.2em; font-weight: bold; }
-.trial .trial_location .loc_contact { margin: 0.25em -0.75em; padding: 1.2em; color: black; word-break: break-word; background-color: #ffffc8; border: 1px solid rgba(0, 0, 0, 0.2); border-left: none; border-right: none; }
+.trial .trial_location .loc_contact { margin: 0.25em -0.75em; padding: 1.2em; color: black; word-break: break-word; background-color: #ffe27d; border: 1px solid rgba(0, 0, 0, 0.2); border-left: none; border-right: none; }
 .trial .details { margin-top: 0.5em; }
 .trial .details > div { display: none; }
 .trial .details .outcome_details { margin: 0.5em 0; }

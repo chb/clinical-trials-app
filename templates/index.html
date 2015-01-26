@@ -125,33 +125,45 @@
 			
 			<script type="text/mustache" id="trial_tmpl">
 				<div class="trial {{ trial.status }}">
-					{{#trial.editing}}
-					<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
-					<button type="reset" can-click="trial.cancel">Cancel</button>
-					<button type="submit" can-click="trial.save">Save Changes</button>
-					<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
-					{{/}}
-					{{^trial.editing}}
-					<h3 class="title">
-						{{#trial.canEdit}}<button class="edit_trial" can-click="trial.edit">Edit Trial</a>{{/}}
-						{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}
-					</h3>
-					{{/}}
+					<div class="trial_head">
+						<div class="trial_head_text">
+							{{#trial.editing}}
+							<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
+							<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
+							{{/}}
+							{{^trial.editing}}
+							<h3 class="title">{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}</h3>
+							{{/}}
+							<p class="supplement">
+								<span class="phases">{{ trial.phasesFormatted }}</span>
+								{{#trial.source}}<span class="source">{{ . }}</span>{{/}}
+								{{#trial.condition}}<span class="condition">{{ . }}</span>{{/}}
+							</p>
+						</div>
+						
+						<div class="trial_head_panel">
+							{{#editing}}
+							<button type="submit" can-click="save">Save Changes</button><br>
+							<button type="reset" can-click="cancel">Cancel</button>
+							{{/}}
+							{{^editing}}
+							{{#canEdit}}<button can-click="edit">Edit Trial</button>{{/}}
+							{{/}}
+						</div>
+					</div>
 					
-					<p class="supplement">
-						<span class="phases">{{ trial.phasesFormatted }}</span>
-						{{#trial.source}}<span class="source">{{ . }}</span>{{/}}
-						{{#trial.condition}}<span class="condition">{{ . }}</span>{{/}}
-					</p>
-					
-					{{#trial.locations}}{{>"location_tmpl"}}{{/}}
-					
-					{{#trial.editing}}
+					{{#editing}}
+					<h4>General Trial Notes</h4>
 					<textarea id="edit_notes" name="edit_notes" class="notes" rows="5" cols="30" placeholder="Notes">{{ trial.info.notes.raw }}</textarea>
+					<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}} only</h4>
+					<textarea id="edit_patient_notes" name="edit_patient_notes" class="notes patient_info" rows="5" cols="30" placeholder="Patient Notes">{{ patient_info.notes.raw }}</textarea>
 					{{/}}
-					{{^trial.editing}}{{#trial.info.notes}}
-					<p class="notes">{{{ html }}}</p>
-					{{/}}{{/}}
+					{{^editing}}
+						{{#trial.locations}}{{>"location_tmpl"}}{{/}}
+						{{#trial.info.notes}}<p class="notes">{{{ html }}}</p>{{/}}
+						<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}}</h4>
+						{{#patient_info.notes}}<p class="notes patient_info">{{{ html }}}</p>{{/}}
+					{{/}}
 					
 					<div class="details">
 						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Trial Details</strong>

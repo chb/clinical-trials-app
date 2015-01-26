@@ -155,26 +155,38 @@ ul.trial_list {
 }
 
 .trial {
-	.title {
-		.edit_trial {
-			float: right;
+	.trial_head {
+		@include display(flex);
+		@include align-items(stretch);
+		@include flex-direction(row);
+		
+		.trial_head_text {
+			@include flex(4);
+		}
+		.trial_head_panel {
+			@include flex(1);
+			text-align: right;
+			button {
+				font-size: 1em;
+			}
 		}
 	}
-	&.suggested .title {
+	
+	&.suggested h3.title {
 		margin-left: -1.25em; padding-left: 0.75em;
 		border-left: 0.5em solid $col-greenbg;
 	}
-	&.eligible .title {
+	&.eligible h3.title {
 		margin-left: -1.25em; padding-left: 0.75em;
 		border-left: 0.5em solid $col-bluebg;
 	}
-	&.ineligible .title {
+	&.ineligible h3.title {
 		margin-left: -1.25em; padding-left: 0.75em;
 		border-left: 0.5em solid $col-redbg;
 	}
 	
 	input[type="text"].title {
-		width: 80%;
+		width: 98%;
 		font-size: 1.1em;
 	}
 	.source {
@@ -187,12 +199,15 @@ ul.trial_list {
 	.notes {
 		margin: 1em 0; padding: 1em;
 		background-color: $col-bg;
+		&.patient_info {
+			background-color: $col-notebg;
+		}
 	}
-	p.notes {
-		// border-left: 0.5em solid $col-border;
+	h4 + p.notes {
+		margin-top: 0;
 	}
 	textarea.notes {
-		width: 80%; padding: 0.2em 0.4em;
+		width: 98%; margin: 0; padding: 0.2em 0.4em;
 		font-size: 1em;
 		border-color: $col-border;
 	}
@@ -218,7 +233,7 @@ ul.trial_list {
 		.loc_contact {
 			margin: 0.25em -0.75em; padding: 1.2em;
 			color: black; word-break: break-word;
-			background-color: $col-note;
+			background-color: $col-notebg;
 			border: 1px solid rgba(0,0,0,0.2); border-left: none; border-right: none;
 		}
 	}

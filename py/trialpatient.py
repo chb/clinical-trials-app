@@ -3,6 +3,7 @@
 
 import logging
 import datetime
+import markdown
 from dateutil.parser import *
 from dateutil.relativedelta import *
 
@@ -195,17 +196,26 @@ class TrialPatientInfo(jsondocument.JSONDocument):
 		self.patient_id = patient_id
 	
 	def for_api(self):
-		d = {'trial_id': self.trial_id}
+		js = {
+			'trial_id': self.trial_id,
+			'patient_id': self.patient_id,
+		}
 		if self.suggested:
-			d['suggested'] = True
+			js['suggested'] = True
+		if self.notes:
+			js['notes'] = {
+				'raw': self.notes,
+				'html': markdown.markdown(self.notes),
+			}
 		
-		return d
+		return js
 	
 	def update_from_api(self, json):
 		d = {}
 		if 'suggested' in json:
 			d['suggested'] = True if 'true' == json['suggested'] or 1 == int(json['suggested']) else False
-		
+		if 'notes' in json:
+			d['notes'] = json['notes']
 		self.update_with(d)
 		self.store()
 

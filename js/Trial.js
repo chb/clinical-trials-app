@@ -28,7 +28,6 @@ var Trial = can.Model.extend({
 	phases: null,
 	
 	init: function(json) {
-		this.attr('canEdit', true);
 		this.updateFromInfo()
 		
 		if (this.phases) {
@@ -62,22 +61,6 @@ var Trial = can.Model.extend({
 			this.attr('info', info);
 		}
 		this.attr('mainTitle', (this.info && this.info.title) ? this.info.title : this.title);
-	},
-	
-	allowEditing: function(flag) {
-		this.attr('canEdit', flag);
-	},
-	
-	edit: function() {
-		TrialEditor.singleton().edit(this);
-	},
-	
-	cancel: function() {
-		TrialEditor.singleton().done(this);
-	},
-	
-	save: function() {
-		TrialEditor.singleton().save(this);
 	},
 	
 	/** Toggles "edit_title" content with the original title and whatever was in there before. */

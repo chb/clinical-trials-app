@@ -218,7 +218,7 @@ def find():
 	#finder.fetch_all = False
 	found = finder.find(request.args)
 	
-	# match trials
+	# match trials and add patient specific trial information
 	trialmatcher = TrialSerialMatcher()
 	trialmatcher.modules = [
 		TrialGenderMatcher(),
@@ -227,9 +227,10 @@ def find():
 	]
 	results = []
 	for result in trialmatcher.match(patient, found):
+		result.add_patient_info(patient)
 		results.append(result.for_api())
 	
-	return jsonify({'results': results or []})
+	return jsonify({'patient_id': patient.id, 'results': results or []})
 
 @app.route('/trials/<trial_id>/info', methods=['GET', 'PUT'])
 def trial_info(trial_id):
@@ -270,8 +271,7 @@ def trial_patient_info(trial_id, patient_id):
 		info = TrialPatientInfo(trial_id, patient_id)
 	info.update_from_api(request.json)
 	
-	return jsonify(info.as_json())
-	
+	return jsonify(info.for_api())
 
 
 # MARK: Enrolling

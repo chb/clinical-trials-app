@@ -14,12 +14,20 @@ class TrialMatchResult(object):
 	def __init__(self, trial, tests):
 		self.trial = trial
 		self.tests = tests
+		self.trial_patient_info = None
+	
+	def add_patient_info(self, patient):
+		assert self.trial
+		self.trial_patient_info = patient.info_for_trial(self.trial.nct)
 	
 	def for_api(self):
-		return {
+		js = {
 			'trial': self.trial.for_api(),
 			'tests': [c.for_api() for c in self.tests],
 		}
+		if self.trial_patient_info is not None:
+			js['patient_info'] = self.trial_patient_info.for_api()
+		return js
 
 
 class TrialMatchTest(object):
