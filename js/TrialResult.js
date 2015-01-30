@@ -65,6 +65,29 @@ var TrialResult = can.Model.extend(
 	suggest: function() {
 		this.attr('suggested', !this.suggested);
 		this.finder_result.updateResultCount();
+		this.putSuggested(true);
+	},
+	
+	putSuggested: function(revert_on_fail, is_retry) {
+		var self = this;
+		$.putJSON('trials/' + this.trial._id + '/patient/' + this.finder_result.patient_id + '/info', {
+			'suggested': this.suggested
+		})
+		.done(function(json, status, xhr) {
+			self.updateFromPatientInfo(json);
+		})
+		.fail(function(xhr, status, error) {
+			console.error('Failed to save trial patient info:', status, error, 'will retry:', !is_retry);
+			
+			if (!is_retry) {
+				self.putSuggested(revert_on_fail, true)
+			}
+			else if (revert_on_fail) {
+				this.attr('suggested', !this.suggested);
+				this.finder_result.updateResultCount();
+				alert("Failed to save trial patient info: " + error);
+			}
+		});
 	},
 	
 	updateFromPatientInfo: function(info) {

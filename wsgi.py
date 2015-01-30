@@ -16,7 +16,7 @@ from flask import Flask, request, redirect, render_template, abort, session, jso
 
 # settings
 DEBUG = int(os.environ.get('DEBUG', 0)) > 0
-USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 0)) > 0
+USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
 LILLY_SECRET = os.environ.get('LILLY_SECRET')
 SMART_DEFAULTS = {
 	'app_id': os.environ.get('SMART_APP_ID'),
