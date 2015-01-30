@@ -60,7 +60,7 @@ var Trial = can.Model.extend({
 		if (info) {
 			if (info.notes && !info.notes.html) {
 				info = $.extend({}, info);
-				info.notes = this.info.notes;		// notes coming back without "html" are client-side JS only, ignore
+				info.notes = this.info ? this.info.notes : null;		// notes coming back without "html" are client-side JS only, ignore
 			}
 			this.attr('info', info);
 		}
