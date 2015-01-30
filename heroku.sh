@@ -14,6 +14,8 @@ read -p "App id (empty for default): " app_id
 
 heroku config:set --app=$app_id \
 	DEBUG=$DEBUG \
+	USE_TEST_PATIENT=$USE_TEST_PATIENT \
+	SESSION_SECRET=$SESSION_SECRET \
 	SMART_APP_ID=$SMART_APP_ID \
 	SMART_API_BASE=$SMART_API_BASE \
 	SMART_REDIRECT=$SMART_REDIRECT \

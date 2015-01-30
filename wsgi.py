@@ -296,6 +296,7 @@ def template_file(filename):
 if '__main__' == __name__:
 	import py.smartclient.flaskbeaker as flaskbeaker
 	flaskbeaker.FlaskBeaker.setup_app(app)
+	app.secret_key = os.environ.get('SESSION_SECRET', 'supersecretkey')
 	
 	if DEBUG:
 		logging.basicConfig(level=logging.DEBUG)

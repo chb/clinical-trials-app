@@ -5,6 +5,7 @@
 
 export DEBUG=1
 export USE_TEST_PATIENT=1
+export SESSION_SECRET="supersecretsecret"
 
 # SMART
 export SMART_APP_ID="my_web_app"
