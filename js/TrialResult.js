@@ -91,7 +91,7 @@ var TrialResult = can.Model.extend(
 	},
 	
 	updateFromPatientInfo: function(info) {
-		if (info && info.trial_id == this.trial._id && info.patient_id == this.finder_result.patient_id) {
+		if (info && (!info.trial_id || info.trial_id == this.trial._id) && (!info.patient_id || info.patient_id == this.finder_result.patient_id)) {
 			this.attr('patient_info', info);
 		}
 		else {

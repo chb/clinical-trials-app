@@ -24,16 +24,15 @@ class TargetTrial(clintrial.Trial):
 			self.trial_info.load()
 	
 	def as_json(self):
-		js = super().as_json()
+		js = super().as_json().copy()
 		if self.trial_info is not None:
 			del js['trial_info']
 		return js
 	
-	
 	def for_api(self):
 		js = super().for_api()
 		if self.trial_info is not None:
-			js['trial_info'] = self.trial_info.for_api()
+			js['info'] = self.trial_info.for_api()
 		return js
 	
 	
@@ -54,6 +53,8 @@ class TargetTrial(clintrial.Trial):
 class TargetTrialInfo(jsondoc.JSONDocument):
 	def __init__(self, ident, json=None):
 		super().__init__(ident, 'trial-info', json)
+		if self.notes and str != type(self.notes):
+			self.notes = None
 	
 	def for_api(self):
 		js = super().for_api()

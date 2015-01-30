@@ -34,25 +34,28 @@ var TrialEditor = can.Construct.extend({
 		
 		var result = this.result;
 		result.setCanEdit(false);
+		var trial = result.trial;
 		
 		// grab DOM data now because we'll be setting "editing" to false during this run-loop
 		var trial_info = {
 			'title': $('#edit_title').val(),
 			'notes': $('#edit_notes').val(),
-		}
+		};
+		trial.updateFromInfo(trial_info);
+		
 		var patient_info = {
 			'notes': $('#edit_patient_notes').val(),
 		};
+		result.updateFromPatientInfo(patient_info);
 		
 		// save trial info data
-		var trial = result.trial;
 		$.putJSON('trials/' + trial._id + '/info', trial_info)
 		.done(function(json, status, xhr) {
 			trial.updateFromInfo(json ? json.trial : null);
 			
 			// save trial patient info data
-			if (result.finder && result.finder.patient_id) {
-				$.putJSON('trials/' + trial._id + '/patient/' + result.finder.patient_id + '/info', patient_info)
+			if (result.finder_result && result.finder_result.patient_id) {
+				$.putJSON('trials/' + trial._id + '/patient/' + result.finder_result.patient_id + '/info', patient_info)
 				.done(function(json, status, xhr) {
 					result.updateFromPatientInfo(json);
 					result.setCanEdit(true);
@@ -64,7 +67,7 @@ var TrialEditor = can.Construct.extend({
 				});
 			}
 			else {
-				console.error("Failed to save patient specific trial info because there is no patient id");
+				console.error("Failed to save patient specific trial info because there is no patient id in the finder_result:", result.finder_result);
 				result.setCanEdit(true);
 			}
 		})

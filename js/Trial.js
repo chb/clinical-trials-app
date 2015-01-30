@@ -58,6 +58,10 @@ var Trial = can.Model.extend({
 	
 	updateFromInfo: function(info) {
 		if (info) {
+			if (info.notes && !info.notes.html) {
+				info = $.extend({}, info);
+				info.notes = this.info.notes;		// notes coming back without "html" are client-side JS only, ignore
+			}
 			this.attr('info', info);
 		}
 		this.attr('mainTitle', (this.info && this.info.title) ? this.info.title : this.title);

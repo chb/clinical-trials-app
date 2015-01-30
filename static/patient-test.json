@@ -25,6 +25,13 @@
         "status": "confirmed",
         "summary": "Abdominal pain"
     }, {
+        "date_onset": "2014-05-22",
+        "date_resolution": null,
+        "notes": null,
+        "snomed": "427685000",
+        "status": "confirmed",
+        "summary": "HER2-positive carcinoma of breast"
+    }, {
         "date_onset": "2005-03-12",
         "date_resolution": null,
         "notes": null,

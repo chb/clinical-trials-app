@@ -127,11 +127,11 @@
 				<div class="trial {{ status }}">
 					<div class="trial_head">
 						<div class="trial_head_text">
-							{{#trial.editing}}
+							{{#editing}}
 							<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
 							<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
 							{{/}}
-							{{^trial.editing}}
+							{{^editing}}
 							<h3 class="title">{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}</h3>
 							{{/}}
 							<p class="supplement">
