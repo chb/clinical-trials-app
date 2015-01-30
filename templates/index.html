@@ -147,7 +147,7 @@
 							<button type="reset" can-click="cancel">Cancel</button>
 							{{/}}
 							{{^editing}}
-							{{#canEdit}}<button can-click="edit">Edit Trial</button><br>{{/}}
+							<button can-click="edit"{{^canEdit}} disabled="disabled"{{/}}>Edit Trial</button><br>
 							<button can-click="suggest">{{#suggested}}Un-Suggest{{/}}{{^suggested}}Suggest Trial{{/}}</button>
 							{{/}}
 						</div>
@@ -162,8 +162,10 @@
 					{{^editing}}
 						{{#trial.locations}}{{>"location_tmpl"}}{{/}}
 						{{#trial.info.notes}}<p class="notes">{{{ html }}}</p>{{/}}
+						{{#patient_info.notes}}
 						<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}}</h4>
-						{{#patient_info.notes}}<p class="notes patient_info">{{{ html }}}</p>{{/}}
+						<p class="notes patient_info">{{{ html }}}</p>
+						{{/}}
 					{{/}}
 					
 					<div class="details">

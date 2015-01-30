@@ -79,11 +79,39 @@ class TargetProfileGender(TargetProfileRule):
 	"""
 	for_type = 'gender'
 
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.gender = None
+		
+		inp_1 = json_dict['inputs'][0] if json_dict and json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
+		if inp_1 is not None:
+			if 'M' == inp_1.get('value'):
+				self.gender = 'male'
+			elif 'F' == inp_1.get('value'):
+				self.gender = 'female'
+			else:
+				logging.warning('Do not understand gender "{}"'.format(inp_1))
+
 
 class TargetProfileAge(TargetProfileRule):
 	""" Limit a patient's age.
 	"""
 	for_type = 'age'
+
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.threshold = None
+		self.is_upper = True
+		self.is_inclusive = True
+		
+		inp_1 = json_dict['inputs'][0] if json_dict and json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
+		if inp_1 is not None:
+			self.threshold = inp_1.get('threshold')
+			operator = inp_1.get('operator')
+			if '>' in operator:
+				self.is_upper = False
+			if '=' in operator:
+				self.is_inclusive = True
 
 
 class TargetProfileDiagnosis(TargetProfileRule):

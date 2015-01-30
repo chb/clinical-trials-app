@@ -269,9 +269,39 @@ class TargetProfileRuleMatcher():
 class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'gender'
 
+	def test(self, patient):
+		include = self.rule.include
+		match = patient.gender == self.rule.gender
+		
+		if include ^ match:
+			return TrialMatchTest.failed(self.rule.description, 'patient.gender')
+		return TrialMatchTest.passed(self.rule.description)
+
 
 class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'age'
+
+	def test(self, patient):
+		age = patient.age_years
+		if age is None:
+			logging.debug('Patient doesn\'t have an age "{}"'.format(self.rule.diagnosis.system))
+			return TrialMatchTest.unsure(self.rule.description)
+		
+		include = self.rule.include
+		match = False
+		if self.rule.is_upper:
+			if age < self.rule.threshold:
+				match = True
+		else:
+			if age > self.rule.threshold:
+				match = True
+		if not match and self.rule.is_inclusive:
+			if age == self.rule.threshold:
+				match = True
+		
+		if include ^ match:
+			return TrialMatchTest.failed(self.rule.description, 'patient.age')
+		return TrialMatchTest.passed(self.rule.description)
 
 
 class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
