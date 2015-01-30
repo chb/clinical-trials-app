@@ -4,6 +4,7 @@
 # copy to "env.sh" and make executable if you change these!
 
 export DEBUG=1
+export USE_TEST_PATIENT=1
 
 # SMART
 export SMART_APP_ID="my_web_app"

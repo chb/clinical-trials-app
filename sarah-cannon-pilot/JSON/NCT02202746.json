@@ -1,0 +1,106 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have mutation of FGFR1 amplification OR 11q (FGF3, FGF4, Cyclin D1, or FGF19) amplification.",
+    "type": "mutation",
+    "include": true,
+    "inputs": [
+      {
+        "value": "FGFR1 amplification"
+      },
+      {
+        "value": "11q (FGF3, FGF4, Cyclin D1, or FGF19) amplification"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of CNS metastases.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/261731003",
+        "prefLabel": "CNS metastases",
+        "description": "CNS metastases",
+        "system": "snomedct",
+        "code": "261731003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Heart disease.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/56265001",
+        "prefLabel": "Heart disease",
+        "description": "Heart disease",
+        "system": "snomedct",
+        "code": "56265001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be pregnant.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "pregnant"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be breastfeeding.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "breastfeeding"
+      }
+    ]
+  }
+]

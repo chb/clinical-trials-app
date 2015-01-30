@@ -1,0 +1,276 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Estrogen receptor negative neoplasm.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/441117001",
+        "prefLabel": "Estrogen receptor negative neoplasm",
+        "description": "Estrogen receptor negative neoplasm",
+        "system": "snomedct",
+        "code": "441117001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Progesterone receptor negative neoplasm.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/441118006",
+        "prefLabel": "Progesterone receptor negative neoplasm",
+        "description": "Progesterone receptor negative neoplasm",
+        "system": "snomedct",
+        "code": "441118006"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication within drug class  HORMONES/SYNTHETICS/MODIFIERS.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000029177",
+        "prefLabel": "[HS000] HORMONES/SYNTHETICS/MODIFIERS",
+        "description": " HORMONES/SYNTHETICS/MODIFIERS",
+        "system": "ndfrt",
+        "code": "N0000029177"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Seizure.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/91175000",
+        "prefLabel": "Seizure",
+        "description": "Seizure",
+        "system": "snomedct",
+        "code": "91175000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class  ANTINEOPLASTICS within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000029091",
+        "prefLabel": "[AN000] ANTINEOPLASTICS",
+        "description": " ANTINEOPLASTICS",
+        "system": "ndfrt",
+        "code": "N0000029091"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class ESTROGENS within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000146730",
+        "prefLabel": "ESTROGENS",
+        "description": "ESTROGENS",
+        "system": "ndfrt",
+        "code": "N0000146730"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class  ANDROGENS/ANABOLICS within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000029179",
+        "prefLabel": "[HS100] ANDROGENS/ANABOLICS",
+        "description": " ANDROGENS/ANABOLICS",
+        "system": "ndfrt",
+        "code": "N0000029179"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with ingredient Samarium within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000166233",
+        "prefLabel": "Samarium [Chemical/Ingredient]",
+        "description": "Samarium",
+        "system": "ndfrt",
+        "code": "N0000166233"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with ingredient Strontium within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000007902",
+        "prefLabel": "Strontium [Chemical/Ingredient]",
+        "description": "Strontium",
+        "system": "ndfrt",
+        "code": "N0000007902"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance butylated hydroxyanisole.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "butylated hydroxyanisole"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance butylated hydroxytoluene.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "butylated hydroxytoluene"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Leptomeningeal sarcoma.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/78303004",
+        "prefLabel": "Meningioma, malignant",
+        "description": "Leptomeningeal sarcoma",
+        "system": "snomedct",
+        "code": "78303004"
+      }
+    ]
+  }
+]

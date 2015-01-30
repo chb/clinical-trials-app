@@ -1,0 +1,68 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Hormone receptor positive malignant neoplasm of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/417181009",
+        "prefLabel": "Hormone receptor positive malignant neoplasm of breast",
+        "description": "Hormone receptor positive malignant neoplasm of breast",
+        "system": "snomedct",
+        "code": "417181009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Diabetes mellitus.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/73211009",
+        "prefLabel": "Diabetes mellitus",
+        "description": "Diabetes mellitus",
+        "system": "snomedct",
+        "code": "73211009"
+      }
+    ]
+  }
+]

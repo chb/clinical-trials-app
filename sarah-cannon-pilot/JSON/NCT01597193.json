@@ -1,0 +1,96 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be pregnant.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "pregnant"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be breastfeeding.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "breastfeeding"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Leptomeningeal sarcoma.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/78303004",
+        "prefLabel": "Meningioma, malignant",
+        "description": "Leptomeningeal sarcoma",
+        "system": "snomedct",
+        "code": "78303004"
+      }
+    ]
+  }
+]

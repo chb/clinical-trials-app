@@ -1,0 +1,261 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of HER2-positive carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/427685000",
+        "prefLabel": "HER2-positive carcinoma of breast",
+        "description": "HER2-positive carcinoma of breast",
+        "system": "snomedct",
+        "code": "427685000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have historical medication with ingredient trastuzumab.",
+    "type": "medication",
+    "include": true,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005608",
+        "prefLabel": "trastuzumab [Chemical/Ingredient]",
+        "description": "trastuzumab",
+        "system": "ndfrt",
+        "code": "N0000005608"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have most recent lab value of Cardiac ejection fraction method greater than or equal to 55 % AND less than or equal to 70 %.",
+    "type": "labValue",
+    "include": true,
+    "qualifier": "most recent",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/MTHU032500",
+        "prefLabel": "Cardiac ejection fraction method",
+        "description": "Cardiac ejection fraction method",
+        "system": "lnc",
+        "code": "MTHU032500"
+      },
+      {
+        "operator": ">=",
+        "threshold": 55
+      },
+      {
+        "code": "%",
+        "prefLabel": "%",
+        "system": "UCUM",
+        "value": "%"
+      },
+      {
+        "operator": "<=",
+        "threshold": 70
+      },
+      {
+        "code": "%",
+        "prefLabel": "%",
+        "system": "UCUM",
+        "value": "%"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be pregnant.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "pregnant"
+      }
+    ]
+  },
+  {
+    "description": "Patient must agree to take birth control during the study.",
+    "type": "agreement",
+    "include": true,
+    "inputs": [
+      {
+        "value": "take birth control during the study"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of symptomatic leptomeningeal carcinomatosis.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "value": "symptomatic leptomeningeal carcinomatosis"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with mechanism of action CYP450 3A4 Inducers for less than or equal to 2 weeks.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000185506",
+        "prefLabel": "Cytochrome P450 3A4 Inducers [MoA]",
+        "description": "CYP450 3A4 Inducers",
+        "system": "ndfrt",
+        "code": "N0000185506"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with mechanism of action CYP450 3A4 Inhibitors for less than or equal to 2 weeks.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000182141",
+        "prefLabel": "Cytochrome P450 3A4 Inhibitors [MoA]",
+        "description": "CYP450 3A4 Inhibitors",
+        "system": "ndfrt",
+        "code": "N0000182141"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Heart disease for less than or equal to 3 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/56265001",
+        "prefLabel": "Heart disease",
+        "description": "Heart disease",
+        "system": "snomedct",
+        "code": "56265001"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P3M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Heart block.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/233916004",
+        "prefLabel": "Heart block",
+        "description": "Heart block",
+        "system": "snomedct",
+        "code": "233916004"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Congestive heart failure.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be pregnant.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "pregnant"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be breastfeeding.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "breastfeeding"
+      }
+    ]
+  },
+  {
+    "description": "Patient must use medical device Cardiac pacemaker.",
+    "type": "device",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/14106009",
+        "prefLabel": "Cardiac pacemaker",
+        "description": "Cardiac pacemaker",
+        "system": "snomedct",
+        "code": "14106009"
+      }
+    ]
+  }
+]

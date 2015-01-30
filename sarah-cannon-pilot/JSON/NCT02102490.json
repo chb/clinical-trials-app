@@ -1,0 +1,133 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Hormone receptor positive malignant neoplasm of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/417181009",
+        "prefLabel": "Hormone receptor positive malignant neoplasm of breast",
+        "description": "Hormone receptor positive malignant neoplasm of breast",
+        "system": "snomedct",
+        "code": "417181009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have historical medication within drug class Estrogen Receptor Antagonist.",
+    "type": "medication",
+    "include": true,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175582",
+        "prefLabel": "Estrogen Receptor Antagonist [EPC]",
+        "description": "Estrogen Receptor Antagonist",
+        "system": "ndfrt",
+        "code": "N0000175582"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of CNS metastases.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/261731003",
+        "prefLabel": "CNS metastases",
+        "description": "CNS metastases",
+        "system": "snomedct",
+        "code": "261731003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class CDK 4/6 inhibitor.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "value": "CDK 4/6 inhibitor"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class  INVESTIGATIONAL AGENTS within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000029201",
+        "prefLabel": "[IN000] INVESTIGATIONAL AGENTS",
+        "description": " INVESTIGATIONAL AGENTS",
+        "system": "ndfrt",
+        "code": "N0000029201"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  }
+]

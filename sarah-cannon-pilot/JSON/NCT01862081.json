@@ -1,0 +1,247 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Local recurrence of malignant tumor of breast OR Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/314955001",
+        "prefLabel": "Local recurrence of malignant tumor of breast",
+        "description": "Local recurrence of malignant tumor of breast",
+        "system": "snomedct",
+        "code": "314955001"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 2 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_2_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 2 Peripheral sensory neuropathy",
+        "description": "Grade 2 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12770"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 3 Peripheral sensory neuropathy",
+        "description": "Grade 3 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12771"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 4 Peripheral sensory neuropathy",
+        "description": "Grade 4 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12772"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 5 Peripheral sensory neuropathy",
+        "description": "Grade 5 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12773"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 2 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_2_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 2 Peripheral motor neuropathy",
+        "description": "Grade 2 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12764"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 3 Peripheral motor neuropathy",
+        "description": "Grade 3 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12765"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 4 Peripheral motor neuropathy",
+        "description": "Grade 4 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12766"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 5 Peripheral motor neuropathy",
+        "description": "Grade 5 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12767"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 2 Cholesterol high.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_2_Cholesterol_high",
+        "prefLabel": "Grade 2 Cholesterol high",
+        "description": "Grade 2 Cholesterol high",
+        "system": "ctcae",
+        "code": "E12129"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Cholesterol high.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Cholesterol_high",
+        "prefLabel": "Grade 3 Cholesterol high",
+        "description": "Grade 3 Cholesterol high",
+        "system": "ctcae",
+        "code": "E12130"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Cholesterol high.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Cholesterol_high",
+        "prefLabel": "Grade 4 Cholesterol high",
+        "description": "Grade 4 Cholesterol high",
+        "system": "ctcae",
+        "code": "E12131"
+      }
+    ]
+  }
+]

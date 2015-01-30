@@ -5,7 +5,7 @@ import os
 import json
 
 import targettrial
-import targetprofiles.model.targetprofile as targetprofile
+import targetprofile
 import clinicaltrials.trialserver as trialserver
 
 

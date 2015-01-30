@@ -1,0 +1,237 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Metastasis from malignant tumor of breast OR Local recurrence of malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/314955001",
+        "prefLabel": "Local recurrence of malignant tumor of breast",
+        "description": "Local recurrence of malignant tumor of breast",
+        "system": "snomedct",
+        "code": "314955001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must have most recent measurement of Left ventricular Ejection fraction greater than or equal to 50 %.",
+    "type": "measurement",
+    "include": true,
+    "qualifier": "most recent",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/10230-1",
+        "prefLabel": "Ejection fraction:VFr:Pt:Heart.ventricle.left:Qn",
+        "description": "Left ventricular Ejection fraction",
+        "system": "lnc",
+        "code": "10230-1",
+        "units": "%"
+      },
+      {
+        "operator": ">=",
+        "threshold": 50
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class monoclonal antibodies within less than or equal to 28 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "value": "monoclonal antibodies"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P28D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance polysorbate 80.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "polysorbate 80"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Deep vein thrombosis within less than or equal to 3 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/128053003",
+        "prefLabel": "Deep venous thrombosis",
+        "description": "Deep vein thrombosis",
+        "system": "snomedct",
+        "code": "128053003"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P3M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Pulmonary embolism within less than or equal to 3 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/59282003",
+        "prefLabel": "Pulmonary embolism",
+        "description": "Pulmonary embolism",
+        "system": "snomedct",
+        "code": "59282003"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P3M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Stroke within less than or equal to 3 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/230690007",
+        "prefLabel": "Cerebrovascular accident",
+        "description": "Stroke",
+        "system": "snomedct",
+        "code": "230690007"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P3M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Heart attack.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/22298006",
+        "prefLabel": "Myocardial infarction",
+        "description": "Heart attack",
+        "system": "snomedct",
+        "code": "22298006"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Congestive heart failure AND New York Heart Association Classification - Class III.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/420913000",
+        "prefLabel": "New York Heart Association Classification - Class III",
+        "description": "New York Heart Association Classification - Class III",
+        "system": "snomedct",
+        "code": "420913000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Congestive heart failure AND New York Heart Association Classification - Class IV.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/422293003",
+        "prefLabel": "New York Heart Association Classification - Class IV",
+        "description": "New York Heart Association Classification - Class IV",
+        "system": "snomedct",
+        "code": "422293003"
+      }
+    ]
+  }
+]

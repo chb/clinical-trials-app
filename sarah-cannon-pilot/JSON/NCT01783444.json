@@ -1,0 +1,105 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Estrogen receptor positive tumor.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/416053008",
+        "prefLabel": "Estrogen receptor positive tumor",
+        "description": "Estrogen receptor positive tumor",
+        "system": "snomedct",
+        "code": "416053008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with ingredient exemestane.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000004783",
+        "prefLabel": "exemestane [Chemical/Ingredient]",
+        "description": "exemestane",
+        "system": "ndfrt",
+        "code": "N0000004783"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with mechanism of action mTOR Inhibitors.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175624",
+        "prefLabel": "mTOR Inhibitors [MoA]",
+        "description": "mTOR Inhibitors",
+        "system": "ndfrt",
+        "code": "N0000175624"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with mechanism of action PI3K inhibitors.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "value": "PI3K inhibitors"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active medication with mechanism of action AKT inhibitors.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "value": "AKT inhibitors"
+      }
+    ]
+  }
+]

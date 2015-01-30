@@ -1,0 +1,328 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of HER2-positive carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/427685000",
+        "prefLabel": "HER2-positive carcinoma of breast",
+        "description": "HER2-positive carcinoma of breast",
+        "system": "snomedct",
+        "code": "427685000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Estrogen receptor negative neoplasm.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/441117001",
+        "prefLabel": "Estrogen receptor negative neoplasm",
+        "description": "Estrogen receptor negative neoplasm",
+        "system": "snomedct",
+        "code": "441117001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Progesterone receptor negative neoplasm.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/441118006",
+        "prefLabel": "Progesterone receptor negative neoplasm",
+        "description": "Progesterone receptor negative neoplasm",
+        "system": "snomedct",
+        "code": "441118006"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Leptomeningeal sarcoma.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/78303004",
+        "prefLabel": "Meningioma, malignant",
+        "description": "Leptomeningeal sarcoma",
+        "system": "snomedct",
+        "code": "78303004"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Seizure.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/91175000",
+        "prefLabel": "Seizure",
+        "description": "Seizure",
+        "system": "snomedct",
+        "code": "91175000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Cerebrovascular accident within less than or equal to 12 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/230690007",
+        "prefLabel": "Cerebrovascular accident",
+        "description": "Cerebrovascular accident",
+        "system": "snomedct",
+        "code": "230690007"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P12M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Transient ischemic attack within less than or equal to 12 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/266257000",
+        "prefLabel": "Transient cerebral ischemia",
+        "description": "Transient ischemic attack",
+        "system": "snomedct",
+        "code": "266257000"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P12M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Peptic ulcer disease for less than or equal to 3 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/13200003",
+        "prefLabel": "Peptic ulcer",
+        "description": "Peptic ulcer disease",
+        "system": "snomedct",
+        "code": "13200003"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P3M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action Androgen Synthesis Inhibitors.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175925",
+        "prefLabel": "Androgen Synthesis Inhibitors [MoA]",
+        "description": "Androgen Synthesis Inhibitors",
+        "system": "ndfrt",
+        "code": "N0000175925"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action Androgen Receptor Antagonists.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000000243",
+        "prefLabel": "Androgen Receptor Antagonists [MoA]",
+        "description": "Androgen Receptor Antagonists",
+        "system": "ndfrt",
+        "code": "N0000000243"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Hepatitis B.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/66071002",
+        "prefLabel": "Type B viral hepatitis",
+        "description": "Hepatitis B",
+        "system": "snomedct",
+        "code": "66071002"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Viral hepatitis C.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/50711007",
+        "prefLabel": "Viral hepatitis C",
+        "description": "Viral hepatitis C",
+        "system": "snomedct",
+        "code": "50711007"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of HIV infection.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/86406008",
+        "prefLabel": "Human immunodeficiency virus infection",
+        "description": "HIV infection",
+        "system": "snomedct",
+        "code": "86406008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance butylated hydroxyanisole.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "butylated hydroxyanisole"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance butylated hydroxytoluene.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "butylated hydroxytoluene"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have allergy to substance labrasol.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "labrasol"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have drug allergy to ingredient trastuzumab.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005608",
+        "prefLabel": "trastuzumab [Chemical/Ingredient]",
+        "description": "trastuzumab",
+        "system": "ndfrt",
+        "code": "N0000005608"
+      }
+    ]
+  }
+]

@@ -1,0 +1,431 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have historical medication with ingredient docetaxel OR with ingredient Paclitaxel OR within drug class Anthracycline Topoisomerase Inhibitor.",
+    "type": "medication",
+    "include": true,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005739",
+        "prefLabel": "docetaxel [Chemical/Ingredient]",
+        "description": "docetaxel",
+        "system": "ndfrt",
+        "code": "N0000005739"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000007153",
+        "prefLabel": "Paclitaxel [Chemical/Ingredient]",
+        "description": "Paclitaxel",
+        "system": "ndfrt",
+        "code": "N0000007153"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175414",
+        "prefLabel": "Anthracycline Topoisomerase Inhibitor [EPC]",
+        "description": "Anthracycline Topoisomerase Inhibitor",
+        "system": "ndfrt",
+        "code": "N0000175414"
+      }
+    ]
+  },
+  {
+    "description": "IF patient must have active diagnosis of HER2-positive carcinoma of breast, THEN patient must have historical medication with ingredient trastuzumab.",
+    "include": true,
+    "type": "conditional",
+    "if": {
+      "description": "Patient must have active diagnosis of HER2-positive carcinoma of breast",
+      "type": "diagnosis",
+      "include": true,
+      "qualifier": "active",
+      "inputs": [
+        {
+          "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/427685000",
+          "prefLabel": "HER2-positive carcinoma of breast",
+          "description": "HER2-positive carcinoma of breast",
+          "system": "snomedct",
+          "code": "427685000"
+        }
+      ]
+    },
+    "then": {
+      "description": "Patient must have historical medication with ingredient trastuzumab",
+      "type": "medication",
+      "include": true,
+      "qualifier": "historical",
+      "inputs": [
+        {
+          "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005608",
+          "prefLabel": "trastuzumab [Chemical/Ingredient]",
+          "description": "trastuzumab",
+          "system": "ndfrt",
+          "code": "N0000005608"
+        }
+      ]
+    }
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Renal insufficiency.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42399005",
+        "prefLabel": "Renal failure syndrome",
+        "description": "Renal insufficiency",
+        "system": "snomedct",
+        "code": "42399005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Hepatic insufficiency.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/59927004",
+        "prefLabel": "Hepatic failure",
+        "description": "Hepatic insufficiency",
+        "system": "snomedct",
+        "code": "59927004"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of CNS metastases.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/261731003",
+        "prefLabel": "CNS metastases",
+        "description": "CNS metastases",
+        "system": "snomedct",
+        "code": "261731003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Heart attack within less than or equal to 6 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/22298006",
+        "prefLabel": "Myocardial infarction",
+        "description": "Heart attack",
+        "system": "snomedct",
+        "code": "22298006"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P6M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Congestive heart failure AND New York Heart Association Classification - Class II.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/421704003",
+        "prefLabel": "New York Heart Association Classification - Class II",
+        "description": "New York Heart Association Classification - Class II",
+        "system": "snomedct",
+        "code": "421704003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Congestive heart failure AND New York Heart Association Classification - Class III.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/420913000",
+        "prefLabel": "New York Heart Association Classification - Class III",
+        "description": "New York Heart Association Classification - Class III",
+        "system": "snomedct",
+        "code": "420913000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Congestive heart failure AND New York Heart Association Classification - Class IV.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/422293003",
+        "prefLabel": "New York Heart Association Classification - Class IV",
+        "description": "New York Heart Association Classification - Class IV",
+        "system": "snomedct",
+        "code": "422293003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have drug allergy to ingredient eribulin.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "value": "eribulin"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not be pregnant.",
+    "type": "state",
+    "include": false,
+    "inputs": [
+      {
+        "value": "pregnant"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of HIV infection.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/86406008",
+        "prefLabel": "Human immunodeficiency virus infection",
+        "description": "HIV infection",
+        "system": "snomedct",
+        "code": "86406008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Viral hepatitis C.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/50711007",
+        "prefLabel": "Viral hepatitis C",
+        "description": "Viral hepatitis C",
+        "system": "snomedct",
+        "code": "50711007"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Hepatitis B.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/66071002",
+        "prefLabel": "Type B viral hepatitis",
+        "description": "Hepatitis B",
+        "system": "snomedct",
+        "code": "66071002"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Transient ischemic attack.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/266257000",
+        "prefLabel": "Transient cerebral ischemia",
+        "description": "Transient ischemic attack",
+        "system": "snomedct",
+        "code": "266257000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 3 Peripheral sensory neuropathy",
+        "description": "Grade 3 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12771"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 4 Peripheral sensory neuropathy",
+        "description": "Grade 4 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12772"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 5 Peripheral sensory neuropathy",
+        "description": "Grade 5 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12773"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 3 Peripheral motor neuropathy",
+        "description": "Grade 3 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12765"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 4 Peripheral motor neuropathy",
+        "description": "Grade 4 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12766"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 5 Peripheral motor neuropathy",
+        "description": "Grade 5 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12767"
+      }
+    ]
+  }
+]

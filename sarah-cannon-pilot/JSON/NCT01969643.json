@@ -1,0 +1,256 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must be LIV-1 expression positive.",
+    "type": "state",
+    "include": true,
+    "inputs": [
+      {
+        "value": "LIV-1 expression positive"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 2 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_2_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 2 Peripheral sensory neuropathy",
+        "description": "Grade 2 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12770"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 3 Peripheral sensory neuropathy",
+        "description": "Grade 3 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12771"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 4 Peripheral sensory neuropathy",
+        "description": "Grade 4 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12772"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 5 Peripheral sensory neuropathy",
+        "description": "Grade 5 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12773"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 2 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_2_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 2 Peripheral motor neuropathy",
+        "description": "Grade 2 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12764"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 3 Peripheral motor neuropathy",
+        "description": "Grade 3 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12765"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 4 Peripheral motor neuropathy",
+        "description": "Grade 4 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12766"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 5 Peripheral motor neuropathy",
+        "description": "Grade 5 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12767"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action P-Glycoprotein Interactions within less than or equal to 2 weeks.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000000239",
+        "prefLabel": "P-Glycoprotein Interactions [MoA]",
+        "description": "P-Glycoprotein Interactions",
+        "system": "ndfrt",
+        "code": "N0000000239"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action CYP450 3A4 Inhibitors within less than or equal to 2 weeks.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000182141",
+        "prefLabel": "Cytochrome P450 3A4 Inhibitors [MoA]",
+        "description": "CYP450 3A4 Inhibitors",
+        "system": "ndfrt",
+        "code": "N0000182141"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action CYP450 3A4 Inducers within less than or equal to 2 weeks.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000185506",
+        "prefLabel": "Cytochrome P450 3A4 Inducers [MoA]",
+        "description": "CYP450 3A4 Inducers",
+        "system": "ndfrt",
+        "code": "N0000185506"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  }
+]

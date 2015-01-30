@@ -1,0 +1,121 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have cancer stage of Clinical stage III B OR Clinical stage IV.",
+    "type": "cancer_stage",
+    "include": true,
+    "inputs": [
+      {
+        "code": "64062008",
+        "prefLabel": "Clinical stage III B",
+        "system": "snomedct",
+        "description": "Clinical stage III B",
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/64062008"
+      },
+      {
+        "code": "2640006",
+        "prefLabel": "Clinical stage IV",
+        "system": "snomedct",
+        "description": "Clinical stage IV",
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/2640006"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 2.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 2
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with ingredient capecitabine.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005958",
+        "prefLabel": "capecitabine [Chemical/Ingredient]",
+        "description": "capecitabine",
+        "system": "ndfrt",
+        "code": "N0000005958"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Inflammatory breast disease.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/266579006",
+        "prefLabel": "Inflammatory disorder of breast",
+        "description": "Inflammatory breast disease",
+        "system": "snomedct",
+        "code": "266579006"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have procedure of Radiation therapy care.",
+    "type": "procedure",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/385798007",
+        "prefLabel": "Radiation therapy care",
+        "description": "Radiation therapy care",
+        "system": "snomedct",
+        "code": "385798007"
+      }
+    ]
+  }
+]

@@ -1,0 +1,233 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must agree to use non-hormonal contraception during the study and for 6 months after the study.",
+    "type": "agreement",
+    "include": true,
+    "inputs": [
+      {
+        "value": "use non-hormonal contraception during the study and for 6 months after the study"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not report adverse event to single-agent trastuzumab emtansine or combination trastuzumab emtansine treatment discontinuation in the parent study.",
+    "type": "report",
+    "include": false,
+    "inputs": [
+      {
+        "value": "adverse event to single-agent trastuzumab emtansine or combination trastuzumab emtansine treatment discontinuation in the parent study"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Heart attack within less than or equal to 6 months.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/22298006",
+        "prefLabel": "Myocardial infarction",
+        "description": "Heart attack",
+        "system": "snomedct",
+        "code": "22298006"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P6M",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Unstable angina.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/4557003",
+        "prefLabel": "Preinfarction syndrome",
+        "description": "Unstable angina",
+        "system": "snomedct",
+        "code": "4557003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Congestive heart failure AND New York Heart Association Classification - Class II.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/421704003",
+        "prefLabel": "New York Heart Association Classification - Class II",
+        "description": "New York Heart Association Classification - Class II",
+        "system": "snomedct",
+        "code": "421704003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Congestive heart failure AND New York Heart Association Classification - Class III.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/420913000",
+        "prefLabel": "New York Heart Association Classification - Class III",
+        "description": "New York Heart Association Classification - Class III",
+        "system": "snomedct",
+        "code": "420913000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Congestive heart failure AND New York Heart Association Classification - Class IV.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/42343007",
+        "prefLabel": "Congestive heart failure",
+        "description": "Congestive heart failure",
+        "system": "snomedct",
+        "code": "42343007"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/422293003",
+        "prefLabel": "New York Heart Association Classification - Class IV",
+        "description": "New York Heart Association Classification - Class IV",
+        "system": "snomedct",
+        "code": "422293003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have drug allergy to ingredient trastuzumab.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000005608",
+        "prefLabel": "trastuzumab [Chemical/Ingredient]",
+        "description": "trastuzumab",
+        "system": "ndfrt",
+        "code": "N0000005608"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 3 Peripheral sensory neuropathy",
+        "description": "Grade 3 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12771"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 4 Peripheral sensory neuropathy",
+        "description": "Grade 4 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12772"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral sensory neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_sensory_neuropathy",
+        "prefLabel": "Grade 5 Peripheral sensory neuropathy",
+        "description": "Grade 5 Peripheral sensory neuropathy",
+        "system": "ctcae",
+        "code": "E12773"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 3 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_3_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 3 Peripheral motor neuropathy",
+        "description": "Grade 3 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12765"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 4 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_4_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 4 Peripheral motor neuropathy",
+        "description": "Grade 4 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12766"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have adverse event of Grade 5 Peripheral motor neuropathy.",
+    "type": "adverse-event",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://ncicb.nci.nih.gov/xml/owl/EVS/ctcae.owl#Grade_5_Peripheral_motor_neuropathy",
+        "prefLabel": "Grade 5 Peripheral motor neuropathy",
+        "description": "Grade 5 Peripheral motor neuropathy",
+        "system": "ctcae",
+        "code": "E12767"
+      }
+    ]
+  }
+]

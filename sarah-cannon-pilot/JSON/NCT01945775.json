@@ -1,0 +1,139 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Breast cancer.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/254837009",
+        "prefLabel": "Malignant tumor of breast",
+        "description": "Breast cancer",
+        "system": "snomedct",
+        "code": "254837009"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of BRCA1 gene mutation positive OR BRCA2 gene mutation positive.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/412734009",
+        "prefLabel": "BRCA1 gene mutation positive",
+        "description": "BRCA1 gene mutation positive",
+        "system": "snomedct",
+        "code": "412734009"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/412738007",
+        "prefLabel": "BRCA2 gene mutation positive",
+        "description": "BRCA2 gene mutation positive",
+        "system": "snomedct",
+        "code": "412738007"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Metastasis from malignant tumor of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/315004001",
+        "prefLabel": "Metastasis from malignant tumor of breast",
+        "description": "Metastasis from malignant tumor of breast",
+        "system": "snomedct",
+        "code": "315004001"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication with mechanism of action PARP inhibitor.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "value": "PARP inhibitor"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of HIV infection.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/86406008",
+        "prefLabel": "Human immunodeficiency virus infection",
+        "description": "HIV infection",
+        "system": "snomedct",
+        "code": "86406008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Viral hepatitis C.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/50711007",
+        "prefLabel": "Viral hepatitis C",
+        "description": "Viral hepatitis C",
+        "system": "snomedct",
+        "code": "50711007"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Hepatitis B.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/66071002",
+        "prefLabel": "Type B viral hepatitis",
+        "description": "Hepatitis B",
+        "system": "snomedct",
+        "code": "66071002"
+      }
+    ]
+  }
+]

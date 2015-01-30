@@ -1,0 +1,218 @@
+[
+  {
+    "description": "Patient's age must be greater than or equal to 18 years.",
+    "type": "age",
+    "include": true,
+    "inputs": [
+      {
+        "operator": ">=",
+        "threshold": 18
+      }
+    ]
+  },
+  {
+    "description": "Patient's gender must be female.",
+    "type": "gender",
+    "include": true,
+    "inputs": [
+      {
+        "value": "F"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Human epidermal growth factor 2 negative carcinoma of breast.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/431396003",
+        "prefLabel": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "description": "Human epidermal growth factor 2 negative carcinoma of breast",
+        "system": "snomedct",
+        "code": "431396003"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have active diagnosis of Estrogen receptor positive tumor OR Progesterone receptor positive tumor.",
+    "type": "diagnosis",
+    "include": true,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/416053008",
+        "prefLabel": "Estrogen receptor positive tumor",
+        "description": "Estrogen receptor positive tumor",
+        "system": "snomedct",
+        "code": "416053008"
+      },
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/416561008",
+        "prefLabel": "Progesterone receptor positive tumor",
+        "description": "Progesterone receptor positive tumor",
+        "system": "snomedct",
+        "code": "416561008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must have a health evaluation score of ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed less than or equal to 1.",
+    "type": "score",
+    "include": true,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/LNC/42800-3",
+        "prefLabel": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "description": "ECOG performance status grade:Prid:Pt:^Patient:Nom:Observed",
+        "system": "lnc",
+        "code": "42800-3"
+      },
+      {
+        "operator": "<=",
+        "threshold": 1
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Metastasis to brain.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/94225005",
+        "prefLabel": "Secondary malignant neoplasm of brain",
+        "description": "Metastasis to brain",
+        "system": "snomedct",
+        "code": "94225005"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Leptomeningeal sarcoma.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/78303004",
+        "prefLabel": "Meningioma, malignant",
+        "description": "Leptomeningeal sarcoma",
+        "system": "snomedct",
+        "code": "78303004"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have active diagnosis of HIV infection.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "active",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/86406008",
+        "prefLabel": "Human immunodeficiency virus infection",
+        "description": "HIV infection",
+        "system": "snomedct",
+        "code": "86406008"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical diagnosis of Seizure.",
+    "type": "diagnosis",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/SNOMEDCT/91175000",
+        "prefLabel": "Seizure",
+        "description": "Seizure",
+        "system": "snomedct",
+        "code": "91175000"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class Androgen Receptor Inhibitor.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175560",
+        "prefLabel": "Androgen Receptor Inhibitor [EPC]",
+        "description": "Androgen Receptor Inhibitor",
+        "system": "ndfrt",
+        "code": "N0000175560"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class Estrogen within less than or equal to 14 days.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175825",
+        "prefLabel": "Estrogen [EPC]",
+        "description": "Estrogen",
+        "system": "ndfrt",
+        "code": "N0000175825"
+      }
+    ],
+    "duration": [
+      {
+        "threshold": "P14D",
+        "operator": "<="
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have historical medication within drug class Androgen.",
+    "type": "medication",
+    "include": false,
+    "qualifier": "historical",
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000175824",
+        "prefLabel": "Androgen [EPC]",
+        "description": "Androgen",
+        "system": "ndfrt",
+        "code": "N0000175824"
+      }
+    ]
+  },
+  {
+    "description": "Patient must not have drug allergy to ingredient exemestane.",
+    "type": "allergy",
+    "include": false,
+    "inputs": [
+      {
+        "purl": "http://purl.bioontology.org/ontology/NDFRT/N0000004783",
+        "prefLabel": "exemestane [Chemical/Ingredient]",
+        "description": "exemestane",
+        "system": "ndfrt",
+        "code": "N0000004783"
+      }
+    ]
+  }
+]
