@@ -268,7 +268,7 @@ class TargetProfileRuleMatcher():
 
 class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'gender'
-
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = patient.gender == self.rule.gender
@@ -280,7 +280,7 @@ class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
 
 class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'age'
-
+	
 	def test(self, patient):
 		age = patient.age_years
 		if age is None:
@@ -306,6 +306,25 @@ class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 
 class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'state'
+	
+	def test(self, patient):
+		include = self.rule.include
+		match = False
+		
+		if 'pregnant' == self.rule.state:
+			pregnancy = TargetProfileStatePregnancyMatcher()
+			match = pregnancy.test_bool(patient)
+		
+		elif 'breastfeeding' == self.rule.state:
+			return TrialMatchTest.unsure('Cannot yet process state rule "{}"'.format(self.rule.description))
+		elif 'able to swallow oral medication' == self.rule.state:
+			return TrialMatchTest.unsure('Cannot yet process state rule "{}"'.format(self.rule.description))
+		else:
+			logging.warning('I cannot match to state "{}"'.format(self.rule.state))
+		
+		if include ^ match:
+			return TrialMatchTest.failed(self.rule.description, 'patient.state.{}'.format(self.rule.state))
+		return TrialMatchTest.passed(self.rule.description)
 
 
 class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
@@ -316,21 +335,22 @@ class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
 	
 	def test(self, patient):
 		include = self.rule.include
+		match = False
+		match_desc = 'patient.conditions'
 		
 		# compare SNOMED-CT codes
 		if 'snomedct' == self.rule.diagnosis.system:
-			code = self.rule.diagnosis.code
-			for condition in patient.conditions:
-				if code == condition.snomed:
-					if include:
-						return TrialMatchTest.passed(self.rule.description)
-					return TrialMatchTest.failed(self.rule.description, condition.summary)
+			snomed = TargetProfileRuleSNOMED(self.rule.diagnosis.code)	# TODO: grab child terms from database
+			matched = snomed.matches([c.snomed for c in patient.conditions])
+			if matched is not None:
+				match = True
+				match_desc = matched.description or match_desc
 		else:
-			logging.debug('I cannot match to diagnoses of type "{}"'.format(self.rule.diagnosis.system))
+			logging.warning('I cannot match to diagnoses of type "{}"'.format(self.rule.diagnosis.system))
 		
 		# no documentation of the patient having the condition
-		if include:
-			return TrialMatchTest.failed(self.rule.description, 'patient.conditions')
+		if match ^ include:
+			return TrialMatchTest.failed(self.rule.description, match_desc)
 		return TrialMatchTest.passed(self.rule.description)
 
 
@@ -348,3 +368,82 @@ TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
+
+
+class TargetProfileRuleSNOMED(object):
+	""" Holds a SNOMED-CT code rule that can expand into child codes.
+	"""
+	
+	class SNOMEDCode(object):
+		def __init__(self, code, description=None):
+			self.code = code
+			self.description = description
+			self.children = None
+		
+		def matches(self, code):
+			if code == self.code:
+				return self
+			if self.children is not None:
+				for child in self.children:
+					if child.matches(code):
+						return child
+			return None
+		
+		def add(self, child_code, description=None):
+			if child_code is not None:
+				if self.children is None:
+					self.children = []
+				self.children.append(TargetProfileRuleSNOMED.SNOMEDCode(child_code, description))
+	
+	
+	def __init__(self, code, description=None, child_codes=None):
+		""" child_nodes must be a list of tuples: (code, desc).
+		"""
+		self.code = TargetProfileRuleSNOMED.SNOMEDCode(code, description)
+		if child_codes is not None:
+			for ccode, cdesc in child_codes:
+				self.code.add(ccode, cdesc)
+	
+	def matches(self, codes):
+		""" Returns a `SNOMEDCode` instance, or None.
+		"""
+		if codes is not None:
+			for code in codes:
+				matched = self.code.matches(code)
+				if matched is not None:
+					return matched
+		return None
+
+
+class TargetProfileStatePregnancyMatcher(object):
+	""" Tests the patient's condition list against pregnancy codes.
+	"""
+	# TODO: should extract child terms from database
+	snomed = TargetProfileRuleSNOMED(77386006, 'Patient currently pregnant', [
+		(9279009, 'Extra-amniotic pregnancy'),
+		(45307008, 'Extrachorial pregnancy'),
+		(47200007, 'High risk pregnancy'),
+			(444661007, 'High risk pregnancy due to history of preterm labor'),
+		(439311009, 'Intends to continue pregnancy'),
+		(65727000, 'Intrauterine pregnancy'),
+			(442478007, 'Combined tubal and intrauterine pregnancy'),
+		(102876002, 'Multigravida'),
+		(72892002, 'Normal pregnancy'),
+		(127363001, 'Number of pregnancies, currently pregnant'),
+		(14418008, 'Precocious pregnancy'),
+		(169561007, 'Pregnant - blood test confirms'),
+		(169564004, 'Pregnant - on abdominal palpation'),
+		(169563005, 'Pregnant - on history'),
+		(169560008, 'Pregnant - urine test confirms'),
+		(169562000, 'Pregnant - V.E. confirms'),
+		(102875003, 'Surrogate pregnancy'),
+		(83074005, 'Unplanned pregnancy'),
+			(169568001, 'Unplanned pregnancy unknown if child is wanted'),
+		(58532003, 'Unwanted pregnancy'),
+			(169567006, 'Pregnant -unplanned-not wanted'),
+	])
+	
+	def test_bool(self, patient):
+		pregnancy = self.__class__.snomed.matches([c.snomed for c in patient.conditions])
+		return pregnancy is not None
+
