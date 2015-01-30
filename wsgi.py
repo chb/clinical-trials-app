@@ -41,7 +41,7 @@ app = Flask(__name__)
 
 # Trial Caches
 LocalTrialServer.trial_cache = LocalJSONCache('trial-cache')
-tpdir = os.path.join('sarah-cannon-pilot', 'breast-target-profiles', 'JSON')
+tpdir = os.path.join('sarah-cannon-pilot', 'JSON')
 LocalTrialServer.profile_cache = LocalJSONCache(tpdir)
 LocalTrialServer.profile_cache.can_write = False
 
@@ -212,7 +212,7 @@ def find():
 	trialserver = None
 	if LILLY_SECRET is not None:
 		trialserver = LillyV2Server(LILLY_SECRET)
-	trialserver = LocalTrialServer('sarah-cannon-pilot/breast-target-profiles/JSON/', trialserver)
+	trialserver = LocalTrialServer(os.path.join('sarah-cannon-pilot', 'JSON'), trialserver)
 	
 	finder = TrialFinder(trialserver, trial_class=TargetTrial)
 	#finder.fetch_all = False

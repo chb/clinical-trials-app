@@ -37,7 +37,6 @@ class LocalTrialServer(trialserver.TrialServer):
 				trial = trial_class(nct, trial_json)
 			else:
 				trial = self.lilly_server.get_trial(nct, trial_class)
-				print(trial)
 				if cache_t is not None:
 					cache_t.store(trial.nct, trial.as_json())
 			
@@ -57,8 +56,9 @@ class LocalJSONCache(object):
 	""" Handles caching JSON files by id.
 	"""
 	def __init__(self, directory):
+		directory = os.path.abspath(directory)
 		if not os.path.exists(directory):
-			raise Exception('Cache directory "{}" does not exist, please create it'.format(directory))
+			os.makedirs(directory, exist_ok=True)
 		
 		self.cache_dir = directory
 		self.can_write = True
