@@ -36,22 +36,21 @@ var TrialFinderResult = can.Model.extend({
 		
 		// fill properties
 		this.attr('results', TrialResult.fromJSON(json['results'], this));
-		this.countResults();
+		this.updateResultCount();
 		this.collectInterventions();
 		this.collectPhases();
 		this.updateTrialShownState();
 	},
 	
-	countResults: function() {
+	updateResultCount: function() {
 		var sugg = 0;
 		var elig = 0;
 		var inelig = 0;
 		for (var i = 0; i < this.results.length; i++) {
-			if ('ineligible' == this.results[i].overallStatus()) {
-				inelig++;
-			}
-			else {
-				elig++;
+			switch (this.results[i].status) {
+				case 'suggested':	sugg++;		break;
+				case 'eligible':	elig++;		break;
+				default:			inelig++;
 			}
 		}
 		this.attr('numSuggested', sugg);
@@ -161,23 +160,19 @@ var TrialFinderResult = can.Model.extend({
 			var trial = result.trial;
 			
 			// update shown status based on eligibility status
-			if (trial && trial.status) {
-				if ('suggested' == trial.status) {
+			switch (result.status) {
+				case 'suggested':
 					result.attr('shownForStatus', this.showSuggested);
-				}
-				else if ('eligible' == trial.status) {
+					break
+				case 'eligible':
 					result.attr('shownForStatus', this.showEligible);
-				}
-				else if ('ineligible' == trial.status) {
+					break
+				case 'ineligible':
 					result.attr('shownForStatus', this.showIneligible);
-				}
-				else {
-					console.warn('Trial has an unknown status:', trial.status);
+					break
+				default:
+					console.warn('Trial has an unknown status:', result.status);
 					result.attr('shownForStatus', true);
-				}
-			}
-			else {
-				console.error('No trial status, or worse: no trial', trial, trial ? trial.status : undefined);
 			}
 			
 			// update shown status based on interventions 

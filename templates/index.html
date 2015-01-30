@@ -124,7 +124,7 @@
 			</script>
 			
 			<script type="text/mustache" id="trial_tmpl">
-				<div class="trial {{ trial.status }}">
+				<div class="trial {{ status }}">
 					<div class="trial_head">
 						<div class="trial_head_text">
 							{{#trial.editing}}
@@ -147,7 +147,8 @@
 							<button type="reset" can-click="cancel">Cancel</button>
 							{{/}}
 							{{^editing}}
-							{{#canEdit}}<button can-click="edit">Edit Trial</button>{{/}}
+							{{#canEdit}}<button can-click="edit">Edit Trial</button><br>{{/}}
+							<button can-click="suggest">{{#suggested}}Un-Suggest{{/}}{{^suggested}}Suggest Trial{{/}}</button>
 							{{/}}
 						</div>
 					</div>

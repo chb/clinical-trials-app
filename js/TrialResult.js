@@ -4,7 +4,7 @@
 var TrialResult = can.Model.extend(
 {
 	/// Instantiate from an array of results
-	fromJSON: function(array, finder) {
+	fromJSON: function(array, finder_result) {
 		if (!array) {
 			return null;
 		}
@@ -12,22 +12,27 @@ var TrialResult = can.Model.extend(
 		var results = [];
 		for (var i = 0; i < array.length; i++) {
 			var result = new TrialResult(array[i]);
-			result.finder = finder
+			result.finder_result = finder_result
 			results.push(result);
 		}
 		return results;
 	},
 },
 {
-	finder: null,
+	finder_result: null,
 	
 	init: function(json) {
 		this.attr('tests', new TrialResultTest.fromJSON(json.tests));
 		this.attr('hasTests', this.tests && this.tests.length > 0);
 		this.attr('canEdit', true);
 		
+		this.attr('suggested', this.patient_info && this.patient_info.suggested);
+		this.attr('status', this.overallStatus());
+		this.bind('suggested', function(ev, newVal, oldVal) {
+			this.attr('status', this.overallStatus());
+		});
+		
 		var trial = new Trial(json.trial);
-		trial.attr('status', this.overallStatus());
 		this.attr('trial', trial);
 		
 		this.bind('shownForStatus', function(ev, newVal, oldVal) {
@@ -57,18 +62,25 @@ var TrialResult = can.Model.extend(
 		TrialEditor.singleton().save(this);
 	},
 	
+	suggest: function() {
+		this.attr('suggested', !this.suggested);
+		this.finder_result.updateResultCount();
+	},
+	
 	updateFromPatientInfo: function(info) {
-		if (info && info.trial_id == this.trial._id && info.patient_id == this.finder.patient_id) {
+		if (info && info.trial_id == this.trial._id && info.patient_id == this.finder_result.patient_id) {
 			this.attr('patient_info', info);
 		}
 		else {
-			console.error("Cannot update from patient info because of trial_id/patient_id mismatch:", info.trial_id, this.trial._id, info.patient_id, this.finder.patient_id)
+			console.error("Cannot update from patient info because of trial_id/patient_id mismatch:", info.trial_id, this.trial._id, info.patient_id, this.finder_result.patient_id)
 		}
 	},
 	
-	/** Returns true if at least one test's status is "fail". */
+	/** Returns "suggested", "eligible" or "ineligible", based on trial preferences and trial test status. */
 	overallStatus: function() {
-		// if suggested...
+		if (this.suggested) {
+			return 'suggested';
+		}
 		if (this.tests) {
 			for (var i = 0; i < this.tests.length; i++) {
 				if ('fail' == this.tests[i].status) {
