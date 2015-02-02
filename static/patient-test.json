@@ -1,23 +1,28 @@
 {
     "_id": "1540505",
-    "age_years": 50,
+    "age_years": 51,
     "birthday": "1964-01-21",
     "city": "Bixby",
     "conditions": [{
+        "_id": "1ffc31c4-a581-48d6-ae8b-858939c7dee5",
         "date_onset": "2005-03-09",
         "date_resolution": null,
         "notes": null,
         "snomed": "162031009",
         "status": "confirmed",
-        "summary": "Dyspepsia and other specified disorders of function of stomach"
+        "summary": "Dyspepsia and other specified disorders of function of stomach",
+        "type": "condition"
     }, {
+        "_id": "a9c13b9b-b1e4-4d7b-a25e-4b564dac9e41",
         "date_onset": "2005-03-09",
         "date_resolution": null,
         "notes": null,
         "snomed": "13200003",
         "status": "confirmed",
-        "summary": "Peptic ulcer without hemorrhage, without perforation AND without obstruction"
+        "summary": "Peptic ulcer without hemorrhage, without perforation AND without obstruction",
+        "type": "condition"
     }, {
+        "_id": "0ae42ac3-84b1-4568-82e9-00d80d9fef8d",
         "date_onset": "2005-03-12",
         "date_resolution": null,
         "notes": null,
@@ -25,6 +30,7 @@
         "status": "confirmed",
         "summary": "Abdominal pain"
     }, {
+        "_id": "dd2a45e2-84b1-4568-4912-00d80d9fef8d",
         "date_onset": "2014-05-22",
         "date_resolution": null,
         "notes": null,
@@ -32,102 +38,431 @@
         "status": "confirmed",
         "summary": "HER2-positive carcinoma of breast"
     }, {
+        "_id": "e68e0a08-3a4b-461c-8b3a-a6e80aba42a2",
         "date_onset": "2005-03-12",
         "date_resolution": null,
         "notes": null,
         "snomed": "44054006",
         "status": "confirmed",
-        "summary": "Diabetes mellitus type 2"
+        "summary": "Diabetes mellitus type 2",
+        "type": "condition"
     }, {
+        "_id": "dd2a45e2-9ddb-4b80-bc1d-7c1f6a9dc1ac",
         "date_onset": "2005-03-25",
         "date_resolution": null,
         "notes": null,
         "snomed": "301717006",
         "status": "confirmed",
-        "summary": "Right upper quadrant pain"
+        "summary": "Right upper quadrant pain",
+        "type": "condition"
     }, {
+        "_id": "5c1c6129-767c-4912-8018-53cb69b142c2",
         "date_onset": "2005-11-20",
         "date_resolution": null,
         "notes": null,
         "snomed": "29857009",
         "status": "confirmed",
-        "summary": "Chest pain"
+        "summary": "Chest pain",
+        "type": "condition"
     }, {
+        "_id": "ec3d4db9-db12-42b5-a4d7-b6960dea1a8f",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "14302001",
         "status": "confirmed",
-        "summary": "Absence of menstruation"
+        "summary": "Absence of menstruation",
+        "type": "condition"
     }, {
+        "_id": "b749cccd-3b9e-4f04-b838-8f5bc037dabc",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "59455009",
         "status": "confirmed",
-        "summary": "Acidosis"
+        "summary": "Acidosis",
+        "type": "condition"
     }, {
+        "_id": "95a5567f-bd49-4d63-8cb1-a56b9812437e",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "14760008",
         "status": "confirmed",
-        "summary": "Constipation"
+        "summary": "Constipation",
+        "type": "condition"
     }, {
+        "_id": "aeada20f-fb28-48d5-b333-413224a2c882",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "34095006",
         "status": "confirmed",
-        "summary": "Dehydration"
+        "summary": "Dehydration",
+        "type": "condition"
     }, {
+        "_id": "dbaecd32-35ae-4c94-babd-a9016b3d8be5",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "235595009",
         "status": "confirmed",
-        "summary": "Gastroesophageal reflux disease"
+        "summary": "Gastroesophageal reflux disease",
+        "type": "condition"
     }, {
+        "_id": "126252fd-71ae-460b-9336-cbbe73b93bb1",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "43339004",
         "status": "confirmed",
-        "summary": "Hypokalemia"
+        "summary": "Hypokalemia",
+        "type": "condition"
     }, {
+        "_id": "6b003655-9e94-474e-bb78-fb21578ea98e",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "25374005",
         "status": "confirmed",
-        "summary": "Other and unspecified noninfectious gastroenteritis and colitis"
+        "summary": "Other and unspecified noninfectious gastroenteritis and colitis",
+        "type": "condition"
     }, {
+        "_id": "33fbc5e2-3285-421b-abac-89e49d740204",
         "date_onset": "2005-12-30",
         "date_resolution": null,
         "notes": null,
         "snomed": "267432004",
         "status": "confirmed",
-        "summary": "Pure hypercholesterolemia"
+        "summary": "Pure hypercholesterolemia",
+        "type": "condition"
     }, {
+        "_id": "be1528db-1841-4712-925a-0cd8e22594cf",
         "date_onset": "2006-04-10",
         "date_resolution": null,
         "notes": null,
         "snomed": "38341003",
         "status": "confirmed",
-        "summary": "Essential hypertension"
+        "summary": "Essential hypertension",
+        "type": "condition"
     }, {
+        "_id": "ce88e343-f3cd-4e07-aff1-46f654d04525",
         "date_onset": "2006-04-10",
         "date_resolution": null,
         "notes": null,
         "snomed": "25064002",
         "status": "confirmed",
-        "summary": "Headache"
+        "summary": "Headache",
+        "type": "condition"
     }
     ],
     "country": "USA",
     "full_name": "Amy E. Clark",
     "gender": "female",
     "location": "Bixby, OK",
+    "medications": [{
+        "_id": "98fb021c-1b0f-49d2-85c9-7707d911c8a7",
+        "rxcui": "582620",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "159f26bf-20b1-4061-8e19-71474ba4cdeb",
+        "rxcui": "308189",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "e25226f8-9d77-4769-9778-e82d00c0dcdf",
+        "rxcui": "617993",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "34ae4d8f-a4d3-4290-9df4-5aafe22457c7",
+        "rxcui": "211307",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "4d5476c9-70ea-4fa0-9da8-405c5a52813e",
+        "rxcui": "261091",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "25614efd-3d70-4815-8fee-affe05d5fcbe",
+        "rxcui": "404630",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "5c6a0c5f-d480-4582-8ece-73d786d5b3af",
+        "rxcui": "239191",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "7aae7388-436c-43c3-a15c-028d46ca9400",
+        "rxcui": "208406",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "8ee7ba82-dabc-4d03-8c05-5ef926cb4e38",
+        "rxcui": "150840",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "c2de1f0a-780f-4ffa-8a13-155974924f49",
+        "rxcui": "309462",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "5ce5df21-ae62-49ed-8e11-115d9d0deccd",
+        "rxcui": "310333",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "6aa6732b-2d9e-41ce-955f-ed1334a831c3",
+        "rxcui": "351396",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "6a068667-f2c9-417d-a70a-542a131d1445",
+        "rxcui": "310893",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "5afc3e38-10d8-44a3-aa00-9dd4a4c31354",
+        "rxcui": "239191",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "d7f6796f-1370-42f5-8ab4-5bcce9d50c55",
+        "rxcui": "352027",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "9696ff8b-153c-4afa-b378-16859b46b1d8",
+        "rxcui": "104884",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "a4f045fb-3b4a-4b03-b1fd-740a8b9fdee2",
+        "rxcui": "755272",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "ab846096-a2c8-4689-96bf-d84c3c404954",
+        "rxcui": "308189",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "1d209b5f-d08e-4e9a-9d31-dd655a80b723",
+        "rxcui": "106346",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "a418fab9-1a48-43ca-92ad-1c90d733d524",
+        "rxcui": "617423",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "52782874-6e20-4e9e-b514-84523781e3ca",
+        "rxcui": "308607",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "3ee3061f-43f0-4ea7-bc54-0581e97936ca",
+        "rxcui": "312961",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "c254a6cd-6c6b-4a6e-92ed-8015878a6883",
+        "rxcui": "381056",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "c404d963-05c7-43ef-a208-4f7d767f301f",
+        "rxcui": "866511",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "9acc384e-bd01-4fc1-8ef9-b6b61e30fe61",
+        "rxcui": "866514",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "df4256c8-45f9-43ca-98df-9c427ed2f278",
+        "rxcui": "197589",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "a752a7a2-c551-4560-8d64-1d16b2c88a58",
+        "rxcui": "762675",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "f63a576d-ba7a-4c77-b157-4c9dbf0a70d2",
+        "rxcui": "151124",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "30b6b9a7-d9a9-48c1-bef6-baffc4834228",
+        "rxcui": "877300",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "0d189d29-59c8-424f-896c-52c1b5d53b0d",
+        "rxcui": "311992",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "962d36f6-eecb-49f3-8c88-61494f229c46",
+        "rxcui": "285128",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "337b908b-0314-4446-ac4f-379a799ac0e7",
+        "rxcui": "745679",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "2c97cb58-9ea4-4312-8ca4-6d13c33847c8",
+        "rxcui": "404473",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "1c018b63-d0b9-42d2-a86c-f75c6dd8753e",
+        "rxcui": "284429",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "12a172e9-9396-4574-9c70-705a7745dbff",
+        "rxcui": "404630",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "db081a45-4d4e-47b7-9f3d-3a233a8a1569",
+        "rxcui": "352318",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "7451a2d4-339d-4b1d-8073-ff6f5ecfcaac",
+        "rxcui": "352319",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "6a028516-c321-4223-b283-c81df42ab2b4",
+        "rxcui": "745752",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "6b9c7ba2-e72a-43be-9997-c71c1da44cd0",
+        "rxcui": "314077",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "71413919-25d1-4e75-94cb-e65cf952a3cc",
+        "rxcui": "404673",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "d543d78b-f831-4b28-b752-50d8ec9f4ac8",
+        "rxcui": "153357",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "3f85347d-d729-4af5-a560-8510d731f378",
+        "rxcui": "197770",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "7fb7e791-4f5b-442d-b36f-994d850a10ca",
+        "rxcui": "199381",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "2827f2c9-1ae3-4739-a701-cf3f01d0c0c4",
+        "rxcui": "106256",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "37e388de-198e-4d90-960c-5933153c7ca3",
+        "rxcui": "197803",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "fee3b949-09af-4e2b-b1b3-ab2ab4eb32e3",
+        "rxcui": "313960",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "c10635d6-7b92-4a45-877a-ffd8a31d458b",
+        "rxcui": "198305",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "d764eb75-ebb5-4900-bd72-21439aec1703",
+        "rxcui": "309367",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "4f192293-4f51-411c-af31-93957cb714c8",
+        "rxcui": "762675",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }, {
+        "_id": "abb3f693-294d-4089-818c-36c6d3ec9ed2",
+        "rxcui": "859258",
+        "status": "active",
+        "summary": null,
+        "type": "medication"
+    }
+    ],
     "region": "OK",
+    "trial_info": [],
     "type": "patient"
 }
