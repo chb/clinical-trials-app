@@ -66,19 +66,27 @@ class TargetProfileRule(object):
 			self.type = json_dict.get('type')
 			self.description = json_dict.get('description')
 			self.include = json_dict.get('include')
-	
+
 
 class TargetProfilePatientState(TargetProfileRule):
 	""" Describe a patient's state.
 	"""
 	for_type = 'state'
+	
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.state = None
+		
+		inp_1 = json_dict['inputs'][0] if json_dict and json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
+		if inp_1 is not None:
+			self.state = inp_1.get('value')
 
 
 class TargetProfileGender(TargetProfileRule):
 	""" Limit a patient's gender.
 	"""
 	for_type = 'gender'
-
+	
 	def __init__(self, json_dict):
 		super().__init__(json_dict)
 		self.gender = None
@@ -97,7 +105,7 @@ class TargetProfileAge(TargetProfileRule):
 	""" Limit a patient's age.
 	"""
 	for_type = 'age'
-
+	
 	def __init__(self, json_dict):
 		super().__init__(json_dict)
 		self.threshold = None
@@ -126,7 +134,22 @@ class TargetProfileDiagnosis(TargetProfileRule):
 		if json_dict is not None:
 			inp_1 = json_dict['inputs'][0] if json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
 			if inp_1 is not None:
-				self.diagnosis = TargetProfileInputDiagnosis(inp_1)
+				self.diagnosis = TargetProfileCodedInput(inp_1)
+
+
+class TargetProfileMedication(TargetProfileRule):
+	""" Handle medications.
+	"""
+	for_type = 'medication'
+	
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.medication = None
+		
+		if json_dict is not None:
+			inp_1 = json_dict['inputs'][0] if json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
+			if inp_1 is not None:
+				self.medication = TargetProfileCodedInput(inp_1)
 
 
 class TargetProfileMeasurement(TargetProfileRule):
@@ -139,18 +162,21 @@ class TargetProfileAllergy(TargetProfileRule):
 	""" Handle allergies.
 	"""
 	for_type = 'allergy'
+	
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.allergy = None
+		
+		if json_dict is not None:
+			inp_1 = json_dict['inputs'][0] if json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
+			if inp_1 is not None:
+				self.allergy = TargetProfileCodedInput(inp_1)
 
 
 class TargetProfileMedicalScore(TargetProfileRule):
 	""" Handle medical scores.
 	"""
 	for_type = 'score'
-
-
-class TargetProfileMedication(TargetProfileRule):
-	""" Handle medications.
-	"""
-	for_type = 'medication'
 
 
 class TargetProfileProcedure(TargetProfileRule):
@@ -221,7 +247,7 @@ class TargetProfileInput(object):
 		self.description = json_dict.get('description') if json_dict is not None else None
 	
 
-class TargetProfileInputDiagnosis(TargetProfileInput):
+class TargetProfileCodedInput(TargetProfileInput):
 	def __init__(self, json_dict):
 		super().__init__(json_dict)
 		self.system = json_dict.get('system') if json_dict is not None else None

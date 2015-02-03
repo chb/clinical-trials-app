@@ -194,7 +194,7 @@ def patient(id=None):
 		logging.info("Trying to retrieve /patient without authorized smart client")
 		return 401
 	
-	return jsonify(patient.for_api())
+	return jsonify(patient.for_api(stripped=True))
 
 
 # MARK: Trials

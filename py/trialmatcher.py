@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import targetprofilerulematcher
 
 
 class TrialMatchResult(object):
@@ -218,133 +219,20 @@ class TrialProfileMatcher(TrialMatcher):
 		# match over all rules
 		tests = []
 		for rule in trial.target_profile.rules:
-			matcher = TargetProfileRuleMatcher.get_matcher(rule)
+			matcher = targetprofilerulematcher.TargetProfileRuleMatcher.get_matcher(rule)
 			if matcher is None:
-				logging.debug('No target profile rule matcher is available for {} "{}"'.format(rule.for_type, rule.description))
+				logging.debug('{}: No target profile rule matcher is available for {} "{}"'.format(trial.nct, rule.for_type, rule.description))
 				tests.append(TrialMatchTest.unsure("No rule matcher to test {} rule \"{}\"".format(rule.for_type, rule.description)))
 			else:
-				tests.append(matcher.test(patient))
+				res, reason = matcher.test(patient)
+				test = None
+				if res is None:
+					test = TrialMatchTest.unsure(reason or matcher.rule.description)
+				elif res:
+					test = TrialMatchTest.passed(matcher.rule.description)
+				else:
+					test = TrialMatchTest.failed(matcher.rule.description, reason)
+				tests.append(test)
 		
 		return tests
 
-
-class TargetProfileRuleMatcher():
-	""" Match one target profile rule.
-	"""
-	rule_type = None
-	matcher_classes = {}
-	
-	@classmethod
-	def register_rule(cls, klass):
-		""" Register a TargetProfileRuleMatcher to match to rules of a given
-		type.
-		"""
-		for_type = klass.rule_type if klass else None
-		if not for_type:
-			raise Exception('I need a class with a rule_type')
-		if for_type in cls.matcher_classes:		# could check if class is different to fail gracefully on double-imports
-			raise Exception('I have already registered {} for {}'.format(cls.matcher_classes[for_type]), for_type)
-		cls.matcher_classes[for_type] = klass
-	
-	@classmethod
-	def get_matcher(cls, for_rule):
-		if for_rule is None or not for_rule.for_type:
-			return None
-		
-		klass = cls.matcher_classes.get(for_rule.for_type)
-		return klass(for_rule) if klass is not None else None
-	
-	def __init__(self, rule):
-		self.rule = rule
-	
-	def test(self, patient):
-		""" Performs the matching logic, returning a TrialMatchTest describing
-		if the patient meets the criteria.
-		
-		:returns: TrialMatchTest instance describing the test outcome
-		"""
-		return TrialMatchTest.unsure(self.rule.description)
-
-
-class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'gender'
-
-	def test(self, patient):
-		include = self.rule.include
-		match = patient.gender == self.rule.gender
-		
-		if include ^ match:
-			return TrialMatchTest.failed(self.rule.description, 'patient.gender')
-		return TrialMatchTest.passed(self.rule.description)
-
-
-class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'age'
-
-	def test(self, patient):
-		age = patient.age_years
-		if age is None:
-			logging.debug('Patient doesn\'t have an age "{}"'.format(self.rule.diagnosis.system))
-			return TrialMatchTest.unsure(self.rule.description)
-		
-		include = self.rule.include
-		match = False
-		if self.rule.is_upper:
-			if age < self.rule.threshold:
-				match = True
-		else:
-			if age > self.rule.threshold:
-				match = True
-		if not match and self.rule.is_inclusive:
-			if age == self.rule.threshold:
-				match = True
-		
-		if include ^ match:
-			return TrialMatchTest.failed(self.rule.description, 'patient.age')
-		return TrialMatchTest.passed(self.rule.description)
-
-
-class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'state'
-
-
-class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
-	""" Determines if a patient matches a diagnosis by looking at her
-	documented conditions.
-	"""
-	rule_type = 'diagnosis'
-	
-	def test(self, patient):
-		include = self.rule.include
-		
-		# compare SNOMED-CT codes
-		if 'snomedct' == self.rule.diagnosis.system:
-			code = self.rule.diagnosis.code
-			for condition in patient.conditions:
-				if code == condition.snomed:
-					if include:
-						return TrialMatchTest.passed(self.rule.description)
-					return TrialMatchTest.failed(self.rule.description, condition.summary)
-		else:
-			logging.debug('I cannot match to diagnoses of type "{}"'.format(self.rule.diagnosis.system))
-		
-		# no documentation of the patient having the condition
-		if include:
-			return TrialMatchTest.failed(self.rule.description, 'patient.conditions')
-		return TrialMatchTest.passed(self.rule.description)
-
-
-class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'medication'
-
-
-class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'score'
-
-
-TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)

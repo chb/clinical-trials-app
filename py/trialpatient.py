@@ -8,8 +8,12 @@ from dateutil.parser import *
 from dateutil.relativedelta import *
 
 import trialcondition
+import trialmedication
+import trialallergy
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 import smartclient.fhirclient.models.condition as condition
+import smartclient.fhirclient.models.medicationprescription as medicationprescription
+import smartclient.fhirclient.models.allergyintolerance as allergyintolerance
 
 
 class TrialPatient(jsondocument.JSONDocument):
@@ -31,6 +35,9 @@ class TrialPatient(jsondocument.JSONDocument):
 	- location = city, region: string
 	
 	- conditions: [TrialCondition]
+	- medications: [TrialMedication]
+	- allergies: [TrialAllergy]
+	
 	- trial_info: [TrialPatientInfo] (loaded from db on init)
 	"""
 	
@@ -42,6 +49,7 @@ class TrialPatient(jsondocument.JSONDocument):
 			self.country = "United States"
 		if self.location is None:
 			self.update_location()
+		
 		if self.conditions is not None:
 			cond = []
 			for c in self.conditions:
@@ -50,6 +58,24 @@ class TrialPatient(jsondocument.JSONDocument):
 				else:
 					cond.append(trialcondition.TrialCondition(c))
 			self.conditions = cond
+		
+		if self.medications is not None:
+			meds = []
+			for m in self.medications:
+				if isinstance(m, trialmedication.TrialMedication):
+					meds.append(m)
+				else:
+					meds.append(trialmedication.TrialMedication(m))
+			self.medications = meds
+		
+		if self.allergies is not None:
+			allergs = []
+			for a in self.allergies:
+				if isinstance(a, trialallergy.TrialAllergy):
+					allergs.append(a)
+				else:
+					allergs.append(trialallergy.TrialAllergy(a))
+			self.allergies = allergs
 		
 		self.trial_info = TrialPatientInfo.find({'type': 'trial-patient-info', 'patient_id': ident})
 	
@@ -63,10 +89,14 @@ class TrialPatient(jsondocument.JSONDocument):
 		if 'country' == name or 'city' == name or 'region' == name:
 			self.update_location()
 	
-	def for_api(self):
-		js_dict = super().for_api()
+	def for_api(self, stripped=False):
+		js_dict = super().for_api().copy()
 		if self.conditions is not None:
-			js_dict['conditions'] = [c.for_api() for c in self.conditions]
+			js_dict['conditions'] = None if stripped else [c.for_api() for c in self.conditions]
+		if self.medications is not None:
+			js_dict['medications'] = None if stripped else [m.for_api() for m in self.medications]
+		if self.allergies is not None:
+			js_dict['allergies'] = None if stripped else [a.for_api() for a in self.allergies]
 		if self.trial_info is not None:
 			js_dict['trial_info'] = [i.for_api() for i in self.trial_info]
 		return js_dict
@@ -101,6 +131,14 @@ class TrialPatient(jsondocument.JSONDocument):
 		# retrieve problem list
 		cond_search = condition.Condition.where(struct={'subject': fpat._remote_id})
 		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform(fpat._server)]
+		
+		# retrieve meds
+		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat._remote_id})
+		patient.medications = [trialmedication.TrialMedication.from_fhir(m) for m in med_search.perform(fpat._server)]
+		
+		# retrieve allergies
+		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat._remote_id})
+		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform(fpat._server)]
 		
 		return patient
 	
@@ -175,7 +213,7 @@ class TrialPatient(jsondocument.JSONDocument):
 		if self.region:
 			parts.append(self.region)
 		setattr(self, 'location', ', '.join(parts) if len(parts) > 0 else None)
-	
+
 
 class TrialPatientInfo(jsondocument.JSONDocument):
 	""" Information linking a patient and a trial, stored by app users.
