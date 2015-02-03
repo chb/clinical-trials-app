@@ -201,6 +201,30 @@ class TargetProfileLabValue(TargetProfileRule):
 	""" Handle lab values.
 	"""
 	for_type = 'labValue'
+	
+	def __init__(self, json_dict):
+		super().__init__(json_dict)
+		self.lab = None
+		self.threshold = None
+		self.is_upper = True
+		self.is_inclusive = True
+		self.qualifier = json_dict.get('qualifier') if json_dict is not None else None
+		
+		inputs = json_dict.get('inputs') if json_dict is not None else None
+		if inputs is not None and len(inputs) > 1:
+			for inp in inputs:
+				if 'threshold' in inp:
+					self.threshold = inp['threshold']
+					operator = inp.get('operator')
+					if '>' in operator:
+						self.is_upper = False
+					if '=' in operator:
+						self.is_inclusive = True
+				elif 'code' in inp:
+					self.lab = TargetProfileCodedInput(inp)
+		else:
+			logging.warning('No "inputs" array or not 2 or more items for "{}" rule: {}'
+				.format(self.rule.description, len(inputs) if inputs else None))
 
 
 class TargetProfileMutation(TargetProfileRule):
@@ -252,4 +276,5 @@ class TargetProfileCodedInput(TargetProfileInput):
 		super().__init__(json_dict)
 		self.system = json_dict.get('system') if json_dict is not None else None
 		self.code  = json_dict.get('code') if json_dict is not None else None
+		self.unit  = json_dict.get('units') if json_dict is not None else None		# TODO: "units" should be "unit", fix when Lilly fixes
 

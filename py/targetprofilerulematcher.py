@@ -193,6 +193,57 @@ class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'score'
 
 
+class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
+	""" Determines if the patient has a documented laboratory value matching
+	the rule.
+	"""
+	rule_type = 'labValue'
+	
+	def test(self, patient):
+		include = self.rule.include
+		match = None
+		match_desc = 'patient.labs'
+		
+		# compare LOINC lab values
+		# TODO: only regard latest lab value if rule.qualifier says so, currently looks at all values
+		if 'lnc' == self.rule.lab.system:
+			loinc = TargetProfileRuleCode('lnc', self.rule.lab.code)
+			
+			for lab in patient.labs:
+				matched = loinc.matches([lab.loinc])
+				if matched is not None:
+					print('---> ', self.rule.qualifier)
+					if lab.unit != self.rule.lab.unit:
+						logging.warning('Different units in lab value rule matcher: {} {} vs. {} {}, skipping'
+							.format(self.rule.threshold, self.rule.lab.unit, lab.value, lab.unit))
+						continue
+					
+					if match is None:
+						match = False
+					if self.rule.is_upper:
+						if lab.value < self.rule.threshold:
+							match = True
+					else:
+						if lab.value > self.rule.threshold:
+							match = True
+					if not match and self.rule.is_inclusive:
+						if lab.value == self.rule.threshold:
+							match = True
+					
+					if match:
+						match_desc = matched.description or match_desc
+		else:
+			return (None, 'I cannot match to lab values of type "{}" for "{}"'
+				.format(self.rule.lab.system, self.rule.description))
+		
+		# if there is no lab value for the patient, we cannot test the rule
+		if match is None:
+			return (None, 'No suitable lab value to test "{}"'.format(self.rule.description))
+		if match ^ include:
+			return (False, match_desc)
+		return (True, None)
+
+
 TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
@@ -200,6 +251,7 @@ TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileLabValueRuleMatcher)
 
 
 class TargetProfileRuleCode(object):

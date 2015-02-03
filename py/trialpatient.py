@@ -10,10 +10,12 @@ from dateutil.relativedelta import *
 import trialcondition
 import trialmedication
 import trialallergy
+import triallab
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 import smartclient.fhirclient.models.condition as condition
 import smartclient.fhirclient.models.medicationprescription as medicationprescription
 import smartclient.fhirclient.models.allergyintolerance as allergyintolerance
+import smartclient.fhirclient.models.observation as observation
 
 
 class TrialPatient(jsondocument.JSONDocument):
@@ -37,6 +39,7 @@ class TrialPatient(jsondocument.JSONDocument):
 	- conditions: [TrialCondition]
 	- medications: [TrialMedication]
 	- allergies: [TrialAllergy]
+	- labs: [TrialLab]
 	
 	- trial_info: [TrialPatientInfo] (loaded from db on init)
 	"""
@@ -77,6 +80,15 @@ class TrialPatient(jsondocument.JSONDocument):
 					allergs.append(trialallergy.TrialAllergy(a))
 			self.allergies = allergs
 		
+		if self.labs is not None:
+			lbs = []
+			for l in self.labs:
+				if isinstance(l, triallab.TrialLab):
+					lbs.append(l)
+				else:
+					lbs.append(triallab.TrialLab(l))
+			self.labs = lbs
+		
 		self.trial_info = TrialPatientInfo.find({'type': 'trial-patient-info', 'patient_id': ident})
 	
 	def __setattr__(self, name, value):
@@ -97,6 +109,8 @@ class TrialPatient(jsondocument.JSONDocument):
 			js_dict['medications'] = None if stripped else [m.for_api() for m in self.medications]
 		if self.allergies is not None:
 			js_dict['allergies'] = None if stripped else [a.for_api() for a in self.allergies]
+		if self.labs is not None:
+			js_dict['labs'] = None if stripped else [l.for_api() for l in self.labs]
 		if self.trial_info is not None:
 			js_dict['trial_info'] = [i.for_api() for i in self.trial_info]
 		return js_dict
@@ -139,6 +153,10 @@ class TrialPatient(jsondocument.JSONDocument):
 		# retrieve allergies
 		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat._remote_id})
 		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform(fpat._server)]
+		
+		# retrieve labs
+		lab_search = observation.Observation.where(struct={'subject': fpat._remote_id})
+		patient.labs = [triallab.TrialLab.from_fhir(l) for l in lab_search.perform(fpat._server)]
 		
 		return patient
 	
