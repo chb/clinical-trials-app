@@ -161,15 +161,36 @@ class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
 		return (True, None)
 
 
-class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
-	rule_type = 'score'
-
-
 class TargetProfileAllergyRuleMatcher(TargetProfileRuleMatcher):
 	""" Determines if the patient has a documented allergy against the given
 	substance.
 	"""
 	rule_type = 'allergy'
+	
+	def test(self, patient):
+		include = self.rule.include
+		match = False
+		match_desc = 'patient.allergies'
+		
+		# compare NDF-RT allergies
+		if 'ndfrt' == self.rule.allergy.system:
+			ndfrt = TargetProfileRuleCode('ndfrt', self.rule.allergy.code)
+			matched = ndfrt.matches([c.ndfrt for c in patient.allergies])
+			if matched is not None:
+				match = True
+				match_desc = matched.description or match_desc
+		else:
+			return (None, 'I cannot match to allergies of type "{}" for "{}"'
+				.format(self.rule.allergy.system, self.rule.description))
+		
+		# no documentation of the patient having the condition
+		if match ^ include:
+			return (False, match_desc)
+		return (True, None)
+
+
+class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
+	rule_type = 'score'
 
 
 TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
@@ -177,6 +198,7 @@ TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
 
 

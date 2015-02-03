@@ -165,13 +165,12 @@ class TargetProfileAllergy(TargetProfileRule):
 	
 	def __init__(self, json_dict):
 		super().__init__(json_dict)
-		self.ndfrt = None
+		self.allergy = None
 		
 		if json_dict is not None:
 			inp_1 = json_dict['inputs'][0] if json_dict.get('inputs') and len(json_dict['inputs']) > 0 else None
 			if inp_1 is not None:
-				if 'ndfrt' == inp_1.get('system'):
-					self.ndfrt = inp_1.get('code')
+				self.allergy = TargetProfileCodedInput(inp_1)
 
 
 class TargetProfileMedicalScore(TargetProfileRule):

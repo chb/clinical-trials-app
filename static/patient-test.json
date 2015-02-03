@@ -1,6 +1,13 @@
 {
     "_id": "1540505",
     "age_years": 51,
+    "allergies": [{
+        "_id": "f6ed6488-a5ae-45e6-b077-cdf45dcaa9f4",
+        "ndfrt": "N0000004783",
+        "status": "confirmed",
+        "summary": "exemestane [Chemical/Ingredient]",
+        "type": "allergy"
+    }],
     "birthday": "1964-01-21",
     "city": "Bixby",
     "conditions": [{

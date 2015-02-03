@@ -24,14 +24,14 @@ class TrialMedication(jsondocument.JSONDocument):
 		med = cls()
 		
 		# find RxNorm code
-		if fhir_med.code is not None and fhir_med.code.coding is not None:
+		if fhir_med is not None and fhir_med.code is not None and fhir_med.code.coding is not None:
 			for code in fhir_med.code.coding:
 				if 'http://www.nlm.nih.gov/research/umls/rxnorm' == code.system:
 					med.rxcui = code.code
 					break
 		
 		med.status = fhir_prescription.status
-		med.summary = fhir_med.text.div if fhir_med.text is not None else None
+		med.summary = fhir_med.text.div if fhir_med is not None and fhir_med.text is not None else None
 		if med.summary is not None:
 			med.summary = re.sub('<[^<]+?>', '', med.summary)		# good enough
 		
