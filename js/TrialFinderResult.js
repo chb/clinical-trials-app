@@ -36,12 +36,23 @@ var TrialFinderResult = can.Model.extend({
 		
 		// fill properties
 		this.attr('results', TrialResult.fromJSON(json['results'], this));
+		this.updateResultOrder();			// we only do this on initial load to not confuse users when they suggest trials
 		this.updateResultCount();
 		this.collectInterventions();
 		this.collectPhases();
 		this.updateTrialShownState();
 	},
 	
+	/** Order the results correctly. */
+	updateResultOrder: function() {
+		if (this.results && this.results.length > 0) {
+			Array.prototype.sort.apply(this.results, [function (a, b) {
+				return a.compare(b);
+			}]);
+		}
+	},
+	
+	/** Update result counts. */
 	updateResultCount: function() {
 		var sugg = 0;
 		var elig = 0;
