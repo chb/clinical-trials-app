@@ -52,8 +52,8 @@ class LocalTrialServer(trialserver.TrialServer):
 		return trials, None, None
 
 
-class LocalJSONCache(object):
-	""" Handles caching JSON files by id.
+class LocalCache(object):
+	""" Handles caching files by id.
 	"""
 	def __init__(self, directory):
 		directory = os.path.abspath(directory)
@@ -64,37 +64,94 @@ class LocalJSONCache(object):
 		self.can_write = True
 		self.timeout = None				# number, in seconds
 	
-	def cache_filename(self, file_id):
+	def cache_filename(self, file_id, **kwargs):
+		""" Override in subclasses to generate nicer filenames. """
+		return file_id
+	
+	def cache_path(self, file_id, **kwargs):
 		assert file_id is not None
 		# TODO: sanitize filename
-		return os.path.join(self.cache_dir, file_id + '.json')
+		filename = self.cache_filename(file_id, **kwargs)
+		return os.path.join(self.cache_dir, filename), filename
 	
-	def retrieve(self, file_id):
-		pth = self.cache_filename(file_id)
-		if pth is None or not os.path.exists(pth):
-			return None
+	def existing_cache_path(self, file_id, **kwargs):
+		path, fname = self.cache_path(file_id, **kwargs)
+		if path is None or not os.path.exists(path):
+			return None, None
 		
 		# remove if older than timeout
 		if self.timeout is not None:
-			mtime = os.path.getmtime(pth)
+			mtime = os.path.getmtime(path)
 			if time.time() - mtime > self.timeout:
-				os.remove(pth)
-				return None
+				os.remove(path)
+				return None, None
 		
-		#print('<--', pth)
-		with io.open(pth, 'r', encoding='UTF-8') as handle:
+		return path, fname
+	
+	def retrieve(self, file_id, **kwargs):
+		path, fname = self.existing_cache_path(file_id, **kwargs)
+		if path is not None:
+			return self.retrieve_from(path, **kwargs)
+	
+	def retrieve_from(self, file_id, **kwargs):
+		""" Must be overridden by subclasses. """
+		return None
+	
+	def store_path(self, file_id, data, **kwargs):
+		if not self.can_write or data is None:
+			return None, None
+		return self.cache_path(file_id, **kwargs)
+		
+	def store(self, file_id, data, **kwargs):
+		path, fname = self.store_path(file_id, data, **kwargs)
+		if path is None:
+			return None, None
+		
+		self.do_store(path, data, **kwargs)
+		return path, fname
+	
+	def do_store(self, data, path, **kwargs):
+		""" Must be overridden by subclasses. """
+		pass
+
+
+class LocalJSONCache(LocalCache):
+	""" Handles caching JSON files by id.
+	"""
+	def cache_filename(self, file_id, **kwargs):
+		return file_id + '.json'
+	
+	def retrieve_from(self, path, **kwargs):
+		#print('<--', path)
+		with io.open(path, 'r', encoding='UTF-8') as handle:
 			return json.load(handle)
 	
-	def store(self, file_id, js):
-		if not self.can_write or js is None:
-			return
-		
-		pth = self.cache_filename(file_id)
-		if pth is not None:
-			#print('-->', pth)
-			with io.open(pth, 'w', encoding='UTF-8') as handle:
-				if dict == type(js):
-					json.dump(js, handle)
-				else:
-					handle.write(js)
+	def do_store(self, path, data, **kwargs):
+		#print('-->', path)
+		with io.open(path, 'w', encoding='UTF-8') as handle:
+			if dict == type(data):
+				json.dump(data, handle)
+			else:
+				handle.write(data)
+
+class LocalImageCache(LocalCache):
+	""" Handles caching JSON files by id.
+	"""
+	def cache_filename(self, file_id, **kwargs):
+		if 'contentType' in kwargs:
+			if 'image/jpeg' == kwargs['contentType'] or 'image/jpg' == kwargs['contentType']:
+				return file_id + '.jpg'
+			if 'image/png' == kwargs['contentType']:
+				return file_id + '.png'
+		return file_id + '.data'
+	
+	def retrieve_from(self, path, **kwargs):
+		#print('<--', path)
+		with open(path, 'rb') as handle:
+			return handle.read()
+	
+	def do_store(self, path, data, **kwargs):
+		#print('-->', path)
+		with open(path, 'wb') as handle:
+			handle.write(data)
 

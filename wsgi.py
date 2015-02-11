@@ -34,7 +34,7 @@ from py.trialfinder import TrialFinder
 from py.targettrial import TargetTrial, TargetTrialInfo
 from py.trialmatcher import *
 from py.clinicaltrials.lillyserver import LillyV2Server
-from py.localutils import LocalTrialServer, LocalJSONCache
+from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
 from py.clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
@@ -183,6 +183,34 @@ def endpoints():
 
 
 # MARK: Patient
+
+@app.route('/patients/<id>/photo')
+@app.route('/patient/photo')
+def patient_photo(id=None):
+	""" Return the patient's photo, if any, placeholder image otherwise.
+	"""
+	patient = _get_patient()
+	if patient is None:
+		logging.info("Trying to retrieve patient photo without authorized smart client")
+		return 401
+	
+	# check cache
+	cache = LocalImageCache('patient-photos')
+	cached, fname = cache.existing_cache_path(patient.id, contentType='image/jpeg')
+	if cached is None:
+		cached, fname = cache.existing_cache_path(patient.id, contentType='image/png')
+	if cached is not None:
+		return send_from_directory('patient-photos', fname)
+	
+	# no cache, load from FHIR
+	typ, dat = patient.load_photo()
+	if dat is not None:
+		cpath, fname = cache.store(patient.id, dat, contentType=typ)
+		return send_from_directory('patient-photos', fname)
+	
+	return static_file('portrait_default.png')
+
+
 
 @app.route('/patients/<id>')						# placeholder, id will be ignored
 @app.route('/patient')

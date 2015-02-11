@@ -113,6 +113,8 @@ class TrialPatient(jsondocument.JSONDocument):
 			js_dict['labs'] = None if stripped else [l.for_api() for l in self.labs]
 		if self.trial_info is not None:
 			js_dict['trial_info'] = [i.for_api() for i in self.trial_info]
+		if 'fhir' in js_dict:
+			del js_dict['fhir']
 		return js_dict
 	
 	@classmethod
@@ -128,6 +130,7 @@ class TrialPatient(jsondocument.JSONDocument):
 			return None
 		
 		patient = cls(fpat._remote_id)
+		patient.fhir = fpat
 		patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
 		patient.gender = client.string_gender(fpat.gender)
 		patient.birthday = fpat.birthDate.isostring
@@ -220,6 +223,30 @@ class TrialPatient(jsondocument.JSONDocument):
 				return "{} {} months".format(years, delta.months)
 			return years
 		return ''
+	
+	
+	# MARK: Portrait
+	
+	def load_photo(self):
+		""" Retrieves a FHIR Patient's first photo and returns a tuple with
+		content-type and data.
+		"""
+		fpat = self.fhir if self.fhir is not None else None
+		if fpat is None:
+			logging.warning("Patient instance lost its handle to the FHIR Patient instance, cannot retrieve photo")
+			return None
+		
+		if fpat.photo is not None:
+			photo_data = None
+			for photo in fpat.photo:
+				if photo.url is not None:
+					photo_data = fpat._server.request_data(photo.url)
+					break
+				elif photo.data is not None:
+					logging.info("Base-64 encoded photo data is not yet supported")
+			if photo_data is not None:
+				return (photo.contentType, photo_data)
+		return (None, None)
 	
 	
 	# MARK: Location
