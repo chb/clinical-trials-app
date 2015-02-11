@@ -192,7 +192,10 @@ def patient_photo(id=None):
 	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to retrieve patient photo without authorized smart client")
-		return 401
+		abort(401)
+	if id is not None and id != patient._id:
+		logging.info("Trying to retrieve photo of patient {} while being authorized for patient {}".format(id, patient._id))
+		abort(401)
 	
 	# check cache
 	cache = LocalImageCache('patient-photos')
@@ -220,8 +223,10 @@ def patient(id=None):
 	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
-		return 401
-	
+		abort(401)
+	if id is not None and id != patient._id:
+		logging.info("Trying to retrieve patient {} while being authorized for patient {}".format(id, patient._id))
+		abort(401)
 	return jsonify(patient.for_api(stripped=True))
 
 
@@ -234,7 +239,7 @@ def find():
 	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to find trials for a patient without authorized smart client")
-		return 401
+		abort(401)
 	
 	# find trials
 	trialserver = None
