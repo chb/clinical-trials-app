@@ -9,7 +9,7 @@ import json
 import re
 import markdown
 import codecs
-from datetime import datetime
+import datetime
 
 # flask
 from flask import Flask, request, redirect, render_template, abort, session, jsonify, send_from_directory
@@ -47,6 +47,7 @@ LocalTrialServer.profile_cache.can_write = False
 
 # Local Storage
 jsonserver = MongoServer()
+TrialPatient.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 TargetTrialInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 TrialPatientInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 
@@ -83,7 +84,25 @@ def _get_patient():
 			js = json.load(h)
 		return TrialPatient('x', js)
 	
-	return TrialPatient.load_from_fhir(_get_smart())
+	smart = _get_smart()
+	if smart.patient_id is None:
+		logging.error('Did read patient via SMART, but did not receive a patient_id')
+		return 500
+	
+	# Try to load from MongoDB and use if it's not older than 5 minutes
+	now = datetime.datetime.now()
+	patient = TrialPatient(smart.patient_id)
+	patient.load()
+	if patient.cached is not None and patient.cached + datetime.timedelta(seconds=300) > now:
+		logging.debug('Patient was recently cached, returning cached data from {}'.format(patient.cached))
+		return patient
+	
+	logging.debug('Loading patient data via FHIR, was cached {}'.format(patient.cached))
+	patient = TrialPatient.load_from_fhir(smart)
+	patient.cached = now
+	patient.store()
+	
+	return patient
 
 
 # MARK: Index

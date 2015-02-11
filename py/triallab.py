@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import isodate
+import datetime
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
@@ -64,8 +66,13 @@ class TrialLab(jsondocument.JSONDocument):
 		
 		return lab
 	
-	def for_api(self):
-		js = super().for_api().copy()
+	def update_with(self, js):
+		super().update_with(js)
+		if self.date is not None and not isinstance(self.date, datetime.date):
+			self.date = isodate.parse_date(self.date)
+	
+	def as_json(self):
+		js = super().as_json().copy()
 		if self.date is not None:
 			js['date'] = self.date.isoformat()
 		return js

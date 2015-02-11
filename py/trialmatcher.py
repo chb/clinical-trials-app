@@ -173,7 +173,7 @@ class TrialAgeMatcher(TrialMatcher):
 				else:
 					tests.append(TrialMatchTest.passed("Must be at least {} years old".format(minAge)))
 			else:
-				tests.append(TrialMatchTest.unsure("Must be at least {} years old").format(minAge))
+				tests.append(TrialMatchTest.unsure("Must be at least {} years old".format(minAge)))
 				
 		if maxAge is not None:
 			if age is not None:

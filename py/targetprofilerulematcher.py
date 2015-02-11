@@ -61,7 +61,7 @@ class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 	def test(self, patient):
 		age = patient.age_years
 		if age is None:
-			logging.debug('Patient doesn\'t have an age "{}"'.format(self.rule.diagnosis.system))
+			logging.debug('Patient doesn\'t have an age')
 			return (None, None)
 		
 		include = self.rule.include
