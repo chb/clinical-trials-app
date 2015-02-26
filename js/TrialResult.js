@@ -112,6 +112,29 @@ var TrialResult = can.Model.extend(
 			}
 		}
 		return 'eligible';
+	},
+	
+	/**
+		Can be used to sort an array of TrialResult instances.
+		@returns -1, 0 or 1, depending on how the receiver compares to the "other" instance
+	 */
+	compare: function(other) {
+		if (this.status != other.status) {				// 1. sort by status
+			if (this.suggested) {
+				return -1;
+			}
+			if (other.suggested) {
+				return 1;
+			}
+			if ('eligible' == this.status) {
+				return -1;
+			}
+			return 1;
+		}
+		if (this.trial.title < other.trial.title) {		// 2. sort by title
+			return -1;
+		}
+		return 1;
 	}
 });
 

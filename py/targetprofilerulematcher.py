@@ -61,7 +61,7 @@ class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 	def test(self, patient):
 		age = patient.age_years
 		if age is None:
-			logging.debug('Patient doesn\'t have an age "{}"'.format(self.rule.diagnosis.system))
+			logging.debug('Patient doesn\'t have an age')
 			return (None, None)
 		
 		include = self.rule.include
@@ -193,6 +193,66 @@ class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
 	rule_type = 'score'
 
 
+class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
+	""" Determines if the patient has a documented laboratory value matching
+	the rule.
+	"""
+	rule_type = 'labValue'
+	
+	def test(self, patient):
+		include = self.rule.include
+		match = None
+		match_desc = None
+		
+		# compare LOINC lab values
+		if 'lnc' == self.rule.lab.system:
+			loinc = TargetProfileRuleCode('lnc', self.rule.lab.code)
+			use_latest = 'most recent' == self.rule.qualifier
+			latest_matched = None
+			
+			for lab in patient.labs:
+				matched = loinc.matches([lab.loinc])
+				if matched is not None:
+					if lab.unit != self.rule.lab.unit:
+						logging.warning('Different units in lab value rule matcher: {} {} vs. {} {}, skipping'
+							.format(self.rule.threshold, self.rule.lab.unit, lab.value, lab.unit))
+						continue
+					
+					# assume False if first lab value, reset to false if newer
+					# lab value and we should only regard the most recent
+					if match is None:
+						match = False
+					elif use_latest and latest_matched is not None and latest_matched < lab.date:
+						match = False
+						match_desc = None
+					
+					# test against bounds
+					if self.rule.is_upper:
+						if lab.value < self.rule.threshold:
+							match = True
+					else:
+						if lab.value > self.rule.threshold:
+							match = True
+					if not match and self.rule.is_inclusive:
+						if lab.value == self.rule.threshold:
+							match = True
+					
+					if match:
+						match_desc = matched.description
+					
+					latest_matched = lab.date
+		else:
+			return (None, 'I cannot match to lab values of type "{}" for "{}"'
+				.format(self.rule.lab.system, self.rule.description))
+		
+		# if there is no lab value for the patient, we cannot test the rule
+		if match is None:
+			return (None, 'No suitable lab value to test "{}"'.format(self.rule.description))
+		if match ^ include:
+			return (False, match_desc or 'patient.labs')
+		return (True, None)
+
+
 TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
@@ -200,6 +260,7 @@ TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileLabValueRuleMatcher)
 
 
 class TargetProfileRuleCode(object):

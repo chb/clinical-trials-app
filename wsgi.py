@@ -9,20 +9,28 @@ import json
 import re
 import markdown
 import codecs
-from datetime import datetime
+import datetime
 
 # flask
 from flask import Flask, request, redirect, render_template, abort, session, jsonify, send_from_directory
 
 # settings
-DEBUG = int(os.environ.get('DEBUG', 0)) > 0
-USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
-LILLY_SECRET = os.environ.get('LILLY_SECRET')
+if os.path.exists('./config.py'):
+	from config import *
+else:
+	logging.warning('No "config.py", relying on environment variables')
+	DEBUG = int(os.environ.get('DEBUG', 0)) > 0
+	USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
+	LILLY_SECRET = os.environ.get('LILLY_SECRET')
+	SMART_APP_ID = os.environ.get('SMART_APP_ID')
+	SMART_API_BASE = os.environ.get('SMART_API_BASE')
+	SMART_REDIRECT = os.environ.get('SMART_REDIRECT')
+
 SMART_DEFAULTS = {
-	'app_id': os.environ.get('SMART_APP_ID'),
+	'app_id': SMART_APP_ID,
 	'auth_type': 'oauth2',
-	'api_base': os.environ.get('SMART_API_BASE'),
-	'redirect_uri': os.environ.get('SMART_REDIRECT'),
+	'api_base': SMART_API_BASE,
+	'redirect_uri': SMART_REDIRECT,
 }
 
 # SMART
@@ -34,7 +42,7 @@ from py.trialfinder import TrialFinder
 from py.targettrial import TargetTrial, TargetTrialInfo
 from py.trialmatcher import *
 from py.clinicaltrials.lillyserver import LillyV2Server
-from py.localutils import LocalTrialServer, LocalJSONCache
+from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
 from py.clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
@@ -47,6 +55,7 @@ LocalTrialServer.profile_cache.can_write = False
 
 # Local Storage
 jsonserver = MongoServer()
+TrialPatient.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 TargetTrialInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 TrialPatientInfo.hookup(jsonserver, os.environ.get('MONGO_BUCKET'))
 
@@ -83,7 +92,25 @@ def _get_patient():
 			js = json.load(h)
 		return TrialPatient('x', js)
 	
-	return TrialPatient.load_from_fhir(_get_smart())
+	smart = _get_smart()
+	if smart.patient_id is None:
+		logging.error('Did read patient via SMART, but did not receive a patient_id')
+		return 500
+	
+	# Try to load from MongoDB and use if it's not older than 5 minutes
+	now = datetime.datetime.now()
+	patient = TrialPatient(smart.patient_id)
+	patient.load()
+	if patient.cached is not None and patient.cached + datetime.timedelta(seconds=300) > now:
+		logging.debug('Patient was recently cached, returning cached data from {}'.format(patient.cached))
+		return patient
+	
+	logging.debug('Loading patient data via FHIR, was cached {}'.format(patient.cached))
+	patient = TrialPatient.load_from_fhir(smart)
+	patient.cached = now
+	patient.store()
+	
+	return patient
 
 
 # MARK: Index
@@ -184,6 +211,37 @@ def endpoints():
 
 # MARK: Patient
 
+@app.route('/patients/<id>/photo')
+@app.route('/patient/photo')
+def patient_photo(id=None):
+	""" Return the patient's photo, if any, placeholder image otherwise.
+	"""
+	patient = _get_patient()
+	if patient is None:
+		logging.info("Trying to retrieve patient photo without authorized smart client")
+		abort(401)
+	if id is not None and id != patient._id:
+		logging.info("Trying to retrieve photo of patient {} while being authorized for patient {}".format(id, patient._id))
+		abort(401)
+	
+	# check cache
+	cache = LocalImageCache('patient-photos')
+	cached, fname = cache.existing_cache_path(patient.id, contentType='image/jpeg')
+	if cached is None:
+		cached, fname = cache.existing_cache_path(patient.id, contentType='image/png')
+	if cached is not None:
+		return send_from_directory('patient-photos', fname)
+	
+	# no cache, load from FHIR
+	typ, dat = patient.load_photo()
+	if dat is not None:
+		cpath, fname = cache.store(patient.id, dat, contentType=typ)
+		return send_from_directory('patient-photos', fname)
+	
+	return static_file('portrait_default.png')
+
+
+
 @app.route('/patients/<id>')						# placeholder, id will be ignored
 @app.route('/patient')
 def patient(id=None):
@@ -192,8 +250,10 @@ def patient(id=None):
 	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to retrieve /patient without authorized smart client")
-		return 401
-	
+		abort(401)
+	if id is not None and id != patient._id:
+		logging.info("Trying to retrieve patient {} while being authorized for patient {}".format(id, patient._id))
+		abort(401)
 	return jsonify(patient.for_api(stripped=True))
 
 
@@ -206,7 +266,7 @@ def find():
 	patient = _get_patient()
 	if patient is None:
 		logging.info("Trying to find trials for a patient without authorized smart client")
-		return 401
+		abort(401)
 	
 	# find trials
 	trialserver = None

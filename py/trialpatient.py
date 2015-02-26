@@ -10,10 +10,12 @@ from dateutil.relativedelta import *
 import trialcondition
 import trialmedication
 import trialallergy
+import triallab
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 import smartclient.fhirclient.models.condition as condition
 import smartclient.fhirclient.models.medicationprescription as medicationprescription
 import smartclient.fhirclient.models.allergyintolerance as allergyintolerance
+import smartclient.fhirclient.models.observation as observation
 
 
 class TrialPatient(jsondocument.JSONDocument):
@@ -37,19 +39,27 @@ class TrialPatient(jsondocument.JSONDocument):
 	- conditions: [TrialCondition]
 	- medications: [TrialMedication]
 	- allergies: [TrialAllergy]
+	- labs: [TrialLab]
 	
 	- trial_info: [TrialPatientInfo] (loaded from db on init)
+	
+	- cached: when the patient data was last cached
 	"""
 	
 	def __init__(self, ident, json=None):
 		super().__init__(ident, "patient", json)
-		if json is None:
+		if self.gender is None:
 			self.gender = "female"
 		if self.country is None:
 			self.country = "United States"
 		if self.location is None:
 			self.update_location()
 		
+		self.trial_info = TrialPatientInfo.find({'type': 'trial-patient-info', 'patient_id': ident})
+	
+	def update_with(self, json):
+		super().update_with(json)
+		#print('===>  ', json)
 		if self.conditions is not None:
 			cond = []
 			for c in self.conditions:
@@ -58,6 +68,8 @@ class TrialPatient(jsondocument.JSONDocument):
 				else:
 					cond.append(trialcondition.TrialCondition(c))
 			self.conditions = cond
+		else:
+			self.conditions = []
 		
 		if self.medications is not None:
 			meds = []
@@ -67,6 +79,8 @@ class TrialPatient(jsondocument.JSONDocument):
 				else:
 					meds.append(trialmedication.TrialMedication(m))
 			self.medications = meds
+		else:
+			self.medications = []
 		
 		if self.allergies is not None:
 			allergs = []
@@ -76,8 +90,19 @@ class TrialPatient(jsondocument.JSONDocument):
 				else:
 					allergs.append(trialallergy.TrialAllergy(a))
 			self.allergies = allergs
+		else:
+			self.allergies = []
 		
-		self.trial_info = TrialPatientInfo.find({'type': 'trial-patient-info', 'patient_id': ident})
+		if self.labs is not None:
+			lbs = []
+			for l in self.labs:
+				if isinstance(l, triallab.TrialLab):
+					lbs.append(l)
+				else:
+					lbs.append(triallab.TrialLab(l))
+			self.labs = lbs
+		else:
+			self.labs = []
 	
 	def __setattr__(self, name, value):
 		""" Overridden to perform some value generation after setting certain
@@ -89,16 +114,29 @@ class TrialPatient(jsondocument.JSONDocument):
 		if 'country' == name or 'city' == name or 'region' == name:
 			self.update_location()
 	
+	def as_json(self):
+		js_dict = super().as_json()
+		if 'trial_info' in js_dict:
+			del js_dict['trial_info']
+		if 'fhir' in js_dict:
+			del js_dict['fhir']
+		return js_dict
+	
 	def for_api(self, stripped=False):
-		js_dict = super().for_api().copy()
-		if self.conditions is not None:
-			js_dict['conditions'] = None if stripped else [c.for_api() for c in self.conditions]
-		if self.medications is not None:
-			js_dict['medications'] = None if stripped else [m.for_api() for m in self.medications]
-		if self.allergies is not None:
-			js_dict['allergies'] = None if stripped else [a.for_api() for a in self.allergies]
-		if self.trial_info is not None:
-			js_dict['trial_info'] = [i.for_api() for i in self.trial_info]
+		js_dict = super().for_api()
+		if stripped:
+			#if 'conditions' in js_dict:
+			#	del js_dict['conditions']
+			if 'medications' in js_dict:
+				del js_dict['medications']
+			if 'allergies' in js_dict:
+				del js_dict['allergies']
+			if 'labs' in js_dict:
+				del js_dict['labs']
+		if 'cached' in js_dict:
+			del js_dict['cached']
+		if 'fhir' in js_dict:
+			del js_dict['fhir']
 		return js_dict
 	
 	@classmethod
@@ -114,6 +152,7 @@ class TrialPatient(jsondocument.JSONDocument):
 			return None
 		
 		patient = cls(fpat._remote_id)
+		patient.fhir = fpat
 		patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
 		patient.gender = client.string_gender(fpat.gender)
 		patient.birthday = fpat.birthDate.isostring
@@ -139,6 +178,10 @@ class TrialPatient(jsondocument.JSONDocument):
 		# retrieve allergies
 		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat._remote_id})
 		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform(fpat._server)]
+		
+		# retrieve labs
+		lab_search = observation.Observation.where(struct={'subject': fpat._remote_id})
+		patient.labs = [triallab.TrialLab.from_fhir(l) for l in lab_search.perform(fpat._server)]
 		
 		return patient
 	
@@ -202,6 +245,30 @@ class TrialPatient(jsondocument.JSONDocument):
 				return "{} {} months".format(years, delta.months)
 			return years
 		return ''
+	
+	
+	# MARK: Portrait
+	
+	def load_photo(self):
+		""" Retrieves a FHIR Patient's first photo and returns a tuple with
+		content-type and data.
+		"""
+		fpat = self.fhir if self.fhir is not None else None
+		if fpat is None:
+			logging.warning("Patient instance lost its handle to the FHIR Patient instance, cannot retrieve photo")
+			return None, None
+		
+		if fpat.photo is not None:
+			photo_data = None
+			for photo in fpat.photo:
+				if photo.url is not None:
+					photo_data = fpat._server.request_data(photo.url)
+					break
+				elif photo.data is not None:
+					logging.info("Base-64 encoded photo data is not yet supported")
+			if photo_data is not None:
+				return photo.contentType, photo_data
+		return None, None
 	
 	
 	# MARK: Location

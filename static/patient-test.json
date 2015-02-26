@@ -166,6 +166,507 @@
     "country": "USA",
     "full_name": "Amy E. Clark",
     "gender": "female",
+    "labs": [{
+        "_id": "1fd3c0e6-b020-4f04-928d-fe9b98444edd",
+        "date": "1997-04-25",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: Blood pressure 144/91 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "5e6860b7-6e66-4bae-9e6e-beb071768eb0",
+        "date": "1997-04-25",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: Systolic blood pressure = 144 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 144.0
+    }, {
+        "_id": "23d52d3c-5317-45c6-acdf-6e4dd3dae72d",
+        "date": "1997-04-25",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: Diastolic blood pressure = 91 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 91.0
+    }, {
+        "_id": "bcc5fca9-b6ff-49b2-84e6-66c800fe463d",
+        "date": "1997-04-28",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-28: Blood pressure 165/109 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "7f1967ec-1b05-4eab-9cca-5bda49220963",
+        "date": "1997-04-28",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-28: Systolic blood pressure = 165 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 165.0
+    }, {
+        "_id": "1ab3676f-543e-4ec3-9ffa-699cd72e5596",
+        "date": "1997-04-28",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-28: Diastolic blood pressure = 109 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 109.0
+    }, {
+        "_id": "4a89da6c-a18b-430e-a903-540a0b45b155",
+        "date": "1998-12-03",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1998-12-03: Blood pressure 127/82 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "a9d0a1ae-d047-468c-9122-0bfa40292112",
+        "date": "1998-12-03",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1998-12-03: Systolic blood pressure = 127 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 127.0
+    }, {
+        "_id": "db641c0c-b6a0-4cfe-af1a-468a37693888",
+        "date": "1998-12-03",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1998-12-03: Diastolic blood pressure = 82 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 82.0
+    }, {
+        "_id": "7884df1b-2e61-4916-bac4-49cae891caf9",
+        "date": "2001-01-18",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-18: Blood pressure 122/77 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "1b213a84-a631-4279-b44c-1e4c9cff8e67",
+        "date": "2001-01-18",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-18: Systolic blood pressure = 122 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 122.0
+    }, {
+        "_id": "23bad91f-ec79-4f3e-9048-3085614cc5a2",
+        "date": "2001-01-18",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-18: Diastolic blood pressure = 77 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 77.0
+    }, {
+        "_id": "45d578c7-f5fd-4f83-9b29-aa21ce44a2bc",
+        "date": "2001-01-19",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-19: Blood pressure 127/81 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "1225be0d-8cf8-4057-bf8a-dd9e91f842c5",
+        "date": "2001-01-19",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-19: Systolic blood pressure = 127 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 127.0
+    }, {
+        "_id": "fb0c369b-9f4d-4221-82a5-10e56de3e515",
+        "date": "2001-01-19",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2001-01-19: Diastolic blood pressure = 81 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 81.0
+    }, {
+        "_id": "1fa59d3f-8bd1-482a-bc03-1292d855849c",
+        "date": "2005-02-28",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-02-28: Blood pressure 131/83 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "7435a8f6-ebe9-4766-a765-1896790b3f27",
+        "date": "2005-02-28",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-02-28: Systolic blood pressure = 131 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 131.0
+    }, {
+        "_id": "a8d2f97b-cb8a-46cf-9b3b-6ba15f98ab5f",
+        "date": "2005-02-28",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-02-28: Diastolic blood pressure = 83 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 83.0
+    }, {
+        "_id": "b28532c9-128e-4641-93ec-979f60194dc9",
+        "date": "2005-04-29",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-04-29: Blood pressure 172/111 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "4967a16b-c7d9-41b3-bba5-dc6d4753bcb3",
+        "date": "2005-04-29",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-04-29: Systolic blood pressure = 172 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 172.0
+    }, {
+        "_id": "ea61c5ed-7074-4394-9dfd-5e9d200f1e14",
+        "date": "2005-04-29",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-04-29: Diastolic blood pressure = 111 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 111.0
+    }, {
+        "_id": "44bdf3a6-1d2a-480c-b63f-31be047c6a01",
+        "date": "2005-05-02",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-02: Blood pressure 128/81 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "a0428826-5828-4967-bedd-973f247cd56a",
+        "date": "2005-05-02",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-02: Systolic blood pressure = 128 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 128.0
+    }, {
+        "_id": "31c6f35a-c048-4c7a-9312-643f605f9f06",
+        "date": "2005-05-02",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-02: Diastolic blood pressure = 81 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 81.0
+    }, {
+        "_id": "0e1b2c7d-b668-48e9-8902-d36b57e2425a",
+        "date": "2005-05-25",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-25: Blood pressure 137/87 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "ccb21d92-d428-44d7-bb22-9467c54f789f",
+        "date": "2005-05-25",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-25: Systolic blood pressure = 137 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 137.0
+    }, {
+        "_id": "e2f41161-9cea-4da4-9899-ef947902cc5a",
+        "date": "2005-05-25",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2005-05-25: Diastolic blood pressure = 87 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 87.0
+    }, {
+        "_id": "b0b7e68f-1d9b-4fd1-b96f-9496755d506e",
+        "date": "2008-11-24",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-24: Blood pressure 137/86 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "0cef56c3-0a61-4c70-ac13-b39ea88c9321",
+        "date": "2008-11-24",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-24: Systolic blood pressure = 137 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 137.0
+    }, {
+        "_id": "1f292100-46fc-4614-b258-2aa54f9092e1",
+        "date": "2008-11-24",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-24: Diastolic blood pressure = 86 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 86.0
+    }, {
+        "_id": "c5a7d3be-9796-41b2-bcbc-a1c038a4e880",
+        "date": "2008-11-25",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-25: Blood pressure 123/77 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "353a86e0-2c9e-459b-9db8-6e3b1c17dfe5",
+        "date": "2008-11-25",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-25: Systolic blood pressure = 123 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 123.0
+    }, {
+        "_id": "2b32046e-4e57-4674-85fc-e5e2cad66e22",
+        "date": "2008-11-25",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-25: Diastolic blood pressure = 77 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 77.0
+    }, {
+        "_id": "3c6805e3-4476-4615-b015-03af23c559ca",
+        "date": "2008-11-28",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-28: Blood pressure 172/109 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "67cd2f0c-ea02-48bf-89ed-fa9c15e7ade3",
+        "date": "2008-11-28",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-28: Systolic blood pressure = 172 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 172.0
+    }, {
+        "_id": "90367cd3-a3ad-4f9f-87dd-a25328c4718e",
+        "date": "2008-11-28",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2008-11-28: Diastolic blood pressure = 109 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 109.0
+    }, {
+        "_id": "9cc483ed-1838-4ef3-8206-3d5646762413",
+        "date": "2009-05-11",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-11: Blood pressure 162/102 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "ac296278-978b-49d8-b0fe-48ff653ad3ed",
+        "date": "2009-05-11",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-11: Systolic blood pressure = 162 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 162.0
+    }, {
+        "_id": "f4e2d099-ceab-498b-b85c-a7639033446a",
+        "date": "2009-05-11",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-11: Diastolic blood pressure = 102 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 102.0
+    }, {
+        "_id": "90187807-3ea3-4725-b0fa-56609952e46f",
+        "date": "2009-05-13",
+        "loinc": "55284-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-13: Blood pressure 153/96 mmHg",
+        "type": "lab",
+        "unit": null,
+        "value": null
+    }, {
+        "_id": "2a909e1d-d17a-4643-9c37-9c7a2911a6e3",
+        "date": "2009-05-13",
+        "loinc": "8480-6",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-13: Systolic blood pressure = 153 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 153.0
+    }, {
+        "_id": "477ba62e-7c77-4e95-9554-aabae92e5eb5",
+        "date": "2009-05-13",
+        "loinc": "8462-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-13: Diastolic blood pressure = 96 mm[Hg]",
+        "type": "lab",
+        "unit": "mm[Hg]",
+        "value": 96.0
+    }, {
+        "_id": "493dcae1-eaa7-4e76-8b82-914413e7b746",
+        "date": "2009-05-14",
+        "loinc": "718-7",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-14: Hemoglobin 79.4 g/L",
+        "type": "lab",
+        "unit": "g/L",
+        "value": 79.4
+    }, {
+        "_id": "f0f1c1b5-56db-4f6c-a38f-929adbaa76d5",
+        "date": "2009-05-15",
+        "loinc": "718-7",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-15: Hemoglobin = 7.82 g/dL",
+        "type": "lab",
+        "unit": "g/dL",
+        "value": 7.82
+    }, {
+        "_id": "a513b724-3026-40ad-b48f-1a60a199efb7",
+        "date": "2009-05-16",
+        "loinc": "718-7",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "2009-05-16: Hemoglobin = 8.1 g/dL",
+        "type": "lab",
+        "unit": "g/dL",
+        "value": 8.1
+    }, {
+        "_id": "5d894a5b-8be1-4b3a-956f-18e6cd139222",
+        "date": "1997-04-25",
+        "loinc": "8302-2",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: height = 169.672 cm",
+        "type": "lab",
+        "unit": "cm",
+        "value": 169.672
+    }, {
+        "_id": "07976bdd-c175-41ef-8aff-6d77d5da8c46",
+        "date": "1997-04-25",
+        "loinc": "8867-4",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: heart_rate = 91.0 {beats}/min",
+        "type": "lab",
+        "unit": "{beats}/min",
+        "value": 91.0
+    }, {
+        "_id": "34afdfbf-5204-44de-8a9c-02132664c90a",
+        "date": "1997-04-25",
+        "loinc": "9279-1",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: respiratory_rate = 16.0 {breaths}/min",
+        "type": "lab",
+        "unit": "{breaths}/min",
+        "value": 16.0
+    }, {
+        "_id": "a190e197-9430-41eb-8969-941d096494a0",
+        "date": "1997-04-25",
+        "loinc": "8310-5",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: temperature = 36.11111 Cel",
+        "type": "lab",
+        "unit": "Cel",
+        "value": 36.11111
+    }, {
+        "_id": "2bba0de6-57ef-4067-b898-f8847c350f5c",
+        "date": "1997-04-25",
+        "loinc": "3141-9",
+        "reliability": "ok",
+        "status": "final",
+        "summary": "1997-04-25: weight = 88.58659 kg",
+        "type": "lab",
+        "unit": "kg",
+        "value": 88.58659
+    }],
     "location": "Bixby, OK",
     "medications": [{
         "_id": "98fb021c-1b0f-49d2-85c9-7707d911c8a7",

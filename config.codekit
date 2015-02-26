@@ -856,7 +856,7 @@
 	"sassUseLibsass": 0,
 	"shouldRunAutoprefixer": 0,
 	"shouldRunBless": 0,
-	"skippedItemsString": "\/py, \/sarah-cannon-pilot, \/target-profile-cache, _logs, .hg, \/static, _cache, log, \/__pycache__, logs, cache, \/env, .svn, .git, \/session_data, \/templates, \/trial-cache",
+	"skippedItemsString": "\/py, \/sarah-cannon-pilot, \/target-profile-cache, _logs, .hg, \/static, _cache, log, \/patient-photos, \/__pycache__, logs, cache, \/env, .svn, .git, \/session_data, \/templates, \/trial-cache",
 	"slimAutoOutputPathEnabled": 1,
 	"slimAutoOutputPathFilenamePattern": "*.html",
 	"slimAutoOutputPathRelativePath": "",

@@ -3,7 +3,7 @@
  */
 var Patient = can.Model.extend({
 	id: '_id',
-	findOne: 'GET /patients/{id}',
+	findOne: 'GET /patient',
 	update: 'PUT /patients/{_id}',
 },
 {
