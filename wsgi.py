@@ -13,28 +13,11 @@ import datetime
 
 # flask
 from flask import Flask, request, redirect, render_template, abort, session, jsonify, send_from_directory
-
-# settings
-if os.path.exists('./config.py'):
-	from config import *
-else:
-	logging.warning('No "config.py", relying on environment variables')
-	DEBUG = int(os.environ.get('DEBUG', 0)) > 0
-	USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
-	LILLY_SECRET = os.environ.get('LILLY_SECRET')
-	SMART_APP_ID = os.environ.get('SMART_APP_ID')
-	SMART_API_BASE = os.environ.get('SMART_API_BASE')
-	SMART_REDIRECT = os.environ.get('SMART_REDIRECT')
-
-SMART_DEFAULTS = {
-	'app_id': SMART_APP_ID,
-	'auth_type': 'oauth2',
-	'api_base': SMART_API_BASE,
-	'redirect_uri': SMART_REDIRECT,
-}
+from settings import *
 
 # SMART
 import py.smartclient.fhirclient.client as smart
+import py.smartclient.flaskbeaker as flaskbeaker
 
 # App
 from py.trialpatient import TrialPatient, TrialPatientInfo
@@ -46,6 +29,8 @@ from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
 from py.clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
+flaskbeaker.FlaskBeaker.setup_app(app)
+app.secret_key = SESSION_SECRET or 'supersecretkey'
 
 # Trial Caches
 LocalTrialServer.trial_cache = LocalJSONCache('trial-cache')
@@ -95,7 +80,7 @@ def _get_patient():
 	smart = _get_smart()
 	if smart.patient_id is None:
 		logging.error('Did read patient via SMART, but did not receive a patient_id')
-		return 500
+		return None
 	
 	# Try to load from MongoDB and use if it's not older than 5 minutes
 	now = datetime.datetime.now()
@@ -137,7 +122,7 @@ def index():
 	defs = {
 		'debug': DEBUG,
 		'need_patient_banner': True,
-		'google_api_key': os.environ.get('GOOGLE_API_KEY')
+		#'google_api_key': GOOGLE_API_KEY,
 	}
 	
 	return render_template('index.html', defs=defs)
@@ -352,15 +337,7 @@ def template_file(filename):
 	return send_from_directory('templates', filename)
 
 
-# start the app
+# if starting directly, put into debug mode
 if '__main__' == __name__:
-	import py.smartclient.flaskbeaker as flaskbeaker
-	flaskbeaker.FlaskBeaker.setup_app(app)
-	app.secret_key = os.environ.get('SESSION_SECRET', 'supersecretkey')
-	
-	if DEBUG:
-		logging.basicConfig(level=logging.DEBUG)
-		app.run(debug=True, port=8000)
-	else:
-		logging.basicConfig(level=logging.WARNING)
-		app.run(host='0.0.0.0', port=8000)
+	logging.basicConfig(level=logging.DEBUG)
+	app.run(debug=True, port=8000)
