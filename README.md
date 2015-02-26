@@ -87,12 +87,19 @@ virtualenv -p python3 env
 pip install -r requirements.txt
 ```
 
-You should now copy `environment.sh` to `env.sh` and adjust the settings.
-When done you can run the server:
+Configuration
+-------------
+
+You should now copy `config.default.py` to `config.py` and adjust the settings.
+When done the app is ready to be run, best via _gunicorn_ or manually:
 
 ```bash
-./run.sh
+python wsgi.py
 ```
+
+The app checks for the presence of `config.py`, if it is not present it looks at environment variables of the same name.
+This can be exploited when running on Heroku, all configuration variables can be set as environment vars in the Heroku dashboard.
+
 
 [flask]: http://flask.pocoo.org
 [mongodb]: http://www.mongodb.org

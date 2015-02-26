@@ -15,14 +15,22 @@ import datetime
 from flask import Flask, request, redirect, render_template, abort, session, jsonify, send_from_directory
 
 # settings
-DEBUG = int(os.environ.get('DEBUG', 0)) > 0
-USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
-LILLY_SECRET = os.environ.get('LILLY_SECRET')
+if os.path.exists('./config.py'):
+	from config import *
+else:
+	logging.warning('No "config.py", relying on environment variables')
+	DEBUG = int(os.environ.get('DEBUG', 0)) > 0
+	USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
+	LILLY_SECRET = os.environ.get('LILLY_SECRET')
+	SMART_APP_ID = os.environ.get('SMART_APP_ID')
+	SMART_API_BASE = os.environ.get('SMART_API_BASE')
+	SMART_REDIRECT = os.environ.get('SMART_REDIRECT')
+
 SMART_DEFAULTS = {
-	'app_id': os.environ.get('SMART_APP_ID'),
+	'app_id': SMART_APP_ID,
 	'auth_type': 'oauth2',
-	'api_base': os.environ.get('SMART_API_BASE'),
-	'redirect_uri': os.environ.get('SMART_REDIRECT'),
+	'api_base': SMART_API_BASE,
+	'redirect_uri': SMART_REDIRECT,
 }
 
 # SMART
