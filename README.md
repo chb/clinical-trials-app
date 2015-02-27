@@ -3,9 +3,9 @@ Clinical Trials App
 
 A Python 3/Flask web app that screens a patient's eligibility for certain clinical trials.
 App state is stored in a local MongoDB NoSQL database.
-Trial data is obtained via [LillyCOI's][lilly] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
+Trial data is obtained via [TrialReach's][trialreachapi] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
 
-[lilly]: http://www.lillycoi.com
+[trialreachapi]: http://developer.trialreach.com
 [ctg]: http://www.clinicaltrials.gov
 
 
@@ -19,7 +19,7 @@ This involves logging in to the SMART container, either explicitly through a  lo
 The patient's demographics (gender, age, location and picture, if available) are shown atop.
 > Need to determine how/if to show problems, meds, ...
 
-A query for all trials being performed in the area is then performed against Lilly's API with the respective restrictions.
+A query for all trials being performed in the area is then performed against TrialReach's API with the respective restrictions.
 The trial's target profile is compared against the patient data to determine the patient's preliminary eligibility.
 > Need to ensure that all trials are included in the initial list
 
@@ -53,8 +53,8 @@ Cache data is discarded if it's older than 5 minutes.
 Trial Matching
 --------------
 
-To find trials matching the search query, a `TrialFinder` instance is created with a handle to a `TrialServer` subclass, which represents Lilly's v2 trial server.
-The trial finder proceeds to query Lilly's API to retrieve trial data.
+To find trials matching the search query, a `TrialFinder` instance is created with a handle to a `TrialServer` subclass, which represents TrialReach's trial server.
+The trial finder proceeds to query TrialReach's API to retrieve trial data.
 Search results are paged, so the trial finder will likely have to repeatedly query the API until all trials have arrived.
 Each trial is represented in a `Trial` instance and downloads its corresponding target profile, if one is available.
 

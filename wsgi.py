@@ -24,7 +24,7 @@ from py.trialpatient import TrialPatient, TrialPatientInfo
 from py.trialfinder import TrialFinder
 from py.targettrial import TargetTrial, TargetTrialInfo
 from py.trialmatcher import *
-from py.clinicaltrials.lillyserver import LillyV2Server
+from py.clinicaltrials.trialreachserver import TrialReachServer
 from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
 from py.clinicaltrials.jsondocument.mongoserver import MongoServer
 
@@ -255,8 +255,8 @@ def find():
 	
 	# find trials
 	trialserver = None
-	if LILLY_SECRET is not None:
-		trialserver = LillyV2Server(LILLY_SECRET)
+	if TRIALREACH_SECRET is not None:
+		trialserver = TrialReachServer(TRIALREACH_SECRET)
 	trialserver = LocalTrialServer(os.path.join('sarah-cannon-pilot', 'JSON'), trialserver)
 	
 	finder = TrialFinder(trialserver, trial_class=TargetTrial)

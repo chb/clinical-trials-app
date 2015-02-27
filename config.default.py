@@ -12,8 +12,8 @@ SMART_APP_ID = "my_web_app"
 SMART_API_BASE = "https://fhir-api.smartplatforms.org"
 SMART_REDIRECT = "http://localhost:8000/fhir-app/"
 
-# LillyCOI API key (base64 encoded "key:secret" string)
-LILLY_SECRET = None
+# TrialReach API key (base64 encoded "key:secret" string)
+TRIALREACH_SECRET = None
 
 # Mongo params; leave host/port/db at None for default localhost connection
 MONGO_HOST = None

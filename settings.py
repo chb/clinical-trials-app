@@ -26,7 +26,7 @@ else:
 	SMART_APP_ID = os.environ.get('SMART_APP_ID')
 	SMART_API_BASE = os.environ.get('SMART_API_BASE')
 	SMART_REDIRECT = os.environ.get('SMART_REDIRECT')
-	LILLY_SECRET = os.environ.get('LILLY_SECRET')
+	TRIALREACH_SECRET = os.environ.get('TRIALREACH_SECRET')
 	GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 SMART_DEFAULTS = {

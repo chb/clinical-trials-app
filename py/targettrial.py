@@ -6,7 +6,6 @@ import json
 import markdown
 
 import clinicaltrials.trial as clintrial
-import clinicaltrials.lillyserver as lillysrv
 import clinicaltrials.jsondocument.jsondocument as jsondoc
 
 

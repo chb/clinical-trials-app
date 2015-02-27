@@ -15,11 +15,11 @@ class LocalTrialServer(trialserver.TrialServer):
 	trial_cache = None
 	profile_cache = None
 	
-	def __init__(self, directory, lilly_server):
+	def __init__(self, directory, trialreach_server):
 		super().__init__(None)
 		assert os.path.isdir(directory)
 		self.directory = directory
-		self.lilly_server = lilly_server
+		self.trialreach_server = trialreach_server
 	
 	def find(self, params=None, request=None, trial_class=None):
 		if trial_class is None:
@@ -36,7 +36,7 @@ class LocalTrialServer(trialserver.TrialServer):
 			if trial_json is not None:
 				trial = trial_class(nct, trial_json)
 			else:
-				trial = self.lilly_server.get_trial(nct, trial_class)
+				trial = self.trialreach_server.get_trial(nct, trial_class)
 				if cache_t is not None:
 					cache_t.store(trial.nct, trial.as_json())
 			
@@ -45,7 +45,7 @@ class LocalTrialServer(trialserver.TrialServer):
 				prof_json = cache_p.retrieve(trial.nct)
 				if prof_json is not None:
 					trial.target_profile = targetprofile.TargetProfile(prof_json)
-			# else use trial.retrieve_profile once we use LillyTrial trials
+			# else use trial.retrieve_profile once we use TrialReach trials
 			
 			trials.append(trial)
 		
