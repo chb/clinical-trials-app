@@ -160,7 +160,7 @@
 					<textarea id="edit_patient_notes" name="edit_patient_notes" class="notes patient_info" rows="5" cols="30" placeholder="Patient Notes">{{ patient_info.notes.raw }}</textarea>
 					{{/}}
 					{{^editing}}
-						{{#trial.locations}}{{>"location_tmpl"}}{{/}}
+						{{#0}}{{#trial.locations}}{{>"location_tmpl"}}{{/}}{{/}}
 						{{#trial.info.notes}}<p class="notes">{{{ html }}}</p>{{/}}
 						{{#patient_info.notes}}
 						<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}}</h4>

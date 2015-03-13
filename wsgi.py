@@ -121,7 +121,7 @@ def index():
 	# patient data ready
 	defs = {
 		'debug': DEBUG,
-		'need_patient_banner': True,
+		'need_patient_banner': not USE_TEST_PATIENT,
 		#'google_api_key': GOOGLE_API_KEY,
 	}
 	

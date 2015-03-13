@@ -3,6 +3,7 @@
 #  You're looking for "config.py", no need to change things here
 
 import os.path
+import logging
 
 if os.path.exists('./config.py'):
 	from config import *
