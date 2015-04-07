@@ -153,12 +153,12 @@ var TrialFinderResult = can.Model.extend({
 	
 	/** Updates the `shownForXY` property on the result instances. */
 	updateTrialShownState: function() {
-		var shownIntv = $.map(this.interventions, function(item, idx) {
+		var shownIntv = this.interventions ? $.map(this.interventions, function(item, idx) {
 			return item.active ? item.name : null;
-		});
-		var shownPhs = $.map(this.phases, function(item, idx) {
+		}) : [];
+		var shownPhs = this.phases ? $.map(this.phases, function(item, idx) {
 			return item.active ? item.name : null;
-		});
+		}) : [];
 		
 		var numInterventions = {};
 		var numPhases = {};
@@ -228,15 +228,18 @@ var TrialFinderResult = can.Model.extend({
 		}
 		
 		// update intervention and phase counts
-		for (var i = 0; i < this.interventions.length; i++) {
-			var intervention = this.interventions[i];
-			intervention.attr('numMatches', numInterventions[intervention.name] || 0);
+		if (this.interventions) {
+			for (var i = 0; i < this.interventions.length; i++) {
+				var intervention = this.interventions[i];
+				intervention.attr('numMatches', numInterventions[intervention.name] || 0);
+			}
 		}
-		for (var i = 0; i < this.phases.length; i++) {
-			var phase = this.phases[i];
-			phase.attr('numMatches', numPhases[phase.name] || 0);
+		if (this.phases) {
+			for (var i = 0; i < this.phases.length; i++) {
+				var phase = this.phases[i];
+				phase.attr('numMatches', numPhases[phase.name] || 0);
+			}
 		}
-		
 		this.attr('showPhases', showPhases);
 	},
 });

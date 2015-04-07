@@ -71,6 +71,10 @@ def _save_smart(client):
 	session['smart_state'] = client.state
 
 def _get_patient():
+	""" Return a `TrialPatient` instance, as authorized in the session.
+	
+	:raises: Exception unless returning a patient instance
+	"""
 	if USE_TEST_PATIENT:
 		js = None
 		with io.open('static/patient-test.json', 'r', encoding='utf-8') as h:
@@ -79,8 +83,7 @@ def _get_patient():
 	
 	smart = _get_smart()
 	if smart.patient_id is None:
-		logging.error('Did read patient via SMART, but did not receive a patient_id')
-		return None
+		raise Exception('Did read patient via SMART, but did not receive a patient_id')
 	
 	# Try to load from MongoDB and use if it's not older than 5 minutes
 	now = datetime.datetime.now()
@@ -201,12 +204,13 @@ def endpoints():
 def patient_photo(id=None):
 	""" Return the patient's photo, if any, placeholder image otherwise.
 	"""
-	patient = _get_patient()
-	if patient is None:
-		logging.info("Trying to retrieve patient photo without authorized smart client")
+	try:
+		patient = _get_patient()
+	except Exception as e:
+		logging.error("Trying to retrieve patient photo without authorized smart client: {}".format(e))
 		abort(401)
 	if id is not None and id != patient._id:
-		logging.info("Trying to retrieve photo of patient {} while being authorized for patient {}".format(id, patient._id))
+		logging.error("Trying to retrieve photo of patient {} while being authorized for patient {}".format(id, patient._id))
 		abort(401)
 	
 	# check cache
@@ -232,12 +236,13 @@ def patient_photo(id=None):
 def patient(id=None):
 	""" Returns the current patient's data as JSON.
 	"""
-	patient = _get_patient()
-	if patient is None:
-		logging.info("Trying to retrieve /patient without authorized smart client")
+	try:
+		patient = _get_patient()
+	except Exception as e:
+		logging.error("Trying to retrieve /patient without authorized smart client: {}".format(e))
 		abort(401)
 	if id is not None and id != patient._id:
-		logging.info("Trying to retrieve patient {} while being authorized for patient {}".format(id, patient._id))
+		logging.error("Trying to retrieve patient {} while being authorized for patient {}".format(id, patient._id))
 		abort(401)
 	return jsonify(patient.for_api(stripped=True))
 
@@ -248,9 +253,10 @@ def patient(id=None):
 def find():
 	""" Retrieve trials for the current patient.
 	"""
-	patient = _get_patient()
-	if patient is None:
-		logging.info("Trying to find trials for a patient without authorized smart client")
+	try:
+		patient = _get_patient()
+	except Exception as e:
+		logging.error("Trying to find trials for a patient without authorized smart client: {}".format(e))
 		abort(401)
 	
 	# find trials
@@ -303,9 +309,12 @@ def trial_patient_info(trial_id, patient_id):
 		abort(400, "No JSON document body")
 	
 	# only allow to get info about the patient this user has currently selected
-	patient = _get_patient()
+	try:
+		patient = _get_patient()
+	except Exception as e:
+		logging.error("Failed to retrieve trial info for patient: {}".formate(e))
 	if patient.id != patient_id:
-		logging.info("Trying to update trial-patient info for patient {} while SMART has patient {}"
+		logging.error("Trying to update trial-patient info for patient {} while SMART has patient {}"
 			.format(patient_id, patient.id))
 		abort(401, "You are not authorized to update trial-patient-info for patient {}"
 			.format(patient_id))

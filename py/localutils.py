@@ -3,6 +3,7 @@
 import io
 import os
 import json
+import logging
 
 import targettrial
 import targetprofile
@@ -35,10 +36,13 @@ class LocalTrialServer(trialserver.TrialServer):
 			trial_json = cache_t.retrieve(nct) if cache_t is not None else None
 			if trial_json is not None:
 				trial = trial_class(nct, trial_json)
-			else:
+			elif self.trialreach_server is not None:
 				trial = self.trialreach_server.get_trial(nct, trial_class)
 				if cache_t is not None:
 					cache_t.store(trial.nct, trial.as_json())
+			else:
+				logging.error("I do NOT have a handle to a TrialReach server, unable to query for trials")
+				continue
 			
 			# check cache for target profile data
 			if trial.target_profile is None and cache_p is not None:

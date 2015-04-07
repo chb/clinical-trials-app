@@ -20,6 +20,11 @@ function initApp() {
 		
 		// search trials
 		finder.find(patient);
+	},
+	function(xhr, status, message) {
+		$('#app').empty().append('<h3>' + status + '</h3>')
+		.append('<h1 class="red">' + message + '</h1>')
+		.append("<p>As an administrator, check the app log for more information</p>");
 	});
 }
 
