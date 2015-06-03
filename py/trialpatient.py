@@ -151,10 +151,10 @@ class TrialPatient(jsondocument.JSONDocument):
 		if fpat is None:
 			return None
 		
-		patient = cls(fpat._remote_id)
+		patient = cls(fpat.id)
 		patient.fhir = fpat
 		patient.full_name = client.human_name(fpat.name[0] if fpat.name and len(fpat.name) > 0 else None)
-		patient.gender = client.string_gender(fpat.gender)
+		patient.gender = fpat.gender
 		patient.birthday = fpat.birthDate.isostring
 		
 		if fpat.address is not None and len(fpat.address) > 0:
@@ -168,20 +168,20 @@ class TrialPatient(jsondocument.JSONDocument):
 			patient.country = address.country
 		
 		# retrieve problem list
-		cond_search = condition.Condition.where(struct={'subject': fpat._remote_id})
-		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform(fpat._server)]
+		cond_search = condition.Condition.where(struct={'subject': fpat.id})
+		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform_resources(fpat._server)]
 		
 		# retrieve meds
-		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat._remote_id})
-		patient.medications = [trialmedication.TrialMedication.from_fhir(m) for m in med_search.perform(fpat._server)]
+		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat.id})
+		patient.medications = [trialmedication.TrialMedication.from_fhir(m) for m in med_search.perform_resources(fpat._server)]
 		
 		# retrieve allergies
-		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat._remote_id})
-		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform(fpat._server)]
+		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat.id})
+		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform_resources(fpat._server)]
 		
 		# retrieve labs
-		lab_search = observation.Observation.where(struct={'subject': fpat._remote_id})
-		patient.labs = [triallab.TrialLab.from_fhir(l) for l in lab_search.perform(fpat._server)]
+		lab_search = observation.Observation.where(struct={'subject': fpat.id})
+		patient.labs = [triallab.TrialLab.from_fhir(l) for l in lab_search.perform_resources(fpat._server)]
 		
 		return patient
 	

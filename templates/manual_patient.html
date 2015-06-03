@@ -1,0 +1,17 @@
+{% extends "master.html" %}
+
+{% block content %}
+	<div id="app" style="min-height: 40em;">
+		<form method="get" action="" class="bigcenter">
+			{% if mrn %}
+			<h2 class="red">It seems we don't have a patient with MRN “{{ mrn }}”<h2>
+			{% endif %}
+			<h1>Enter Patient MRN</h1>
+			<p>
+				<input type="text" name="mrn" value="{% if mrn %}{{ mrn }}{% endif %}" placeholder="MRN"><br>
+				<br>
+				<button type="submit">Submit</button>
+			</p>
+		</form>
+	</div>
+{% endblock %}

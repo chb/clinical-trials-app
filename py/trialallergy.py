@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import py.smartclient.fhirclient.models.substance as substance
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
@@ -20,7 +21,7 @@ class TrialAllergy(jsondocument.JSONDocument):
 		""" Fill properties from a FHIR MedicationPrescription instance.
 		"""
 		assert fhir_allergy
-		fhir_substance = fhir_allergy.substance.resolved
+		fhir_substance = fhir_allergy.substance.resolved(substance.Substance)
 		allergy = cls()
 		
 		# find NDF-RT code

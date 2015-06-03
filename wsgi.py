@@ -64,11 +64,11 @@ def _get_smart(iss=None, launch=None):
 	# use state if we have state or init from settings
 	state = session.get('smart_state')
 	if state:
-		return smart.FHIRClient(state=state)
-	return smart.FHIRClient(settings=settings)
+		return smart.FHIRClient(state=state, save_func=_save_smart)
+	return smart.FHIRClient(settings=settings, save_func=_save_smart)
 
-def _save_smart(client):
-	session['smart_state'] = client.state
+def _save_smart(state):
+	session['smart_state'] = state
 
 def _get_patient():
 	""" Return a `TrialPatient` instance, as authorized in the session.
@@ -93,7 +93,7 @@ def _get_patient():
 		logging.debug('Patient was recently cached, returning cached data from {}'.format(patient.cached))
 		return patient
 	
-	logging.debug('Loading patient data via FHIR, was cached {}'.format(patient.cached))
+	logging.debug('Loading patient data via FHIR, was last cached {}'.format(patient.cached))
 	patient = TrialPatient.load_from_fhir(smart)
 	patient.cached = now
 	patient.store()
@@ -108,26 +108,31 @@ def _get_patient():
 def index():
 	""" The app's main page.
 	"""
+	defs = {
+		'debug': DEBUG,
+		'need_patient_switcher': not USE_TEST_PATIENT,
+		#'google_api_key': GOOGLE_API_KEY,
+	}
+	
 	if not USE_TEST_PATIENT:
+		mrn = request.args.get('mrn')
 		smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
-		
+		if smart_client.patient is None and mrn:
+			smart_client.patient_id = mrn
+			
 		# no patient yet, maybe need to authorize
 		if smart_client.patient is None:
 			if not smart_client.ready:
 				auth_url = smart_client.authorize_url
-				_save_smart(smart_client)
-				logging.debug('redirecting to app launch page at {}'.format(auth_url))
-				return redirect(auth_url)
+				if auth_url is not None:
+					logging.debug('redirecting to app launch page at {}'.format(auth_url))
+					return redirect(auth_url)
+				logging.debug('Server does not advertise an authorize_url')
 			
-			return "Ready, but no patient"
+			# no patient, but authorized: let user select patient manually (since the server did not do that)
+			return render_template('manual_patient.html', defs=defs, mrn=mrn)
 	
 	# patient data ready
-	defs = {
-		'debug': DEBUG,
-		'need_patient_banner': not USE_TEST_PATIENT,
-		#'google_api_key': GOOGLE_API_KEY,
-	}
-	
 	return render_template('index.html', defs=defs)
 
 @app.route('/fhir-app/launch.html')
@@ -174,7 +179,6 @@ def callback():
 	smart_client = _get_smart()
 	try:
 		smart_client.handle_callback(request.url)
-		_save_smart(smart_client)
 	except Exception as e:
 		return """<h1>Authorization Error</h1><p>{}</p><p><a href="/logout">Start over</a></p>""".format(e)
 	logging.debug("Got an access token, returning home")

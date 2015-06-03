@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import py.smartclient.fhirclient.models.medication as medication
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
@@ -20,7 +21,7 @@ class TrialMedication(jsondocument.JSONDocument):
 		""" Fill properties from a FHIR MedicationPrescription instance.
 		"""
 		assert fhir_prescription
-		fhir_med = fhir_prescription.medication.resolved
+		fhir_med = fhir_prescription.medication.resolved(medication.Medication)
 		med = cls()
 		
 		# find RxNorm code

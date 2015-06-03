@@ -35,8 +35,8 @@ class TrialLab(jsondocument.JSONDocument):
 			print('LAB PERIOD', fhir_observation.appliesPeriod)
 		
 		# find LOINC code
-		if fhir_observation.name is not None and fhir_observation.name.coding is not None:
-			for code in fhir_observation.name.coding:
+		if fhir_observation.code is not None and fhir_observation.code.coding is not None:
+			for code in fhir_observation.code.coding:
 				if 'http://loinc.org' == code.system:
 					lab.loinc = code.code
 					break
