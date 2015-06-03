@@ -11,6 +11,7 @@ env
 # Other
 trial-cache
 patient-photos
+*.pyc
 __pycache__
 .sass-cache
 .DS_Store

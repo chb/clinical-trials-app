@@ -1,256 +1,242 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Trial Eligibility</title>
-	<link rel="stylesheet" type="text/css" href="static/style.css">
-	<link rel="icon" type="image/png" href="static/favicon.png">
+{% extends "master.html" %}
+
+{% block content %}
+	{%- if defs.need_patient_switcher %}
+	<div class="back_to_select">
+		<a id="back_to_patient" href="logout">« Change patient</a>
+	</div>
+	{%- endif %}
 	
-	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-</head>
-<body>
-	<div id="container">
-		<header>
-			<!-- a href="help">Help</a -->
-		</header>
+	{#- Trial list item template #}
+	<script type="text/mustache" id="app_tmpl">{% raw %}
+	{{#finder.patient.full_name}}
+	<h1>Trials for {{ . }}</h1>
+	{{/}}
+	{{^finder.patient.full_name}}
+	<h1>Trial Eligibility</h1>
+	{{/}}
+	
+	<div id="overview">
+		{{#finder.patient}}
+		{{>"//templates/demographics.ro.mustache.html"}}
+		{{/}}
 		
-		<div id="content">
-			{%- if defs.need_patient_banner %}
-			<div class="back_to_select">
-				<a id="back_to_patient" href="logout">« Change patient</a>
+		<div id="status">
+			<div class="suggested{{^finder.result.showSuggested}} inactive{{/}}" can-click="finder.result.toggleShowSuggested">
+				<em>{{#finder.result}}{{ numSuggested }}{{/}}{{^finder.result}}~{{/}}</em>
+				<p>Suggested</p>
 			</div>
-			{%- endif %}
-			
-			{#- Trial list item template #}
-			<script type="text/mustache" id="app_tmpl">{% raw %}
-			{{#finder.patient.full_name}}
-			<h1>Trials for {{ . }}</h1>
-			{{/}}
-			{{^finder.patient.full_name}}
-			<h1>Trial Eligibility</h1>
-			{{/}}
-			
-			<div id="overview">
-				{{#finder.patient}}
-				{{>"//templates/demographics.ro.mustache.html"}}
-				{{/}}
-				
-				<div id="status">
-					<div class="suggested{{^finder.result.showSuggested}} inactive{{/}}" can-click="finder.result.toggleShowSuggested">
-						<em>{{#finder.result}}{{ numSuggested }}{{/}}{{^finder.result}}~{{/}}</em>
-						<p>Suggested</p>
-					</div>
-					<div class="eligible{{^finder.result.showEligible}} inactive{{/}}" can-click="finder.result.toggleShowEligible">
-						<em>{{#finder.result}}{{ numEligible }}{{/}}{{^finder.result}}~{{/}}</em>
-						<p>Eligible</p>
-					</div>
-					<div class="ineligible{{^finder.result.showIneligible}} inactive{{/}}" can-click="finder.result.toggleShowIneligible">
-						<em>{{#finder.result}}{{ numIneligible }}{{/}}{{^finder.result}}~{{/}}</em>
-						<p>Not Eligible</p>
-					</div>
-				</div>
+			<div class="eligible{{^finder.result.showEligible}} inactive{{/}}" can-click="finder.result.toggleShowEligible">
+				<em>{{#finder.result}}{{ numEligible }}{{/}}{{^finder.result}}~{{/}}</em>
+				<p>Eligible</p>
 			</div>
-			
-			{{#finder.patient.hasConditions}}
-			<div id="patient_problems">
-				<h2 class="hide_next" onclick="$(this).toggleClass('hide_next')">Conditions</h2>
-				<ul id="problem_list">
-					{{#finder.patient.conditions}}
-					<li>
-						<span class="problem_name">{{ summary }}</span>
-						<span class="supplement">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</span>
-					</li>
-					{{/}}
-				</ul>
+			<div class="ineligible{{^finder.result.showIneligible}} inactive{{/}}" can-click="finder.result.toggleShowIneligible">
+				<em>{{#finder.result}}{{ numIneligible }}{{/}}{{^finder.result}}~{{/}}</em>
+				<p>Not Eligible</p>
 			</div>
+		</div>
+	</div>
+	
+	{{#finder.patient.hasConditions}}
+	<div id="patient_problems">
+		<h2 class="hide_next" onclick="$(this).toggleClass('hide_next')">Conditions</h2>
+		<ul id="problem_list">
+			{{#finder.patient.conditions}}
+			<li>
+				<span class="problem_name">{{ summary }}</span>
+				<span class="supplement">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</span>
+			</li>
 			{{/}}
-			
-			{{#finder.status}}
-			<div class="trial_status">{{ . }}</div>
+		</ul>
+	</div>
+	{{/}}
+	
+	{{#finder.status}}
+	<div class="trial_status">{{ . }}</div>
+	{{/}}
+	{{#finder.error}}
+	<div class="trial_status red">{{ . }}</div>
+	{{/}}
+	
+	{{#finder.result}}
+	<div id="trial_selectors">
+		<div class="trial_opt_selector">
+			<h2>Intervention / Observation</h2>
+			<ul id="selector_inv_type">
+			{{#interventions}}
+				<li>
+					<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
+					<label for="{{ huid }}">{{ name }}</label>
+					<span class="num_matches">{{ numMatches }}</span>
+				</li>
 			{{/}}
-			{{#finder.error}}
-			<div class="trial_status red">{{ . }}</div>
+			{{^interventions}}
+				<li><h3>No results</h3></li>
 			{{/}}
-			
-			{{#finder.result}}
-			<div id="trial_selectors">
-				<div class="trial_opt_selector">
-					<h2>Intervention / Observation</h2>
-					<ul id="selector_inv_type">
-					{{#interventions}}
-						<li>
-							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
-							<label for="{{ huid }}">{{ name }}</label>
-							<span class="num_matches">{{ numMatches }}</span>
-						</li>
-					{{/}}
-					{{^interventions}}
-						<li><h3>No results</h3></li>
-					{{/}}
-					</ul>
-				</div>
-				{{#showPhases}}
-				<div class="trial_opt_selector">
-					<h2>Trial phase</h2>
-					<ul id="selector_inv_phase">
-					{{#phases}}
-						<li{{^numMatches}} style="display:none;"{{/}}>
-							<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
-							<label for="{{ huid }}">{{ name }}</label>
-							<span class="num_matches">{{ numMatches }}</span>
-						</li>
-					{{/}}
-					</ul>
-				</div>
-				{{/}}
-			</div>
-			<div style="clear:left;"> </div>
-			
-			<!--div id="selector_keywords_parent">
-				<h2>Selected Keywords</h2>
-				<div id="selector_keywords"></div>
-			</div-->
-			
-			<div id="trials">
-				{{#numShownTitle}}<h2>{{ . }}</h2>{{/}}
-				<ul id="trial_list" class="trial_list">
-				{{#results}}
-					<li{{^shown}} style="display:none;"{{/}}>{{>"trial_tmpl"}}</li>
-				{{/}}
-				</ul>
-			</div>
+			</ul>
+		</div>
+		{{#showPhases}}
+		<div class="trial_opt_selector">
+			<h2>Trial phase</h2>
+			<ul id="selector_inv_phase">
+			{{#phases}}
+				<li{{^numMatches}} style="display:none;"{{/}}>
+					<input type="checkbox" id="{{ huid }}" can-value="active" can-change="updateTrialShownState">
+					<label for="{{ huid }}">{{ name }}</label>
+					<span class="num_matches">{{ numMatches }}</span>
+				</li>
 			{{/}}
-			</script>
-			
-			<script type="text/mustache" id="trial_tmpl">
-				<div class="trial {{ status }}">
-					<div class="trial_head">
-						<div class="trial_head_text">
-							{{#editing}}
-							<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
-							<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
-							{{/}}
-							{{^editing}}
-							<h3 class="title">{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}</h3>
-							{{/}}
-							<p class="supplement">
-								<span class="phases">{{ trial.phasesFormatted }}</span>
-								{{#trial.source}}<span class="source">{{ . }}</span>{{/}}
-								{{#trial.condition}}<span class="condition">{{ . }}</span>{{/}}
-							</p>
-						</div>
-						
-						<div class="trial_head_panel">
-							{{#editing}}
-							<button type="submit" can-click="save">Save Changes</button><br>
-							<button type="reset" can-click="cancel">Cancel</button>
-							{{/}}
-							{{^editing}}
-							<button can-click="edit"{{^canEdit}} disabled="disabled"{{/}}>Edit Trial</button><br>
-							<button can-click="suggest">{{#suggested}}Un-Suggest{{/}}{{^suggested}}Suggest Trial{{/}}</button>
-							{{/}}
-						</div>
-					</div>
-					
+			</ul>
+		</div>
+		{{/}}
+	</div>
+	<div style="clear:left;"> </div>
+	
+	<!--div id="selector_keywords_parent">
+		<h2>Selected Keywords</h2>
+		<div id="selector_keywords"></div>
+	</div-->
+	
+	<div id="trials">
+		{{#numShownTitle}}<h2>{{ . }}</h2>{{/}}
+		<ul id="trial_list" class="trial_list">
+		{{#results}}
+			<li{{^shown}} style="display:none;"{{/}}>{{>"trial_tmpl"}}</li>
+		{{/}}
+		</ul>
+	</div>
+	{{/}}
+	</script>
+	
+	<script type="text/mustache" id="trial_tmpl">
+		<div class="trial {{ status }}">
+			<div class="trial_head">
+				<div class="trial_head_text">
 					{{#editing}}
-					<h4>General Trial Notes</h4>
-					<textarea id="edit_notes" name="edit_notes" class="notes" rows="5" cols="30" placeholder="Notes">{{ trial.info.notes.raw }}</textarea>
-					<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}} only</h4>
-					<textarea id="edit_patient_notes" name="edit_patient_notes" class="notes patient_info" rows="5" cols="30" placeholder="Patient Notes">{{ patient_info.notes.raw }}</textarea>
+					<input id="edit_title" type="text" name="edit_title" class="title" value="{{ trial.info.title }}" placeholder="Override Trial Title">
+					<div class="supplement"><i>Original Title:</i> <a href="javascript:void();" can-click="trial.previewTitle">{{ trial.title }}</a></div>
 					{{/}}
 					{{^editing}}
-						{{#0}}{{#trial.locations}}{{>"location_tmpl"}}{{/}}{{/}}
-						{{#trial.info.notes}}<p class="notes">{{{ html }}}</p>{{/}}
-						{{#patient_info.notes}}
-						<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}}</h4>
-						<p class="notes patient_info">{{{ html }}}</p>
-						{{/}}
+					<h3 class="title">{{ trial.mainTitle }}{{#trial.score}} ({{ . }}){{/}}</h3>
 					{{/}}
-					
-					<div class="details">
-						<strong class="toggle" onclick="$(this).siblings('div').toggle()">Trial Details</strong>
-						<div class="supplement">
-							Keywords: {{#trial.keyword}}<span class="keyword">{{ . }}</span>{{/}}{{^trial.keyword}}none{{/}}
-						</div>
-						
-						{{#trial.primary_outcome}}<div>
-							<h4>Primary Outcome</h4>
-							<ul>{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
-						</div>{{/}}
-						{{#trial.secondary_outcome}}<div>
-							<h4>Secondary Outcome</h4>
-							<ul>{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
-						</div>{{/}}
-						
-						{{#trial.brief_summary}}
-						<div><p class="summary">{{ textblock }}</p></div>
-						{{/}}
-					</div>
-					
-					{{#hasTests}}
-					<div class="tests">
-						<strong class="toggle" onclick="$(this).parent().toggleClass('show_all')">Eligibility Tests</strong>
-						{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
-					</div>
-					{{/}}
-					
-					{{#trial.eligibility}}
-					<div class="criteria">
-						<strong class="toggle" onclick="$(this).next().toggle()">Eligibility Criteria</strong>
-						<p class="formatted_criteria" style="display:none;">
-							{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
-							{{{ html }}}
-						</p>
-					</div>
-					{{/}}
-					
-					<p>
-						<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">» {{ trial._id }}</a>
+					<p class="supplement">
+						<span class="phases">{{ trial.phasesFormatted }}</span>
+						{{#trial.source}}<span class="source">{{ . }}</span>{{/}}
+						{{#trial.condition}}<span class="condition">{{ . }}</span>{{/}}
 					</p>
-					<div style="clear:right;"> </div>
 				</div>
-			</script>
-			
-			<script type="text/mustache" id="outcome_tmpl">
-				<li>
-					<span class="toggle" onclick="$(this).siblings('.outcome_details').toggle()">{{ measure }}</span>
-					{{#safety_issue}}<b class="red">Safety Issue</b>{{/}}
-					<div class="outcome_details" style="display:none;">
-						<p>{{ time_frame }}</p>
-						<p class="supplement">{{ description }}</p>
-					</div>
-				</li>
-			</script>
-			
-			<script type="text/mustache" id="location_tmpl">
-			<div class="trial_location">
-				<div class="loc_status">
-					<span style="color:{{ status_color }};">{{ status }}</span>
-					{{#contact}}
-					–
-					<a href="javascript:void(0);" onclick="$(this).next().toggle()">contact</a>
-					<div class="loc_contact" style="display:none;">
-						<p class="cont_name">{{ contact.name }}</p>
-						{{#contact.email}}
-						<p class="cont_email"><a href="mailto:{{ contact.email }}?subject=Trial+{{ trial.nct }}">{{ contact.email }}</a></p>
-						{{/}}
-						{{#contact.phone}}
-						<p class="cont_phone">{{ contact.phone }}</p>
-						{{/}}
-					</div>
+				
+				<div class="trial_head_panel">
+					{{#editing}}
+					<button type="submit" can-click="save">Save Changes</button><br>
+					<button type="reset" can-click="cancel">Cancel</button>
+					{{/}}
+					{{^editing}}
+					<button can-click="edit"{{^canEdit}} disabled="disabled"{{/}}>Edit Trial</button><br>
+					<button can-click="suggest">{{#suggested}}Un-Suggest{{/}}{{^suggested}}Suggest Trial{{/}}</button>
 					{{/}}
 				</div>
-				{{#facility.name}}<div class="loc_name">{{ . }}</div>{{/}}
-				{{#facility.address.city}}<div class="loc_city">{{ . }}{{#facility.address.state}}, {{ . }}{{/}}</div>{{/}}
-				{{#distance}}<div class="loc_distance">{{ distance }} Miles</div>{{/}}
 			</div>
-			{% endraw %}</script>
 			
-			<div id="app"><h1>Loading...</h1></div>
+			{{#editing}}
+			<h4>General Trial Notes</h4>
+			<textarea id="edit_notes" name="edit_notes" class="notes" rows="5" cols="30" placeholder="Notes">{{ trial.info.notes.raw }}</textarea>
+			<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}} only</h4>
+			<textarea id="edit_patient_notes" name="edit_patient_notes" class="notes patient_info" rows="5" cols="30" placeholder="Patient Notes">{{ patient_info.notes.raw }}</textarea>
+			{{/}}
+			{{^editing}}
+				{{#0}}{{#trial.locations}}{{>"location_tmpl"}}{{/}}{{/}}
+				{{#trial.info.notes}}<p class="notes">{{{ html }}}</p>{{/}}
+				{{#patient_info.notes}}
+				<h4>Notes for {{#finder.patient.full_name}}{{ . }}{{/}}{{^finder.patient.full_name}}this Patient{{/}}</h4>
+				<p class="notes patient_info">{{{ html }}}</p>
+				{{/}}
+			{{/}}
+			
+			<div class="details">
+				<strong class="toggle" onclick="$(this).siblings('div').toggle()">Trial Details</strong>
+				<div class="supplement">
+					Keywords: {{#trial.keyword}}<span class="keyword">{{ . }}</span>{{/}}{{^trial.keyword}}none{{/}}
+				</div>
+				
+				{{#trial.primary_outcome}}<div>
+					<h4>Primary Outcome</h4>
+					<ul>{{#trial.primary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
+				</div>{{/}}
+				{{#trial.secondary_outcome}}<div>
+					<h4>Secondary Outcome</h4>
+					<ul>{{#trial.secondary_outcome}}{{>"outcome_tmpl"}}{{/}}</ul>
+				</div>{{/}}
+				
+				{{#trial.brief_summary}}
+				<div><p class="summary">{{ textblock }}</p></div>
+				{{/}}
+			</div>
+			
+			{{#hasTests}}
+			<div class="tests">
+				<strong class="toggle" onclick="$(this).parent().toggleClass('show_all')">Eligibility Tests</strong>
+				{{#tests}}<tt class="exclusion_reason {{ status }}">• {{ test }}</tt>{{/}}
+			</div>
+			{{/}}
+			
+			{{#trial.eligibility}}
+			<div class="criteria">
+				<strong class="toggle" onclick="$(this).next().toggle()">Eligibility Criteria</strong>
+				<p class="formatted_criteria" style="display:none;">
+					{{#gender}}Gender: <b>{{ . }}</b><br>{{/}}
+					{{{ html }}}
+				</p>
+			</div>
+			{{/}}
+			
+			<p>
+				<a class="ctgov_link" href="http://www.clinicaltrials.gov/ct2/show/{{ trial._id }}" target="_blank">» {{ trial._id }}</a>
+			</p>
+			<div style="clear:right;"> </div>
 		</div>
-		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
+	</script>
+	
+	<script type="text/mustache" id="outcome_tmpl">
+		<li>
+			<span class="toggle" onclick="$(this).siblings('.outcome_details').toggle()">{{ measure }}</span>
+			{{#safety_issue}}<b class="red">Safety Issue</b>{{/}}
+			<div class="outcome_details" style="display:none;">
+				<p>{{ time_frame }}</p>
+				<p class="supplement">{{ description }}</p>
+			</div>
+		</li>
+	</script>
+	
+	<script type="text/mustache" id="location_tmpl">
+	<div class="trial_location">
+		<div class="loc_status">
+			<span style="color:{{ status_color }};">{{ status }}</span>
+			{{#contact}}
+			–
+			<a href="javascript:void(0);" onclick="$(this).next().toggle()">contact</a>
+			<div class="loc_contact" style="display:none;">
+				<p class="cont_name">{{ contact.name }}</p>
+				{{#contact.email}}
+				<p class="cont_email"><a href="mailto:{{ contact.email }}?subject=Trial+{{ trial.nct }}">{{ contact.email }}</a></p>
+				{{/}}
+				{{#contact.phone}}
+				<p class="cont_phone">{{ contact.phone }}</p>
+				{{/}}
+			</div>
+			{{/}}
+		</div>
+		{{#facility.name}}<div class="loc_name">{{ . }}</div>{{/}}
+		{{#facility.address.city}}<div class="loc_city">{{ . }}{{#facility.address.state}}, {{ . }}{{/}}</div>{{/}}
+		{{#distance}}<div class="loc_distance">{{ distance }} Miles</div>{{/}}
 	</div>
+	{% endraw %}</script>
+	
+	<div id="app"><h1>Loading...</h1></div>
+{% endblock %}
+
+
+{% block afterbody %}
 	<script src="static/jquery.min.js"></script>
 	<script src="static/can.jquery{% if defs.debug %}.dev{% endif %}.js"></script>
 	{%- if google_api_key %}
@@ -263,5 +249,4 @@
 		initApp();
 	});
 	</script>
-</body>
-</html>
+{% endblock %}

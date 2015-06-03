@@ -157,7 +157,7 @@ def help():
 		with codecs.open(help_md, 'r', 'utf-8') as help:
 			text = markdown.markdown(help.read())
 			links = [{'text': "Trial Eligibility App", 'href': '/'}]
-			html = render_template('master.html', content=text, links=links)
+			html = render_template('content.html', content=text, links=links)
 			
 			# render to html
 			with codecs.open(help_html, 'w', 'utf-8') as write:
@@ -207,8 +207,8 @@ def patient_photo(id=None):
 	try:
 		patient = _get_patient()
 	except Exception as e:
-		logging.error("Trying to retrieve patient photo without authorized smart client: {}".format(e))
-		abort(401)
+		logging.error("Exception trying to retrieve patient photo: {}".format(e))
+		abort(500)
 	if id is not None and id != patient._id:
 		logging.error("Trying to retrieve photo of patient {} while being authorized for patient {}".format(id, patient._id))
 		abort(401)
@@ -239,8 +239,8 @@ def patient(id=None):
 	try:
 		patient = _get_patient()
 	except Exception as e:
-		logging.error("Trying to retrieve /patient without authorized smart client: {}".format(e))
-		abort(401)
+		logging.error("Exception trying to retrieve /patient: {}".format(e))
+		abort(500)
 	if id is not None and id != patient._id:
 		logging.error("Trying to retrieve patient {} while being authorized for patient {}".format(id, patient._id))
 		abort(401)

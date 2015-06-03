@@ -2,7 +2,12 @@
 <html>
 <head>
 	<title>{{ title|default("Trial Eligibility") }}</title>
-	<link rel="stylesheet" type="text/css" href="static/style.css" />
+	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<link rel="icon" type="image/png" href="static/favicon.png">
+	
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 </head>
 <body>
 	<div id="container">
@@ -14,9 +19,10 @@
 			{%- endfor %}
 		</header>
 		<div id="content">
-			{{ content|safe }}
+			{%- block content %}{% endblock -%}
 		</div>
 		<div id="footer">Made at <a href="http://www.chip.org" target="_blank">CHIP</a></div>
 	</div>
+	{%- block afterbody %}{% endblock %}
 </body>
 </html>
