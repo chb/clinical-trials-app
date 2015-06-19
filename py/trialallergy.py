@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import py.smartclient.fhirclient.models.substance as substance
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
@@ -17,10 +18,10 @@ class TrialAllergy(jsondocument.JSONDocument):
 	
 	@classmethod
 	def from_fhir(cls, fhir_allergy):
-		""" Fill properties from a FHIR MedicationPrescription instance.
+		""" Fill properties from a FHIR AllergyIntolerance instance.
 		"""
 		assert fhir_allergy
-		fhir_substance = fhir_allergy.substance.resolved
+		fhir_substance = fhir_allergy.substance.resolved(substance.Substance)
 		allergy = cls()
 		
 		# find NDF-RT code
@@ -30,6 +31,7 @@ class TrialAllergy(jsondocument.JSONDocument):
 					allergy.ndfrt = code.code
 					break
 		
+		# TODO: use criticality
 		allergy.status = fhir_allergy.status
 		allergy.summary = fhir_substance.text.div if fhir_substance is not None and fhir_substance.text is not None else None
 		if allergy.summary is not None:

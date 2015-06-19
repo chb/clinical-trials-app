@@ -9,7 +9,7 @@ SESSION_SECRET = "supersecretsecret"
 
 # SMART
 SMART_APP_ID = "my_web_app"
-SMART_API_BASE = "https://fhir-api.smartplatforms.org"
+SMART_API_BASE = "https://fhir-open-api-dstu2.smarthealthit.org"
 SMART_REDIRECT = "http://localhost:8000/fhir-app/"
 
 # TrialReach API key (base64 encoded "key:secret" string)

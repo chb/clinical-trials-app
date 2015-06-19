@@ -216,6 +216,14 @@ div.supplement {
 .xsmall {
 	font-size: x-small;
 }
+.bigcenter {
+	padding: 3em 0;
+	font-size: 1.2em; text-align: center;
+	
+	input, button {
+		font-size: 1.2em;
+	}
+}
 
 
 .tag {

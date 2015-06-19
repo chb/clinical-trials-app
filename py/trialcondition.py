@@ -29,11 +29,13 @@ class TrialCondition(jsondocument.JSONDocument):
 			for code in fhir_cond.code.coding:
 				if 'http://snomed.info/sct' == code.system:
 					cond.snomed = code.code
+					cond.summary = code.display
 					break
-		cond.date_onset = fhir_cond.onsetDate.isostring if fhir_cond.onsetDate is not None else None
+		cond.date_onset = fhir_cond.onsetDateTime.isostring if fhir_cond.onsetDateTime is not None else None
 		cond.date_resolution = fhir_cond.abatementDate.isostring if fhir_cond.abatementDate is not None else None
-		cond.status = fhir_cond.status
-		cond.summary = fhir_cond.text.div if fhir_cond.text is not None else None
+		cond.status = fhir_cond.clinicalStatus
+		if cond.summary is None:
+			cond.summary = fhir_cond.text.div if fhir_cond.text is not None else None
 		if cond.summary is not None:
 			cond.summary = re.sub('<[^<]+?>', '', cond.summary)		# good enough
 		cond.notes = fhir_cond.notes

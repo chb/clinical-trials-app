@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-#  You're looking for "config.py", no need to change things here
+#  You're looking for "config.default.py", no need to change things here
 
 import os.path
 import logging
