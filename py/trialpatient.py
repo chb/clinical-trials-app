@@ -171,6 +171,15 @@ class TrialPatient(jsondocument.JSONDocument):
 		cond_search = condition.Condition.where(struct={'subject': fpat.id})
 		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform_resources(fpat._server)]
 		
+		# retrieve observations: labs and mutations
+		obs_search = observation.Observation.where(struct={'subject': fpat.id})
+		observations = obs_search.perform_resources(fpat._server)
+		patient.labs = []
+		for obs in observations:
+			if triallab.TrialLab.is_lab(obs):
+				patient.labs.append(triallab.TrialLab.from_fhir(obs))
+		patient.labs = patient.labs if len(patient.labs) > 0 else None
+		
 		# retrieve meds
 		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat.id})
 		patient.medications = [trialmedication.TrialMedication.from_fhir(m) for m in med_search.perform_resources(fpat._server)]
@@ -178,10 +187,6 @@ class TrialPatient(jsondocument.JSONDocument):
 		# retrieve allergies
 		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat.id})
 		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform_resources(fpat._server)]
-		
-		# retrieve labs
-		lab_search = observation.Observation.where(struct={'subject': fpat.id})
-		patient.labs = [triallab.TrialLab.from_fhir(l) for l in lab_search.perform_resources(fpat._server)]
 		
 		return patient
 	

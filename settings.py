@@ -23,6 +23,7 @@ else:
 	logging.warning('No "config.py" found, relying on environment variables')
 	DEBUG = int(os.environ.get('DEBUG', 0)) > 0
 	USE_TEST_PATIENT = int(os.environ.get('USE_TEST_PATIENT', 1)) > 0
+	PATIENT_CACHE_TIMEOUT = int(os.environ.get('PATIENT_CACHE_TIMEOUT', 300))
 	SESSION_SECRET = os.environ.get('SESSION_SECRET')
 	SMART_APP_ID = os.environ.get('SMART_APP_ID')
 	SMART_API_BASE = os.environ.get('SMART_API_BASE')
@@ -32,7 +33,6 @@ else:
 
 SMART_DEFAULTS = {
 	'app_id': SMART_APP_ID,
-	'auth_type': 'oauth2',
 	'api_base': SMART_API_BASE,
 	'redirect_uri': SMART_REDIRECT,
 }
