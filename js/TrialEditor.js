@@ -41,41 +41,34 @@ var TrialEditor = can.Construct.extend({
 			'title': $('#edit_title').val(),
 			'notes': $('#edit_notes').val(),
 		};
-		trial.updateFromInfo(trial_info);
-		
 		var patient_info = {
 			'notes': $('#edit_patient_notes').val(),
 		};
-		result.updateFromPatientInfo(patient_info);
 		
-		// save trial info data
-		$.putJSON('trials/' + trial._id + '/info', trial_info)
-		.done(function(json, status, xhr) {
-			trial.updateFromInfo(json ? json.trial : null);
+		$.when(
+			
+			// save trial info data
+			$.putJSON('trials/' + trial._id + '/info', trial_info)
+			.done(function(json, status, xhr) {
+				trial.updateFromInfo(json ? json.trial : null);
+			})
+			.fail(function(xhr, status, error) {
+				console.error('Failed to save trial info:', status, error);
+				alert("Failed to save trial info: " + error);
+			}),
 			
 			// save trial patient info data
-			if (result.finder_result && result.finder_result.patient_id) {
-				$.putJSON('trials/' + trial._id + '/patient/' + result.finder_result.patient_id + '/info', patient_info)
-				.done(function(json, status, xhr) {
-					result.updateFromPatientInfo(json);
-					result.setCanEdit(true);
-				})
-				.fail(function(xhr, status, error) {
-					console.error('Failed to save trial patient info:', status, error);
-					alert("Failed to save trial patient info: " + error);
-					result.setCanEdit(true);
-				});
-			}
-			else {
-				console.error("Failed to save patient specific trial info because there is no patient id in the finder_result:", result.finder_result);
-				result.setCanEdit(true);
-			}
-		})
-		.fail(function(xhr, status, error) {
-			console.error('Failed to save trial info:', status, error);
-			alert("Failed to save trial info: " + error);
+			$.putJSON('trials/' + trial._id + '/patient/' + result.finder_result.patient_id + '/info', patient_info)
+			.done(function(json, status, xhr) {
+				result.updateFromPatientInfo(json);
+			})
+			.fail(function(xhr, status, error) {
+				console.error('Failed to save trial patient info:', status, error);
+				alert("Failed to save trial patient info: " + error);
+			})
+		).done(function() {
 			result.setCanEdit(true);
-		});
+		})
 		this.done(result);
 	}
 });
