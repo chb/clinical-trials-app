@@ -23,6 +23,7 @@ class TrialMedication(jsondocument.JSONDocument):
 		assert fhir_prescription
 		fhir_med = fhir_prescription.medication.resolved(medication.Medication)
 		med = cls()
+		med._id = fhir_prescription.id
 		
 		# find RxNorm code
 		if fhir_med is not None and fhir_med.code is not None and fhir_med.code.coding is not None:

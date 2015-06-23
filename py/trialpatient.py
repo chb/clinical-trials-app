@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os.path
 import logging
 import datetime
 import markdown
@@ -11,6 +12,7 @@ import trialcondition
 import trialmedication
 import trialallergy
 import triallab
+import trialmutation
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 import smartclient.fhirclient.models.condition as condition
 import smartclient.fhirclient.models.medicationprescription as medicationprescription
@@ -178,6 +180,17 @@ class TrialPatient(jsondocument.JSONDocument):
 		for obs in observations:
 			if triallab.TrialLab.is_lab(obs):
 				patient.labs.append(triallab.TrialLab.from_fhir(obs))
+			elif trialmutation.TrialMutation.is_mutation(obs):
+				mut = trialmutation.TrialMutation.from_fhir(obs)
+				
+				# this is a mutation, find corresponding observation
+				for cond in patient.conditions:
+					if mut.reference and cond.id == os.path.basename(mut.reference):
+						if cond.mutations is None:
+							cond.mutations = []
+						cond.mutations.append(mut)
+						break
+		
 		patient.labs = patient.labs if len(patient.labs) > 0 else None
 		
 		# retrieve meds

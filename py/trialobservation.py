@@ -27,6 +27,7 @@ class TrialObservation(jsondocument.JSONDocument):
 		"""
 		assert fhir_observation
 		obs = cls()
+		obs._id = fhir_observation.id
 		
 		# determine date
 		if fhir_observation.appliesDateTime is not None:
