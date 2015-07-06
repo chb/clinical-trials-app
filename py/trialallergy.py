@@ -23,6 +23,7 @@ class TrialAllergy(jsondocument.JSONDocument):
 		assert fhir_allergy
 		fhir_substance = fhir_allergy.substance.resolved(substance.Substance)
 		allergy = cls()
+		allergy._id = fhir_allergy.id
 		
 		# find NDF-RT code
 		if fhir_substance is not None and fhir_substance.type is not None and fhir_substance.type.coding is not None:

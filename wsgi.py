@@ -76,10 +76,8 @@ def _get_patient():
 	:raises: Exception unless returning a patient instance
 	"""
 	if USE_TEST_PATIENT:
-		js = None
 		with io.open('static/patient-test.json', 'r', encoding='utf-8') as h:
-			js = json.load(h)
-		return TrialPatient('x', js)
+			return TrialPatient('x', json.load(h))
 	
 	smart = _get_smart()
 	if smart.patient_id is None:
@@ -89,7 +87,7 @@ def _get_patient():
 	now = datetime.datetime.now()
 	patient = TrialPatient(smart.patient_id)
 	patient.load()
-	if patient.cached is not None and patient.cached + datetime.timedelta(seconds=300) > now:
+	if patient.cached is not None and patient.cached + datetime.timedelta(seconds=PATIENT_CACHE_TIMEOUT) > now:
 		logging.debug('Patient was recently cached, returning cached data from {}'.format(patient.cached))
 		return patient
 	
@@ -119,7 +117,7 @@ def index():
 		smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
 		if smart_client.patient is None and mrn:
 			smart_client.patient_id = mrn
-			
+		
 		# no patient yet, maybe need to authorize
 		if smart_client.patient is None:
 			if not smart_client.ready:
@@ -129,8 +127,11 @@ def index():
 					return redirect(auth_url)
 				logging.debug('Server does not advertise an authorize_url')
 			
-			# no patient, but authorized: let user select patient manually (since the server did not do that)
-			return render_template('manual_patient.html', defs=defs, mrn=mrn)
+			# no patient, but authorized: let user select patient manually
+			# (since the server did not do that). This might actually load the
+			# patient since we just called smart_client.ready.
+			if smart_client.patient is None:
+				return render_template('manual_patient.html', defs=defs, mrn=mrn)
 	
 	# patient data ready
 	return render_template('index.html', defs=defs)

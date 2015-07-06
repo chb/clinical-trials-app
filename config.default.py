@@ -3,8 +3,9 @@
 # App settings
 # copy to "config.py"
 
-DEBUG = 1
-USE_TEST_PATIENT = 1
+DEBUG = 0
+USE_TEST_PATIENT = 0
+PATIENT_CACHE_TIMEOUT = 300      # seconds until cached patient data becomes stale
 SESSION_SECRET = "supersecretsecret"
 
 # SMART

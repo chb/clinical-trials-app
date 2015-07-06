@@ -16,6 +16,7 @@ class TrialCondition(jsondocument.JSONDocument):
 		self.status = None
 		self.summary = None
 		self.notes = None
+		self.mutations = None
 		super().__init__(None, "condition", json)
 	
 	@classmethod
@@ -25,6 +26,8 @@ class TrialCondition(jsondocument.JSONDocument):
 		assert fhir_cond
 		
 		cond = cls()
+		cond._id = fhir_cond.id
+		
 		if fhir_cond.code is not None and fhir_cond.code.coding is not None:
 			for code in fhir_cond.code.coding:
 				if 'http://snomed.info/sct' == code.system:
