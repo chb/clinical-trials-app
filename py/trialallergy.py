@@ -21,20 +21,21 @@ class TrialAllergy(jsondocument.JSONDocument):
 		""" Fill properties from a FHIR AllergyIntolerance instance.
 		"""
 		assert fhir_allergy
-		fhir_substance = fhir_allergy.substance.resolved(substance.Substance)
 		allergy = cls()
 		allergy._id = fhir_allergy.id
 		
 		# find NDF-RT code
-		if fhir_substance is not None and fhir_substance.type is not None and fhir_substance.type.coding is not None:
-			for code in fhir_substance.type.coding:
+		display = None
+		if fhir_allergy.substance is not None and fhir_allergy.substance.coding is not None:
+			for code in fhir_allergy.substance.coding:
 				if 'http://rxnav.nlm.nih.gov/REST/Ndfrt' == code.system:
 					allergy.ndfrt = code.code
+					display = code.display
 					break
 		
 		# TODO: use criticality
 		allergy.status = fhir_allergy.status
-		allergy.summary = fhir_substance.text.div if fhir_substance is not None and fhir_substance.text is not None else None
+		allergy.summary = fhir_allergy.text.div if fhir_allergy.text is not None else display
 		if allergy.summary is not None:
 			allergy.summary = re.sub('<[^<]+?>', '', allergy.summary)		# good enough
 		
