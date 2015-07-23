@@ -276,5 +276,7 @@ class TargetProfileCodedInput(TargetProfileInput):
 		super().__init__(json_dict)
 		self.system = json_dict.get('system') if json_dict is not None else None
 		self.code  = json_dict.get('code') if json_dict is not None else None
-		self.unit  = json_dict.get('units') if json_dict is not None else None		# TODO: "units" should be "unit", fix when TrialReach fixes
+		self.unit  = json_dict.get('units') if json_dict is not None else None
+		self.description  = json_dict.get('description') if json_dict is not None else None
+		self.prefLabel  = json_dict.get('prefLabel') if json_dict is not None else None
 
