@@ -101,7 +101,7 @@ class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 						pass		# TODO: check if "resolved"
 					
 					cpt = snomed.SNOMEDConcept(c.snomed)
-					if cpt.code == '77386006' or cpt.has_parent('77386006'):
+					if cpt.code == '77386006' or cpt.isa('77386006'):
 						match = True
 						break
 		
@@ -134,7 +134,7 @@ class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
 			matched = None
 			for c in patient.conditions:
 				cpt = snomed.SNOMEDConcept(c.snomed)
-				if cpt.code == self.rule.diagnosis.code or cpt.has_parent(self.rule.diagnosis.code):
+				if cpt.code == self.rule.diagnosis.code or cpt.isa(self.rule.diagnosis.code):
 					matched = snomed.SNOMEDConcept(self.rule.diagnosis.code)
 					break
 			if matched is not None:
