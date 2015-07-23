@@ -115,8 +115,11 @@ def index():
 	if not USE_TEST_PATIENT:
 		mrn = request.args.get('mrn')
 		smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
-		if smart_client.patient is None and mrn:
-			smart_client.patient_id = mrn
+		if mrn:
+			if smart_client.patient_id != mrn:
+				smart_client.reset_patient()
+			if smart_client.patient is None:
+				smart_client.patient_id = mrn
 		
 		# no patient yet, maybe need to authorize
 		if smart_client.patient is None:
