@@ -3,6 +3,7 @@
 
 import re
 import clinicaltrials.jsondocument.jsondocument as jsondocument
+import trialmutation
 
 
 class TrialCondition(jsondocument.JSONDocument):
@@ -18,6 +19,26 @@ class TrialCondition(jsondocument.JSONDocument):
 		self.notes = None
 		self.mutations = None
 		super().__init__(None, "condition", json)
+	
+	def update_with(self, js):
+		super().update_with(js)
+		if self.mutations is not None:
+			mutes = []
+			for mute in self.mutations:
+				mutes.append(trialmutation.TrialMutation(mute))
+			self.mutations = mutes
+	
+	def as_json(self):
+		js_dict = super().as_json()
+		if self.mutations is not None:
+			js_dict['mutations'] = [m.as_json() for m in self.mutations]
+		return js_dict
+	
+	def for_api(self):
+		js_dict = super().for_api()
+		if self.mutations is not None:
+			js_dict['mutations'] = [m.for_api() for m in self.mutations]
+		return js_dict
 	
 	@classmethod
 	def from_fhir(cls, fhir_cond):

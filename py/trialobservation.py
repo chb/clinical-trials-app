@@ -7,15 +7,25 @@ import datetime
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 
+class TrialObservationInterpretation(object):
+	def __init__(self, string_value):
+		self.string = string_value
+	
+	@property
+	def positive(self):
+	    return 'POS' == self.string
+
+
 class TrialObservation(jsondocument.JSONDocument):
 	""" Represents one observation.
 	"""
 	
 	def __init__(self, json=None):
 		self.date = None
-		self.coding = None				# FHIR Coding array
-		self.value = None				# numeric value
-		self.unit = None				# the UCUM unit
+		self.coding = None              # FHIR Coding array
+		self.interpretation = None      # as TrialObservationInterpretation
+		self.value = None               # numeric value
+		self.unit = None                # the UCUM unit
 		self.reliability = None
 		self.status = None
 		self.summary = None
@@ -38,6 +48,13 @@ class TrialObservation(jsondocument.JSONDocument):
 		# find coding
 		if fhir_observation.code is not None and fhir_observation.code.coding is not None:
 			obs.coding = fhir_observation.code.coding
+		
+		# find interpretation
+		if fhir_observation.interpretation is not None and fhir_observation.interpretation.coding is not None:
+			for coding in fhir_observation.interpretation.coding:
+				if 'http://hl7.org/fhir/v2/0078' == coding.system:
+					obs.interpretation = TrialObservationInterpretation(coding.code)
+					break
 		
 		# find value
 		if fhir_observation.valueAttachment is not None:
@@ -68,10 +85,22 @@ class TrialObservation(jsondocument.JSONDocument):
 		super().update_with(js)
 		if self.date is not None and not isinstance(self.date, datetime.date):
 			self.date = isodate.parse_date(self.date)
+		if self.interpretation is not None:
+			self.interpretation = TrialObservationInterpretation(self.interpretation)
 	
 	def as_json(self):
-		js = super().as_json().copy()
+		js_dict = super().as_json().copy()
 		if self.date is not None:
-			js['date'] = self.date.isoformat()
-		return js
+			js_dict['date'] = self.date.isoformat()
+		if self.interpretation is not None:
+			js_dict['interpretation'] = self.interpretation.string
+		return js_dict
+	
+	def for_api(self):
+		js_dict = super().for_api().copy()
+		if self.date is not None:
+			js_dict['date'] = self.date.isoformat()
+		if self.interpretation is not None:
+			js_dict['interpretation'] = self.interpretation.string
+		return js_dict
 

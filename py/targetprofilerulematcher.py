@@ -4,7 +4,7 @@
 import logging
 
 import codeable
-import umls.snomed as snomed
+import targetprofilediagnosisrulematcher
 
 
 class TargetProfileRuleMatcher():
@@ -27,8 +27,10 @@ class TargetProfileRuleMatcher():
 	
 	@classmethod
 	def get_matcher(cls, for_rule):
-		if for_rule is None or not for_rule.for_type:
-			return None
+		if for_rule is None:
+			raise Exception('Must supply a rule in order to receive a matcher')
+		if not for_rule.for_type:
+			raise Exception('Invalid rule, does not have "for_type" set: {}'.format(for_rule))
 		
 		klass = cls.matcher_classes.get(for_rule.for_type)
 		return klass(for_rule) if klass is not None else None
@@ -93,17 +95,8 @@ class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 		
 		# check for pregnancy "condition" (SNOMED-CT 77386006)
 		if 'pregnant' == self.rule.state:
-			if patient.conditions is not None:
-				for c in patient.conditions:
-					if c.date_onset is not None:
-						pass		# TODO: compare dates
-					if c.date_resolution is not None:
-						pass		# TODO: check if "resolved"
-					
-					cpt = snomed.SNOMEDConcept(c.snomed)
-					if cpt.code == '77386006' or cpt.isa('77386006'):
-						match = True
-						break
+			matcher = targetprofilediagnosisrulematcher.TargetProfileDiagnosisPregnancyRuleMatcher(self.rule)
+			match = matcher.match_for(patient) is not None
 		
 		elif 'breastfeeding' == self.rule.state:
 			return (None, "Testing whether the patient is breastfeeding is not yet supported")
@@ -131,12 +124,8 @@ class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
 		
 		# compare SNOMED-CT codes
 		if 'snomedct' == self.rule.diagnosis.system:
-			matched = None
-			for c in patient.conditions:
-				cpt = snomed.SNOMEDConcept(c.snomed)
-				if cpt.code == self.rule.diagnosis.code or cpt.isa(self.rule.diagnosis.code):
-					matched = snomed.SNOMEDConcept(self.rule.diagnosis.code)
-					break
+			matcher = targetprofilediagnosisrulematcher.TargetProfileDiagnosisSNOMEDRuleMatcher(self.rule)
+			matched = matcher.match_for(patient)
 			if matched is not None:
 				match = True
 				match_desc = matched.term or match_desc
