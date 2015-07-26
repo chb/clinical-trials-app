@@ -44,7 +44,12 @@
 			{{#finder.patient.conditions}}
 			<li>
 				<span class="problem_name">{{ summary }}</span>
-				<span class="supplement">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</span>
+				{{#mutations.0}}<span class="mutations">
+				{{#mutations}}
+					<span>{{ display }}: <b class="{{ interpretation }}">{{ interpretation }}</b></span>
+				{{/}}
+				</span>{{/}}
+				<p class="problem_date">{{^date_resolution}}since {{ date_onset }}{{/}}{{#date_resolution}} - {{ . }}{{/}}</p>
 			</li>
 			{{/}}
 		</ul>

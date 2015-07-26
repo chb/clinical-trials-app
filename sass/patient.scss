@@ -87,6 +87,27 @@ ul#problem_list {
 		.problem_name {
 			font-size: 1.2em;
 		}
+		.mutations {
+			margin-left: 1em;
+			color: $col-faded;
+			
+			& > *::after, & > *:after {
+				content: ', ';
+			}
+			& > *:last-child:after, & > *:last-child::after {
+				content: none;
+			}
+			.POS {
+				color: $col-green;
+			}
+			.NEG {
+				color: $col-red;
+			}
+		}
+		.problem_date {
+			margin: 0 0 0 2em;
+			font-size: 0.9em; color: $col-faded;
+		}
 		
 		&#prob_manual {
 			cursor: default;
