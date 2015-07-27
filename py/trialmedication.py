@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import py.smartclient.fhirclient.models.medication as medication
+import smartclient.fhirclient.models.medication as medication
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 
 

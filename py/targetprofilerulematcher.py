@@ -111,7 +111,7 @@ class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 		return (True, None)
 
 
-class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherDiagnosis(TargetProfileRuleMatcher):
 	""" Determines if a patient matches a diagnosis by looking at her
 	documented conditions.
 	"""
@@ -262,7 +262,7 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherDiagnosis)
 TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
 TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)

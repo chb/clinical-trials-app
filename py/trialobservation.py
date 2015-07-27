@@ -25,6 +25,7 @@ class TrialObservation(jsondocument.JSONDocument):
 		self.coding = None              # FHIR Coding array
 		self.interpretation = None      # as TrialObservationInterpretation
 		self.value = None               # numeric value
+		self.valuestring = None         # string value
 		self.unit = None                # the UCUM unit
 		self.reliability = None
 		self.status = None
@@ -71,7 +72,7 @@ class TrialObservation(jsondocument.JSONDocument):
 		elif fhir_observation.valueSampledData is not None:
 			print('-- LAB VALUE (as valueSampledData)', fhir_observation.valueSampledData)
 		elif fhir_observation.valueString is not None:
-			print('-- LAB VALUE (as valueString)', fhir_observation.valueString)
+			fhir_observation.valuestring = fhir_observation.valueString
 		
 		obs.reliability = fhir_observation.reliability
 		obs.status = fhir_observation.status

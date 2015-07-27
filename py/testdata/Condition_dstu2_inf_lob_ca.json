@@ -1,0 +1,33 @@
+{
+    "category": {
+        "coding": [
+            {
+                "code": "39154008",
+                "display": "Clinical diagnosis",
+                "system": "http://snomed.info/sct"
+            }
+        ]
+    },
+    "clinicalStatus": "confirmed",
+    "code": {
+        "coding": [
+            {
+                "code": "278054005",
+                "display": "Infiltrating lobular carcinoma of breast",
+                "system": "http://snomed.info/sct"
+            }
+        ],
+        "text": "ILC"
+    },
+    "id": "test-pat-lbca",
+    "meta": {
+        "lastUpdated": "2015-07-21T19:11:15.145+00:00",
+        "versionId": "190457"
+    },
+    "onsetDateTime": "2014-01-01",
+    "patient": {
+        "display": "Petrich Magda",
+        "reference": "Patient/test-pat"
+    },
+    "resourceType": "Condition"
+}

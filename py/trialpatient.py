@@ -141,6 +141,40 @@ class TrialPatient(jsondocument.JSONDocument):
 			del js_dict['fhir']
 		return js_dict
 	
+	def process_observations(self, observations):
+		""" Given a list of FHIR observations, determines which are mutations
+		and which are lab values, filling the receiver's ivars accordingly.
+		"""
+		if observations is None:
+			return
+		if self.labs is None:
+			self.labs = []
+		
+		for obs in observations:
+			if triallab.TrialLab.is_lab(obs):
+				self.labs.append(triallab.TrialLab.from_fhir(obs))
+			elif trialmutation.TrialMutation.is_mutation(obs):
+				mut = trialmutation.TrialMutation.from_fhir(obs)
+				
+				# this is a mutation, find corresponding observation
+				if self.conditions is not None:
+					found = False
+					for cond in self.conditions:
+						if mut.reference and cond.id == os.path.basename(mut.reference):
+							if cond.mutations is None:
+								cond.mutations = []
+							cond.mutations.append(mut)
+							found = True
+							break
+					if not found:
+						logging.warning("Found a mutation but not the matching condition in patient {}"
+							.format(self.id))
+				else:
+					logging.warning("Found a mutation but patient {} has no conditions"
+						.format(self.id))
+		
+		self.labs = self.labs if len(self.labs) > 0 else None
+	
 	@classmethod
 	def load_from_fhir(cls, client):
 		""" Instantiates a TrialPatient with data from a FHIR Patient resource,
@@ -176,22 +210,7 @@ class TrialPatient(jsondocument.JSONDocument):
 		# retrieve observations: labs and mutations
 		obs_search = observation.Observation.where(struct={'subject': fpat.id})
 		observations = obs_search.perform_resources(fpat._server)
-		patient.labs = []
-		for obs in observations:
-			if triallab.TrialLab.is_lab(obs):
-				patient.labs.append(triallab.TrialLab.from_fhir(obs))
-			elif trialmutation.TrialMutation.is_mutation(obs):
-				mut = trialmutation.TrialMutation.from_fhir(obs)
-				
-				# this is a mutation, find corresponding observation
-				for cond in patient.conditions:
-					if mut.reference and cond.id == os.path.basename(mut.reference):
-						if cond.mutations is None:
-							cond.mutations = []
-						cond.mutations.append(mut)
-						break
-		
-		patient.labs = patient.labs if len(patient.labs) > 0 else None
+		patient.process_observations(observations)
 		
 		# retrieve meds
 		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat.id})

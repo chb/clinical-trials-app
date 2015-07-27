@@ -32,7 +32,7 @@ class TargetProfile(object):
 			for js in json_arr:
 				klass = self.rule_classes.get(js.get('type'))
 				if klass is None:
-					logging.info('No target profile rule class to represent "{}"'.format(js.get('type')))
+					logging.warning('No target profile rule class to represent "{}"'.format(js.get('type')))
 				else:
 					self.rules.append(klass(js))
 	

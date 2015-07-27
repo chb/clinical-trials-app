@@ -213,7 +213,7 @@ class TrialProfileMatcher(TrialMatcher):
 		determines if the patient is disqualified or not.
 		"""
 		if trial.target_profile is None:
-			logging.debug('No target profile for {}, cannot match'.format(trial.nct))
+			logging.warning('No target profile for {}, cannot match'.format(trial.nct))
 			return []
 		
 		# match over all rules
@@ -221,7 +221,7 @@ class TrialProfileMatcher(TrialMatcher):
 		for rule in trial.target_profile.rules:
 			matcher = targetprofilerulematcher.TargetProfileRuleMatcher.get_matcher(rule)
 			if matcher is None:
-				logging.debug('{}: No target profile rule matcher is available for {} "{}"'.format(trial.nct, rule.for_type, rule.description))
+				logging.warning('{}: No target profile rule matcher is available for {} "{}"'.format(trial.nct, rule.for_type, rule.description))
 				tests.append(TrialMatchTest.unsure("No rule matcher to test {} rule \"{}\"".format(rule.for_type, rule.description)))
 			else:
 				res, reason = matcher.test(patient)
