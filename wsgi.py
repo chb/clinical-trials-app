@@ -20,13 +20,13 @@ import py.smartclient.fhirclient.client as smart
 import py.smartclient.flaskbeaker as flaskbeaker
 
 # App
-from py.trialpatient import TrialPatient, TrialPatientInfo
-from py.trialfinder import TrialFinder
-from py.targettrial import TargetTrial, TargetTrialInfo
-from py.trialmatcher import *
-from py.clinicaltrials.trialreachserver import TrialReachServer
-from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
-from py.clinicaltrials.jsondocument.mongoserver import MongoServer
+from trialpatient import TrialPatient, TrialPatientInfo
+from trialfinder import TrialFinder
+from targettrial import TargetTrial, TargetTrialInfo
+from trialmatcher import *
+from clinicaltrials.trialreachserver import TrialReachServer
+from localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
+from clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
 flaskbeaker.FlaskBeaker.setup_app(app)

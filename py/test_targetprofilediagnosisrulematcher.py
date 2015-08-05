@@ -273,16 +273,74 @@ class TargetProfileDiagnosisRuleMatcherTests(unittest.TestCase):
 		profile = targetprofile.TargetProfile([rulejs])
 		test = targetprofilediagnosisrulematcher.TargetProfileDiagnosisSNOMEDRuleMatcher(profile.rules[0])
 		self.assertIsNone(test.match_for(self.patient))
-		# self.makeESRPos()
-		# self.assertIsNone(test.match_for(self.patient))
-		# self.makePGRPos(False)
-		# self.assertIsNotNone(test.match_for(self.patient))
-		# self.makeESRNeg()
-		# self.assertIsNone(test.match_for(self.patient))
-		# self.makeHER2Pos(False)
-		# self.assertIsNone(test.match_for(self.patient))
-		# self.makePGRPos()
-		# self.assertIsNone(test.match_for(self.patient))
+		self.makeESRPos()
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makePGRPos(False)
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makeESRNeg()
+		self.assertIsNone(test.match_for(self.patient))
+		self.makeHer2Pos(False)
+		self.assertIsNone(test.match_for(self.patient))
+		self.makePGRPos()
+		self.assertIsNotNone(test.match_for(self.patient))
+	
+	def testBreastTumorHormoneNeg(self):
+		rulejs = {
+			"description": "Patient must have active diagnosis of Hormone receptor negative neoplasm.",
+			"type": "diagnosis",
+			"include": True,
+			"qualifier": "active",
+			"inputs": [{
+				"purl": "http://purl.bioontology.org/ontology/SNOMEDCT/438628005",
+				"prefLabel": "Hormone receptor negative neoplasm",
+				"description": "Hormone receptor negative neoplasm",
+				"system": "snomedct",
+				"code": "438628005"
+			}]
+		}
+		profile = targetprofile.TargetProfile([rulejs])
+		test = targetprofilediagnosisrulematcher.TargetProfileDiagnosisSNOMEDRuleMatcher(profile.rules[0])
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makeESRPos()
+		self.assertIsNone(test.match_for(self.patient))
+		self.makePGRPos(False)
+		self.assertIsNone(test.match_for(self.patient))
+		self.makeESRNeg()
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makeHer2Pos(False)
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makePGRPos(False)
+		self.assertIsNone(test.match_for(self.patient))
+	
+	def testBreastTumorTripleNeg(self):
+		rulejs = {
+			"description": "Patient must have active diagnosis of Triple-negative breast cancer.",
+			"type": "diagnosis",
+			"include": True,
+			"qualifier": "active",
+			"inputs": [{
+				"purl": "http://purl.bioontology.org/ontology/SNOMEDCT/706970001",
+				"prefLabel": "Triple-negative breast cancer",
+				"description": "Triple-negative breast cancer",
+				"system": "snomedct",
+				"code": "706970001"
+			}]
+		}
+		profile = targetprofile.TargetProfile([rulejs])
+		test = targetprofilediagnosisrulematcher.TargetProfileDiagnosisSNOMEDRuleMatcher(profile.rules[0])
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makeESRPos()
+		self.assertIsNone(test.match_for(self.patient))
+		self.makePGRPos(False)
+		self.assertIsNone(test.match_for(self.patient))
+		self.makeESRNeg()
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makeHer2Pos(False)
+		self.assertIsNone(test.match_for(self.patient))
+		self.makeESRNeg()
+		self.assertIsNotNone(test.match_for(self.patient))
+		self.makePGRNeg(False)
+		self.assertIsNotNone(test.match_for(self.patient))
 
 
 trialpatient.TrialPatientInfo.hookup(jsonserver.JSONServer(), 'none')

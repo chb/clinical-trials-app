@@ -56,10 +56,10 @@ class TargetProfileDiagnosisSNOMEDRuleMatcher(TargetProfileDiagnosisRuleMatcher)
 class TargetProfileDiagnosisSNOMEDMutationRuleMatcher(object):
 	""" Superclass for testers that test SNOMED-coded diseases with mutations.
 	"""
-	tests = None
-	parents = []
-	hgnc = None
-	hgnc_positive = True
+	tests = None             # the specific SNOMED code to check for
+	parents = []             # the parent codes which are also a match, provided the mutation(s) match
+	hgnc = None              # the Hugo gene id for which a mutation is expected
+	hgnc_positive = True     # whether the mutation must be positive
 	
 	def __init__(self):
 		self.specific = self.__class__.tests
@@ -69,9 +69,10 @@ class TargetProfileDiagnosisSNOMEDMutationRuleMatcher(object):
 	
 	def matches(self, condition):
 		""" Tests if:
-		1. Is the given condition the same concept as the specific one?
-		2. Is the given condition a child of the parent(s), and if so
-		3. Is the given mutation present or absent as desired?
+		- Is the given condition the same concept as the specific one?
+		or
+		- Is the given condition a child of the parent(s), and if so
+		- Is the given mutation present or absent as desired?
 		"""
 		cpt = snomed.SNOMEDConcept(condition.snomed)
 		spec = snomed.SNOMEDConcept(self.specific)
@@ -173,21 +174,30 @@ TargetProfileDiagnosisSNOMEDRuleMatcher.announce_extra(TargetProfileDiagnosisSNO
 
 
 class TargetProfileDiagnosisSNOMEDHormoneReceptorPosRuleMatcher(TargetProfileDiagnosisSNOMEDMutationRuleMatcher):
-	""" Tests for positivity of estrogen and progesterone receptors.
+	""" Hormone receptor positive tumor, tests for positivity of estrogen
+	or (!) progesterone receptors.
 	"""
 	tests = '417742002'
 	
-	def __init__(self, snomed):
-		super().__init__(snomed)
-		self.esr = TargetProfileDiagnosisSNOMEDESRPosRuleMatcher(snomed)
-		self.pgr = TargetProfileDiagnosisSNOMEDPGRPosRuleMatcher(snomed)
+	def __init__(self):
+		super().__init__()
+		self.esr = TargetProfileDiagnosisSNOMEDESRPosRuleMatcher()
+		self.pgr = TargetProfileDiagnosisSNOMEDPGRPosRuleMatcher()
 	
 	def matches(self, condition):
-		if not self.esr.matches(condition):
-			return False
+		if self.esr.matches(condition):
+			return True
 		return self.pgr.matches(condition)
 
+class TargetProfileDiagnosisSNOMEDHormoneReceptorPos2RuleMatcher(TargetProfileDiagnosisSNOMEDHormoneReceptorPosRuleMatcher):
+	""" Extends TargetProfileDiagnosisSNOMEDHormoneReceptorPosRuleMatcher by
+	checking for its child concept "Hormone receptor positive malignant
+	neoplasm of breast"
+	"""
+	tests = '417181009'
+
 TargetProfileDiagnosisSNOMEDRuleMatcher.announce_extra(TargetProfileDiagnosisSNOMEDHormoneReceptorPosRuleMatcher)
+TargetProfileDiagnosisSNOMEDRuleMatcher.announce_extra(TargetProfileDiagnosisSNOMEDHormoneReceptorPos2RuleMatcher)
 
 
 class TargetProfileDiagnosisSNOMEDHormoneReceptorNegRuleMatcher(TargetProfileDiagnosisSNOMEDMutationRuleMatcher):
@@ -195,10 +205,10 @@ class TargetProfileDiagnosisSNOMEDHormoneReceptorNegRuleMatcher(TargetProfileDia
 	"""
 	tests = '438628005'
 	
-	def __init__(self, snomed):
-		super().__init__(snomed)
-		self.esr = TargetProfileDiagnosisSNOMEDESRNegRuleMatcher(snomed)
-		self.pgr = TargetProfileDiagnosisSNOMEDPGRNegRuleMatcher(snomed)
+	def __init__(self,):
+		super().__init__()
+		self.esr = TargetProfileDiagnosisSNOMEDESRNegRuleMatcher()
+		self.pgr = TargetProfileDiagnosisSNOMEDPGRNegRuleMatcher()
 	
 	def matches(self, condition):
 		if not self.esr.matches(condition):
@@ -213,20 +223,20 @@ class TargetProfileDiagnosisSNOMEDTripleNegRuleMatcher(TargetProfileDiagnosisSNO
 	"""
 	tests = '706970001'
 	
-	def __init__(self, snomed):
-		super().__init__(snomed)
-		self.her = TargetProfileDiagnosisSNOMEDHer2NegRuleMatcher(snomed)
-		self.esr = TargetProfileDiagnosisSNOMEDESRNegRuleMatcher(snomed)
-		self.pgr = TargetProfileDiagnosisSNOMEDPGRNegRuleMatcher(snomed)
+	def __init__(self):
+		super().__init__()
+		self.her = TargetProfileDiagnosisSNOMEDHer2NegRuleMatcher()
+		self.esr = TargetProfileDiagnosisSNOMEDESRNegRuleMatcher()
+		self.pgr = TargetProfileDiagnosisSNOMEDPGRNegRuleMatcher()
 	
 	def matches(self, condition):
 		if not self.her.matches(condition):
 			return False
 		if not self.esr.matches(condition):
 			return False
-		if not self.pgr.matches(condition):
-			return False
-		return True
+		return self.pgr.matches(condition)
+
+TargetProfileDiagnosisSNOMEDRuleMatcher.announce_extra(TargetProfileDiagnosisSNOMEDTripleNegRuleMatcher)
 
 
 class TargetProfileDiagnosisPregnancyRuleMatcher(TargetProfileDiagnosisRuleMatcher):
