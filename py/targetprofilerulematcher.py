@@ -38,6 +38,12 @@ class TargetProfileRuleMatcher():
 	def __init__(self, rule):
 		self.rule = rule
 	
+	@property
+	def property(self):
+		""" Patient's property examined by the matcher.
+		"""
+		return None
+	
 	def test(self, patient):
 		""" Performs the matching logic, returning a tuple with True describing
 		the patient meeting the criteria, False not meeting and None that the
@@ -48,26 +54,34 @@ class TargetProfileRuleMatcher():
 		return (None, None)
 
 
-class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherGender(TargetProfileRuleMatcher):
 	rule_type = 'gender'
+	
+	@property
+	def property(self):
+		return 'patient.gender'
 	
 	def test(self, patient):
 		include = self.rule.include
 		match = patient.gender == self.rule.gender
 		
 		if include ^ match:
-			return (False, 'patient.gender')
+			return (False, "Patient is not {}".format(self.rule.gender))
 		return (True, None)
 
 
-class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherAge(TargetProfileRuleMatcher):
 	rule_type = 'age'
+	
+	@property
+	def property(self):
+		return 'patient.age'
 	
 	def test(self, patient):
 		age = patient.age_years
 		if age is None:
-			logging.debug('Patient doesn\'t have an age')
-			return (None, None)
+			logging.debug("Patient doesn't have an age")
+			return (None, "Patient doesn't have an age")
 		
 		include = self.rule.include
 		match = False
@@ -82,21 +96,27 @@ class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 				match = True
 		
 		if include ^ match:
-			return (False, 'patient.age')
+			return (False, "Patient is not in the target age range")
 		return (True, None)
 
 
-class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherState(TargetProfileRuleMatcher):
 	rule_type = 'state'
+	
+	@property
+	def property(self):
+		return 'patient.state.{}'.format(self.rule.state)
 	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
+		reason = "Patient does not match state"
 		
 		# check for pregnancy "condition" (SNOMED-CT 77386006)
 		if 'pregnant' == self.rule.state:
 			matcher = targetprofilediagnosisrulematcher.TargetProfileDiagnosisPregnancyRuleMatcher(self.rule)
 			match = matcher.match_for(patient) is not None
+			reason = "Patient is not pregnant" if include else "Patient is pregnant"
 		
 		elif 'breastfeeding' == self.rule.state:
 			return (None, "Testing whether the patient is breastfeeding is not yet supported")
@@ -107,7 +127,7 @@ class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 				.format(self.rule.state, self.rule.description))
 		
 		if include ^ match:
-			return (False, 'patient.state.{}'.format(self.rule.state))
+			return (False, reason)
 		return (True, None)
 
 
@@ -117,10 +137,14 @@ class TargetProfileRuleMatcherDiagnosis(TargetProfileRuleMatcher):
 	"""
 	rule_type = 'diagnosis'
 	
+	@property
+	def property(self):
+		return 'patient.conditions'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.conditions'
+		reason = None
 		
 		# compare SNOMED-CT codes
 		if 'snomedct' == self.rule.diagnosis.system:
@@ -128,27 +152,30 @@ class TargetProfileRuleMatcherDiagnosis(TargetProfileRuleMatcher):
 			matched = matcher.match_for(patient)
 			if matched is not None:
 				match = True
-				match_desc = matched.term or match_desc
+				reason = matched.term
 		else:
 			return (None, 'I cannot match to diagnoses of type "{}" for "{}"'
 				.format(self.rule.diagnosis.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherMedication(TargetProfileRuleMatcher):
 	""" Determines if the patient is currently prescribed the medication(s)
 	mentioned in the rule.
 	"""
 	rule_type = 'medication'
 	
+	@property
+	def property(self):
+		return 'patient.medications'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.medications'
+		reason = None
 		
 		# compare RxNorm meds
 		if 'rxnorm' == self.rule.medication.system:
@@ -156,27 +183,30 @@ class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
 			matched = rxnorm.find_any([c.rxnorm for c in patient.medications])
 			if matched is not None:
 				match = True
-				match_desc = matched.description or match_desc
+				reason = matched.description
 		else:
 			return (None, 'I cannot match to medications of type "{}" for "{}"'
 				.format(self.rule.medication.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileAllergyRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherAllergy(TargetProfileRuleMatcher):
 	""" Determines if the patient has a documented allergy against the given
 	substance.
 	"""
 	rule_type = 'allergy'
 	
+	@property
+	def property(self):
+		return 'patient.allergies'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.allergies'
+		reason = None
 		
 		# compare NDF-RT allergies
 		if 'ndfrt' == self.rule.allergy.system:
@@ -184,31 +214,34 @@ class TargetProfileAllergyRuleMatcher(TargetProfileRuleMatcher):
 			matched = ndfrt.find_any([c.ndfrt for c in patient.allergies])
 			if matched is not None:
 				match = True
-				match_desc = matched.description or match_desc
+				reason = matched.description
 		else:
 			return (None, 'I cannot match to allergies of type "{}" for "{}"'
 				.format(self.rule.allergy.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherScore(TargetProfileRuleMatcher):
 	rule_type = 'score'
 
 
-class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherLabValue(TargetProfileRuleMatcher):
 	""" Determines if the patient has a documented laboratory value matching
 	the rule.
 	"""
 	rule_type = 'labValue'
 	
+	@property
+	def property(self):
+		return 'patient.labs'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = None
-		match_desc = None
+		reason = None
 		
 		# compare LOINC lab values
 		if 'lnc' == self.rule.lab.system:
@@ -230,7 +263,7 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 						match = False
 					elif use_latest and latest_matched is not None and latest_matched < lab.date:
 						match = False
-						match_desc = None
+						reason = None
 					
 					# test against bounds
 					if self.rule.is_upper:
@@ -244,7 +277,7 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 							match = True
 					
 					if match:
-						match_desc = matched.description
+						reason = matched.description
 					
 					latest_matched = lab.date
 		else:
@@ -255,16 +288,16 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 		if match is None:
 			return (None, 'No suitable lab value to test "{}"'.format(self.rule.description))
 		if match ^ include:
-			return (False, match_desc or 'patient.labs')
+			return (False, reason)
 		return (True, None)
 
 
-TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherGender)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherAge)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherState)
 TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherDiagnosis)
-TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileLabValueRuleMatcher)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherMedication)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherAllergy)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherScore)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherLabValue)
 
