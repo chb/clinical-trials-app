@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import trialobservation
 
 
@@ -28,17 +29,23 @@ class TrialMutation(trialobservation.TrialObservation):
 	def from_fhir(cls, fhir_observation):
 		""" Fill properties from a FHIR Observation instance.
 		"""
-		mut = super().from_fhir(fhir_observation)
+		mute = super().from_fhir(fhir_observation)
 		
 		if fhir_observation.modifierExtension is not None:
 			for ext in fhir_observation.modifierExtension:
 				if 'http://fhir-registry.smarthealthit.org/StructureDefinition/gene-expression-in' == ext.url:
-					mut.reference = ext.valueReference.reference if ext.valueReference is not None else None
+					mute.reference = ext.valueReference.reference if ext.valueReference is not None else None
 		
 		# find HGNC code
-		if mut.coding is not None:
-			for code in mut.coding:
+		if mute.coding is not None:
+			for code in mute.coding:
 				if 'http://www.genenames.org' == code.system:
-					mut.hgnc = code.code
-			mut.coding = None
-		return mut
+					mute.hgnc = code.code
+			mute.coding = None
+		
+		if mute.interpretation is None:
+			logging.warning("Mutation {} has no interpretation, should pull from values (TODO)"
+				.format(mute))
+		
+		return mute
+

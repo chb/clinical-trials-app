@@ -3,6 +3,9 @@
 
 import logging
 
+import codeable
+import targetprofilediagnosisrulematcher
+
 
 class TargetProfileRuleMatcher():
 	""" Match one target profile rule.
@@ -24,14 +27,22 @@ class TargetProfileRuleMatcher():
 	
 	@classmethod
 	def get_matcher(cls, for_rule):
-		if for_rule is None or not for_rule.for_type:
-			return None
+		if for_rule is None:
+			raise Exception('Must supply a rule in order to receive a matcher')
+		if not for_rule.for_type:
+			raise Exception('Invalid rule, does not have "for_type" set: {}'.format(for_rule))
 		
 		klass = cls.matcher_classes.get(for_rule.for_type)
 		return klass(for_rule) if klass is not None else None
 	
 	def __init__(self, rule):
 		self.rule = rule
+	
+	@property
+	def property(self):
+		""" Patient's property examined by the matcher.
+		"""
+		return None
 	
 	def test(self, patient):
 		""" Performs the matching logic, returning a tuple with True describing
@@ -43,26 +54,34 @@ class TargetProfileRuleMatcher():
 		return (None, None)
 
 
-class TargetProfileGenderRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherGender(TargetProfileRuleMatcher):
 	rule_type = 'gender'
+	
+	@property
+	def property(self):
+		return 'patient.gender'
 	
 	def test(self, patient):
 		include = self.rule.include
 		match = patient.gender == self.rule.gender
 		
 		if include ^ match:
-			return (False, 'patient.gender')
+			return (False, "Patient is not {}".format(self.rule.gender))
 		return (True, None)
 
 
-class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherAge(TargetProfileRuleMatcher):
 	rule_type = 'age'
+	
+	@property
+	def property(self):
+		return 'patient.age'
 	
 	def test(self, patient):
 		age = patient.age_years
 		if age is None:
-			logging.debug('Patient doesn\'t have an age')
-			return (None, None)
+			logging.debug("Patient doesn't have an age")
+			return (None, "Patient doesn't have an age")
 		
 		include = self.rule.include
 		match = False
@@ -77,20 +96,27 @@ class TargetProfileAgeRuleMatcher(TargetProfileRuleMatcher):
 				match = True
 		
 		if include ^ match:
-			return (False, 'patient.age')
+			return (False, "Patient is not in the target age range")
 		return (True, None)
 
 
-class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherState(TargetProfileRuleMatcher):
 	rule_type = 'state'
+	
+	@property
+	def property(self):
+		return 'patient.state.{}'.format(self.rule.state)
 	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
+		reason = "Patient does not match state"
 		
+		# check for pregnancy "condition" (SNOMED-CT 77386006)
 		if 'pregnant' == self.rule.state:
-			pregnancy = TargetProfileStatePregnancyMatcher()
-			match = pregnancy.test_bool(patient)
+			matcher = targetprofilediagnosisrulematcher.TargetProfileDiagnosisPregnancyRuleMatcher(self.rule)
+			match = matcher.match_for(patient) is not None
+			reason = "Patient is not pregnant" if include else "Patient is pregnant"
 		
 		elif 'breastfeeding' == self.rule.state:
 			return (None, "Testing whether the patient is breastfeeding is not yet supported")
@@ -101,117 +127,130 @@ class TargetProfileStateRuleMatcher(TargetProfileRuleMatcher):
 				.format(self.rule.state, self.rule.description))
 		
 		if include ^ match:
-			return (False, 'patient.state.{}'.format(self.rule.state))
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileDiagnosisRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherDiagnosis(TargetProfileRuleMatcher):
 	""" Determines if a patient matches a diagnosis by looking at her
 	documented conditions.
 	"""
 	rule_type = 'diagnosis'
 	
+	@property
+	def property(self):
+		return 'patient.conditions'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.conditions'
+		reason = None
 		
 		# compare SNOMED-CT codes
 		if 'snomedct' == self.rule.diagnosis.system:
-			snomed = TargetProfileRuleCode('snomedct', self.rule.diagnosis.code)	# TODO: grab child terms from database
-			matched = snomed.matches([c.snomed for c in patient.conditions])
+			matcher = targetprofilediagnosisrulematcher.TargetProfileDiagnosisSNOMEDRuleMatcher(self.rule)
+			matched = matcher.match_for(patient)
 			if matched is not None:
 				match = True
-				match_desc = matched.description or match_desc
+				reason = matched.term
 		else:
 			return (None, 'I cannot match to diagnoses of type "{}" for "{}"'
 				.format(self.rule.diagnosis.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileMedicationRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherMedication(TargetProfileRuleMatcher):
 	""" Determines if the patient is currently prescribed the medication(s)
 	mentioned in the rule.
 	"""
 	rule_type = 'medication'
 	
+	@property
+	def property(self):
+		return 'patient.medications'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.medications'
+		reason = None
 		
 		# compare RxNorm meds
 		if 'rxnorm' == self.rule.medication.system:
-			rxnorm = TargetProfileRuleCode('rxnorm', self.rule.medication.code)
-			matched = rxnorm.matches([c.rxnorm for c in patient.medications])
+			rxnorm = codeable.Codeable('rxnorm', self.rule.medication.code)
+			matched = rxnorm.find_any([c.rxnorm for c in patient.medications])
 			if matched is not None:
 				match = True
-				match_desc = matched.description or match_desc
+				reason = matched.description
 		else:
 			return (None, 'I cannot match to medications of type "{}" for "{}"'
 				.format(self.rule.medication.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileAllergyRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherAllergy(TargetProfileRuleMatcher):
 	""" Determines if the patient has a documented allergy against the given
 	substance.
 	"""
 	rule_type = 'allergy'
 	
+	@property
+	def property(self):
+		return 'patient.allergies'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = False
-		match_desc = 'patient.allergies'
+		reason = None
 		
 		# compare NDF-RT allergies
 		if 'ndfrt' == self.rule.allergy.system:
-			ndfrt = TargetProfileRuleCode('ndfrt', self.rule.allergy.code)
-			matched = ndfrt.matches([c.ndfrt for c in patient.allergies])
+			ndfrt = codeable.Codeable('ndfrt', self.rule.allergy.code)
+			matched = ndfrt.find_any([c.ndfrt for c in patient.allergies])
 			if matched is not None:
 				match = True
-				match_desc = matched.description or match_desc
+				reason = matched.description
 		else:
 			return (None, 'I cannot match to allergies of type "{}" for "{}"'
 				.format(self.rule.allergy.system, self.rule.description))
 		
-		# no documentation of the patient having the condition
 		if match ^ include:
-			return (False, match_desc)
+			return (False, reason)
 		return (True, None)
 
 
-class TargetProfileScoreRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherScore(TargetProfileRuleMatcher):
 	rule_type = 'score'
 
 
-class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
+class TargetProfileRuleMatcherLabValue(TargetProfileRuleMatcher):
 	""" Determines if the patient has a documented laboratory value matching
 	the rule.
 	"""
 	rule_type = 'labValue'
 	
+	@property
+	def property(self):
+		return 'patient.labs'
+	
 	def test(self, patient):
 		include = self.rule.include
 		match = None
-		match_desc = None
+		reason = None
 		
 		# compare LOINC lab values
 		if 'lnc' == self.rule.lab.system:
-			loinc = TargetProfileRuleCode('lnc', self.rule.lab.code)
+			loinc = codeable.Codeable('lnc', self.rule.lab.code)
 			use_latest = 'most recent' == self.rule.qualifier
 			latest_matched = None
 			
 			for lab in patient.labs:
-				matched = loinc.matches([lab.loinc])
+				matched = loinc.find(lab.loinc)
 				if matched is not None:
 					if lab.unit != self.rule.lab.unit:
 						logging.warning('Different units in lab value rule matcher: {} {} vs. {} {}, skipping'
@@ -224,7 +263,7 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 						match = False
 					elif use_latest and latest_matched is not None and latest_matched < lab.date:
 						match = False
-						match_desc = None
+						reason = None
 					
 					# test against bounds
 					if self.rule.is_upper:
@@ -238,7 +277,7 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 							match = True
 					
 					if match:
-						match_desc = matched.description
+						reason = matched.description
 					
 					latest_matched = lab.date
 		else:
@@ -249,95 +288,16 @@ class TargetProfileLabValueRuleMatcher(TargetProfileRuleMatcher):
 		if match is None:
 			return (None, 'No suitable lab value to test "{}"'.format(self.rule.description))
 		if match ^ include:
-			return (False, match_desc or 'patient.labs')
+			return (False, reason)
 		return (True, None)
 
 
-TargetProfileRuleMatcher.register_rule(TargetProfileGenderRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileAgeRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileStateRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileDiagnosisRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileMedicationRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileAllergyRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileScoreRuleMatcher)
-TargetProfileRuleMatcher.register_rule(TargetProfileLabValueRuleMatcher)
-
-
-class TargetProfileRuleCode(object):
-	""" Holds a coding system and a code that can expand into child codes.
-	"""
-	
-	class Code(object):
-		def __init__(self, code, description=None):
-			self.code = code
-			self.description = description
-			self.children = None
-		
-		def matches(self, code):
-			if code == self.code:
-				return self
-			if self.children is not None:
-				for child in self.children:
-					if child.matches(code):
-						return child
-			return None
-		
-		def add(self, child_code, description=None):
-			if child_code is not None:
-				if self.children is None:
-					self.children = []
-				self.children.append(TargetProfileRuleCode.Code(child_code, description))
-	
-	
-	def __init__(self, system, code, description=None, child_codes=None):
-		""" child_codes must be a list of tuples: (code, desc).
-		"""
-		self.system = system
-		self.code = TargetProfileRuleCode.Code(code, description)
-		if child_codes is not None:
-			for ccode, cdesc in child_codes:
-				self.code.add(ccode, cdesc)
-	
-	def matches(self, codes):
-		""" Returns a `Code` instance, or None.
-		"""
-		if codes is not None:
-			for code in codes:
-				matched = self.code.matches(code)
-				if matched is not None:
-					return matched
-		return None
-
-
-class TargetProfileStatePregnancyMatcher(object):
-	""" Tests the patient's condition list against pregnancy codes.
-	"""
-	# TODO: should extract child terms from database
-	snomed = TargetProfileRuleCode(77386006, 'Patient currently pregnant', [
-		(9279009, 'Extra-amniotic pregnancy'),
-		(45307008, 'Extrachorial pregnancy'),
-		(47200007, 'High risk pregnancy'),
-			(444661007, 'High risk pregnancy due to history of preterm labor'),
-		(439311009, 'Intends to continue pregnancy'),
-		(65727000, 'Intrauterine pregnancy'),
-			(442478007, 'Combined tubal and intrauterine pregnancy'),
-		(102876002, 'Multigravida'),
-		(72892002, 'Normal pregnancy'),
-		(127363001, 'Number of pregnancies, currently pregnant'),
-		(14418008, 'Precocious pregnancy'),
-		(169561007, 'Pregnant - blood test confirms'),
-		(169564004, 'Pregnant - on abdominal palpation'),
-		(169563005, 'Pregnant - on history'),
-		(169560008, 'Pregnant - urine test confirms'),
-		(169562000, 'Pregnant - V.E. confirms'),
-		(102875003, 'Surrogate pregnancy'),
-		(83074005, 'Unplanned pregnancy'),
-			(169568001, 'Unplanned pregnancy unknown if child is wanted'),
-		(58532003, 'Unwanted pregnancy'),
-			(169567006, 'Pregnant -unplanned-not wanted'),
-	])
-	
-	def test_bool(self, patient):
-		pregnancy = self.__class__.snomed.matches([c.snomed for c in patient.conditions])
-		return pregnancy is not None
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherGender)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherAge)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherState)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherDiagnosis)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherMedication)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherAllergy)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherScore)
+TargetProfileRuleMatcher.register_rule(TargetProfileRuleMatcherLabValue)
 

@@ -13,9 +13,9 @@ class TrialMatchResult(object):
 	FAIL = False
 	
 	def __init__(self, trial, tests):
-		self.trial = trial
-		self.tests = tests
-		self.trial_patient_info = None
+		self.trial = trial                 # Trial instance
+		self.tests = tests                 # TrialMatchTest instances
+		self.trial_patient_info = None     # TrialPatientInfo instance
 	
 	def add_patient_info(self, patient):
 		assert self.trial
@@ -37,21 +37,31 @@ class TrialMatchTest(object):
 	"""
 	
 	@classmethod
-	def passed(cls, test):
-		return cls(TrialMatchResult.PASS, test)
+	def passed(cls, test, prop):
+		inst = cls(test, prop)
+		inst.did_pass()
+		return inst
 	
 	@classmethod
-	def failed(cls, test, fail_property):
-		return cls(TrialMatchResult.FAIL, test, fail_property)
+	def failed(cls, test, prop, reason=None):
+		inst = cls(test, prop)
+		inst.did_fail(reason)
+		return inst
 	
-	@classmethod
-	def unsure(cls, test):
-		return cls(TrialMatchResult.UNSURE, test)
-	
-	def __init__(self, result, test, fail_property=None):
-		self.result = result
+	def __init__(self, test, prop=None):
+		self.result = TrialMatchResult.UNSURE
 		self.test = test
-		self.fail_property = fail_property
+		self.property = prop
+		self.override = None
+		self.reason = None
+	
+	def did_pass(self):
+		self.result = TrialMatchResult.PASS
+	
+	def did_fail(self, reason=None):
+		self.result = TrialMatchResult.FAIL
+		if reason is not None:
+			self.reason = reason
 	
 	def for_api(self):
 		js = {
@@ -61,8 +71,12 @@ class TrialMatchTest(object):
 			js['status'] = 'pass'
 		elif TrialMatchResult.FAIL == self.result:
 			js['status'] = 'fail'
-		if self.fail_property is not None:
-			js['property'] = self.fail_property
+		if self.reason is not None and TrialMatchResult.PASS != self.result:
+			js['reason'] = self.reason
+		if self.property is not None:
+			js['property'] = self.property
+		if self.override is not None:
+			js['override'] = self.override
 		
 		return js
 
@@ -94,7 +108,7 @@ class TrialMatcher(object):
 		:returns: A list of `TrialMatchTest` instances for the given trial,
 			never None.
 		"""
-		return [TrialMatchTest.unsure(None)]
+		return [TrialMatchTest(None)]
 
 
 class TrialSerialMatcher(TrialMatcher):
@@ -128,26 +142,24 @@ class TrialGenderMatcher(TrialMatcher):
 		want = trial.eligibility.get('gender') if trial.eligibility else None
 		if want is not None and len(want) > 0:
 			if 'both' == want.lower():
-				return [TrialMatchTest.passed("Trial accepts patients of any gender")]
+				return [TrialMatchTest.passed("Trial accepts patients of any gender", 'patient.gender')]
 			
 			have = patient.gender
 			
 			if 'f' == want[0].lower():
+				tst = TrialMatchTest("Trial only accepts female patients", 'patient.gender')
 				if have is not None and len(have) > 0:
-					if 'f' != have[0].lower():
-						return [TrialMatchTest.failed("Trial only accepts female patients", 'patient.gender')]
-					return [TrialMatchTest.passed("Trial only accepts female patients")]
-				return [TrialMatchTest.unsure("Trial only accepts female patients")]
+					tst.did_pass() if 'f' == have[0].lower() else tst.did_fail("Patient is not female")
+				return [tst]
 			
 			if 'm' == want[0].lower():
+				tst = TrialMatchTest("Trial only accepts male patients", 'patient.gender')
 				if have is not None and len(have) > 0:
-					if 'm' != have[0].lower():
-						return [TrialMatchTest.failed("Trial only accepts male patients", 'patient.gender')]
-					return [TrialMatchTest.passed("Trial only accepts male patients")]
-				return [TrialMatchTest.unsure("Trial only accepts male patients")]
+					tst.did_pass() if 'm' == have[0].lower() else tst.did_fail("Patient is not male")
+				return [tst]
 			
 			logging.warning('Not sure which gender is expected by "{}", trial: {}'.format(want, trial.nct))
-			return [TrialMatchTest.unsure("Trial requests unknown gender \"{}\"".format(want))]
+			return [TrialMatchTest("Trial requests unknown gender \"{}\"".format(want), 'patient.gender')]
 		
 		return []
 
@@ -167,22 +179,24 @@ class TrialAgeMatcher(TrialMatcher):
 		maxAge = self.sanitize_ctg_age(elig.get('maximum_age')) if elig is not None else None
 		
 		if minAge is not None:
+			tst = TrialMatchTest("Must be at least {} years old".format(minAge), 'patient.age_years')
 			if age is not None:
 				if age < minAge:
-					tests.append(TrialMatchTest.failed("Must be at least {} years old, but is {}".format(minAge, age), 'patient.age_years'))
+					tst.did_fail("Patient is {} years old".format(age))
 				else:
-					tests.append(TrialMatchTest.passed("Must be at least {} years old".format(minAge)))
+					tst.did_pass()
 			else:
-				tests.append(TrialMatchTest.unsure("Must be at least {} years old".format(minAge)))
+				tests.append(tst)
 				
 		if maxAge is not None:
+			tst = TrialMatchTest("Must be no more than {} years old".format(maxAge), 'patient.age_years')
 			if age is not None:
 				if age > maxAge:
-					tests.append(TrialMatchTest.failed("Must be no more than {} years old, but is {}".format(maxAge, age), 'patient.age_years'))
+					tst.did_fail("Patient is {} years old".format(age))
 				else:
-					tests.append(TrialMatchTest.passed("Must be no more than {} years old".format(maxAge)))
+					tst.did_pass()
 			else:
-				tests.append(TrialMatchTest.unsure("Must be no more than {} years old".format(maxAge)))
+				tests.append(tst)
 		
 		return tests
 	
@@ -213,7 +227,7 @@ class TrialProfileMatcher(TrialMatcher):
 		determines if the patient is disqualified or not.
 		"""
 		if trial.target_profile is None:
-			logging.debug('No target profile for {}, cannot match'.format(trial.nct))
+			logging.warning('No target profile for {}, cannot match'.format(trial.nct))
 			return []
 		
 		# match over all rules
@@ -221,18 +235,14 @@ class TrialProfileMatcher(TrialMatcher):
 		for rule in trial.target_profile.rules:
 			matcher = targetprofilerulematcher.TargetProfileRuleMatcher.get_matcher(rule)
 			if matcher is None:
-				logging.debug('{}: No target profile rule matcher is available for {} "{}"'.format(trial.nct, rule.for_type, rule.description))
-				tests.append(TrialMatchTest.unsure("No rule matcher to test {} rule \"{}\"".format(rule.for_type, rule.description)))
+				logging.warning('{}: No target profile rule matcher is available for {} "{}"'.format(trial.nct, rule.for_type, rule.description))
+				tests.append(TrialMatchTest("No rule matcher to test {} rule \"{}\"".format(rule.for_type, rule.description)))
 			else:
 				res, reason = matcher.test(patient)
-				test = None
-				if res is None:
-					test = TrialMatchTest.unsure(reason or matcher.rule.description)
-				elif res:
-					test = TrialMatchTest.passed(matcher.rule.description)
-				else:
-					test = TrialMatchTest.failed(matcher.rule.description, reason)
-				tests.append(test)
+				tst = TrialMatchTest(matcher.rule.description, matcher.property)
+				if res is not None:
+					tst.did_pass() if res else tst.did_fail(reason)
+				tests.append(tst)
 		
 		return tests
 

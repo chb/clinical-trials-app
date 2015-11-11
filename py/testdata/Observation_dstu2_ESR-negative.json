@@ -1,0 +1,47 @@
+{
+    "code": {
+        "coding": [
+            {
+                "code": "HGNC:3467",
+                "display": "estrogen receptor 1",
+                "system": "http://www.genenames.org"
+            }
+        ],
+        "text": "ER Pct"
+    },
+    "id": "hca-obs-esrneg",
+    "interpretation": {
+        "coding": [
+            {
+                "code": "NEG",
+                "display": "Negative",
+                "system": "http://hl7.org/fhir/v2/0078"
+            }
+        ]
+    },
+    "meta": {
+        "lastUpdated": "2015-07-21T19:11:15.172+00:00",
+        "versionId": "190475"
+    },
+    "modifierExtension": [
+        {
+            "url": "http://fhir-registry.smarthealthit.org/StructureDefinition/gene-expression-in",
+            "valueReference": {
+                "display": "ILC",
+                "reference": "Condition/test-pat-lbca"
+            }
+        }
+    ],
+    "reliability": "ok",
+    "resourceType": "Observation",
+    "status": "final",
+    "subject": {
+        "reference": "Patient/test-pat"
+    },
+    "valueQuantity": {
+        "code": "%",
+        "system": "http://unitsofmeasure.org",
+        "units": "%",
+        "value": 1
+    }
+}

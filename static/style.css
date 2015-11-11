@@ -81,6 +81,12 @@ header { padding: 0.5em 3em 0; text-align: right; }
 ul#problem_list { padding: 0; list-style-type: none; }
 ul#problem_list li { padding: 0.15em 0; line-height: 1.6; }
 ul#problem_list li .problem_name { font-size: 1.2em; }
+ul#problem_list li .mutations { margin-left: 1em; color: #505050; }
+ul#problem_list li .mutations > *::after, ul#problem_list li .mutations > *:after { content: ', '; }
+ul#problem_list li .mutations > *:last-child:after, ul#problem_list li .mutations > *:last-child::after { content: none; }
+ul#problem_list li .mutations .POS { color: #1A0; }
+ul#problem_list li .mutations .NEG { color: #A00; }
+ul#problem_list li .problem_date { margin: 0 0 0 2em; font-size: 0.9em; color: #505050; }
 ul#problem_list li#prob_manual { cursor: default; }
 ul#problem_list li#prob_manual input { width: 50%; margin: 0 0.5em 0 0; }
 ul#problem_list li#prob_manual button { font-size: 1.1em; }

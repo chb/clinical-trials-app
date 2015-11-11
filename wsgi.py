@@ -20,13 +20,13 @@ import py.smartclient.fhirclient.client as smart
 import py.smartclient.flaskbeaker as flaskbeaker
 
 # App
-from py.trialpatient import TrialPatient, TrialPatientInfo
-from py.trialfinder import TrialFinder
-from py.targettrial import TargetTrial, TargetTrialInfo
-from py.trialmatcher import *
-from py.clinicaltrials.trialreachserver import TrialReachServer
-from py.localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
-from py.clinicaltrials.jsondocument.mongoserver import MongoServer
+from trialpatient import TrialPatient, TrialPatientInfo
+from trialfinder import TrialFinder
+from targettrial import TargetTrial, TargetTrialInfo
+from trialmatcher import *
+from clinicaltrials.trialreachserver import TrialReachServer
+from localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
+from clinicaltrials.jsondocument.mongoserver import MongoServer
 
 app = Flask(__name__)
 flaskbeaker.FlaskBeaker.setup_app(app)
@@ -115,8 +115,11 @@ def index():
 	if not USE_TEST_PATIENT:
 		mrn = request.args.get('mrn')
 		smart_client = _get_smart(iss=request.args.get('iss'), launch=request.args.get('launch'))
-		if smart_client.patient is None and mrn:
-			smart_client.patient_id = mrn
+		if mrn:
+			if smart_client.patient_id != mrn:
+				smart_client.reset_patient()
+			if smart_client.patient is None:
+				smart_client.patient_id = mrn
 		
 		# no patient yet, maybe need to authorize
 		if smart_client.patient is None:
