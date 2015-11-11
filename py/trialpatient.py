@@ -15,7 +15,7 @@ import triallab
 import trialmutation
 import clinicaltrials.jsondocument.jsondocument as jsondocument
 import smartclient.fhirclient.models.condition as condition
-import smartclient.fhirclient.models.medicationprescription as medicationprescription
+import smartclient.fhirclient.models.medicationorder as medicationorder
 import smartclient.fhirclient.models.allergyintolerance as allergyintolerance
 import smartclient.fhirclient.models.observation as observation
 
@@ -204,7 +204,7 @@ class TrialPatient(jsondocument.JSONDocument):
 			patient.country = address.country
 		
 		# retrieve problem list
-		cond_search = condition.Condition.where(struct={'subject': fpat.id})
+		cond_search = condition.Condition.where(struct={'patient': fpat.id})
 		patient.conditions = [trialcondition.TrialCondition.from_fhir(c) for c in cond_search.perform_resources(fpat._server)]
 		
 		# retrieve observations: labs and mutations
@@ -213,11 +213,11 @@ class TrialPatient(jsondocument.JSONDocument):
 		patient.process_observations(observations)
 		
 		# retrieve meds
-		med_search = medicationprescription.MedicationPrescription.where(struct={'subject': fpat.id})
+		med_search = medicationorder.MedicationOrder.where(struct={'patient': fpat.id})
 		patient.medications = [trialmedication.TrialMedication.from_fhir(m) for m in med_search.perform_resources(fpat._server)]
 		
 		# retrieve allergies
-		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'subject': fpat.id})
+		allerg_search = allergyintolerance.AllergyIntolerance.where(struct={'patient': fpat.id})
 		patient.allergies = [trialallergy.TrialAllergy.from_fhir(a) for a in allerg_search.perform_resources(fpat._server)]
 		
 		return patient

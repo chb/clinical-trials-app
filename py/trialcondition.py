@@ -56,7 +56,7 @@ class TrialCondition(jsondocument.JSONDocument):
 					cond.summary = code.display
 					break
 		cond.date_onset = fhir_cond.onsetDateTime.isostring if fhir_cond.onsetDateTime is not None else None
-		cond.date_resolution = fhir_cond.abatementDate.isostring if fhir_cond.abatementDate is not None else None
+		cond.date_resolution = fhir_cond.abatementDateTime.isostring if fhir_cond.abatementDateTime is not None else None
 		cond.status = fhir_cond.clinicalStatus
 		if cond.summary is None:
 			cond.summary = fhir_cond.text.div if fhir_cond.text is not None else None
