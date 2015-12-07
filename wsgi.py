@@ -27,10 +27,14 @@ from trialmatcher import *
 from clinicaltrials.trialreachserver import TrialReachServer
 from localutils import LocalTrialServer, LocalJSONCache, LocalImageCache
 from clinicaltrials.jsondocument.mongoserver import MongoServer
+from umls.snomed import SNOMED
 
 app = Flask(__name__)
 flaskbeaker.FlaskBeaker.setup_app(app)
 app.secret_key = SESSION_SECRET or 'supersecretkey'
+
+# Setup Checks
+SNOMED.check_database()
 
 # Trial Caches
 LocalTrialServer.trial_cache = LocalJSONCache('trial-cache')

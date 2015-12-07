@@ -22,4 +22,4 @@ MONGO_PORT = None
 MONGO_DB = None
 MONGO_USER = None
 MONGO_PASS = None
-MONGO_BUCKET = None		# this must be set to a name, there is no default value
+MONGO_BUCKET = 'trials'      # this must be set to a name, cannot be None as there is no default value
