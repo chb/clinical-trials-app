@@ -32,7 +32,6 @@
             }
         }
     ],
-    "reliability": "ok",
     "resourceType": "Observation",
     "status": "final",
     "subject": {
@@ -42,7 +41,7 @@
     "valueQuantity": {
         "code": "%",
         "system": "http://unitsofmeasure.org",
-        "units": "%",
+        "unit": "%",
         "value": 19
     }
 }

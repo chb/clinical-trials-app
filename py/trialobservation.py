@@ -27,7 +27,7 @@ class TrialObservation(jsondocument.JSONDocument):
 		self.value = None               # numeric value
 		self.valuestring = None         # string value
 		self.unit = None                # the UCUM unit
-		self.reliability = None
+		self.reliability = "ok"
 		self.status = None
 		self.summary = None
 		super().__init__(None, "lab", json)
@@ -41,10 +41,10 @@ class TrialObservation(jsondocument.JSONDocument):
 		obs._id = fhir_observation.id
 		
 		# determine date
-		if fhir_observation.appliesDateTime is not None:
-			obs.date = fhir_observation.appliesDateTime.date
-		elif fhir_observation.appliesPeriod is not None:
-			print('LAB PERIOD', fhir_observation.appliesPeriod)
+		if fhir_observation.effectiveDateTime is not None:
+			obs.date = fhir_observation.effectiveDateTime.date
+		elif fhir_observation.effectivePeriod is not None:
+			print('LAB PERIOD', fhir_observation.effectivePeriod)
 		
 		# find coding
 		if fhir_observation.code is not None and fhir_observation.code.coding is not None:
@@ -65,7 +65,7 @@ class TrialObservation(jsondocument.JSONDocument):
 		elif fhir_observation.valuePeriod is not None:
 			print('-- LAB VALUE (as valuePeriod)', fhir_observation.valuePeriod)
 		elif fhir_observation.valueQuantity is not None:
-			obs.unit = fhir_observation.valueQuantity.units
+			obs.unit = fhir_observation.valueQuantity.unit
 			obs.value = fhir_observation.valueQuantity.value
 		elif fhir_observation.valueRatio is not None:
 			print('-- LAB VALUE (as valueRatio)', fhir_observation.valueRatio)
@@ -74,7 +74,6 @@ class TrialObservation(jsondocument.JSONDocument):
 		elif fhir_observation.valueString is not None:
 			fhir_observation.valuestring = fhir_observation.valueString
 		
-		obs.reliability = fhir_observation.reliability
 		obs.status = fhir_observation.status
 		obs.summary = fhir_observation.text.div if fhir_observation is not None and fhir_observation.text is not None else None
 		if obs.summary is not None:

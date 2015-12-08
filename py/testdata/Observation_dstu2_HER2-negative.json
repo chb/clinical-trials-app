@@ -32,7 +32,6 @@
             }
         }
     ],
-    "reliability": "ok",
     "resourceType": "Observation",
     "status": "final",
     "subject": {
