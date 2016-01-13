@@ -4,7 +4,7 @@ Clinical Trials App
 A Python 3/Flask web app that screens a patient's eligibility for certain clinical trials.
 Retrieves patient data via a [SMART on FHIR][smart] API and trial data via [TrialReach's][trialreachapi] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
 
-This work ich [Apache 2 licensed](./LICENSE.txt).
+This work is [Apache 2 licensed](./LICENSE.txt).
 
 [trialreachapi]: http://developer.trialreach.com
 [ctg]: http://www.clinicaltrials.gov
