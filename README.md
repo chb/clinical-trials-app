@@ -2,34 +2,12 @@ Clinical Trials App
 ===================
 
 A Python 3/Flask web app that screens a patient's eligibility for certain clinical trials.
-App state is stored in a local MongoDB NoSQL database.
-Trial data is obtained via [TrialReach's][trialreachapi] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
+Retrieves patient data via a [SMART on FHIR][smart] API and trial data via [TrialReach's][trialreachapi] trial API, which enhances trial data registered on [ClinicalTrials.gov][ctg].
+
+This work ich [Apache 2 licensed](./LICENSE.txt).
 
 [trialreachapi]: http://developer.trialreach.com
 [ctg]: http://www.clinicaltrials.gov
-
-
-User Flow
----------
-
-The app is used in context of a patient.
-Patient data (age, gender, zip, problems, meds, labs, ...) is obtained via the [SMART on FHIR][smart] API.
-This involves logging in to the SMART container, either explicitly through a  login page or implicitly by launching the app from within the EHR.
-
-The patient's demographics (gender, age, location and picture, if available) are shown atop.
-> Need to determine how/if to show problems, meds, ...
-
-A query for all trials being performed in the area is then performed against TrialReach's API with the respective restrictions.
-Each trial's target profile is compared against patient data to determine her preliminary eligibility.
-
-Trials are then listed, along with their matching and failing criteria, below the patient overview, ordered first by status (suggested first, then eligible, then ineligible) and then by trial title.
-> Need to figure out best trial sort order
-
-The list provides a quick glance at the trials, with trial title, intervention, phase and keywords visible.
-> Display other trial information that is important.
-
-Textual eligibility criteria can be expanded and a link to the original ClinicalTrials.gov website is provided.
-
 [smart]: http://smartplatforms.org
 
 
